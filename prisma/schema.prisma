@@ -1,0 +1,234 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum user_type {
+  CLIENT
+  LAWYER
+  ADMIN
+}
+
+enum Specialty {
+  CORPORATE_LAW
+  CRIMINAL_LAW
+  FAMILY_LAW
+  INTELLECTUAL_PROPERTY_LAW
+  EMPLOYMENT_LAW
+  IMMIGRATION_LAW
+  REAL_ESTATE_LAW
+  ENVIRONMENTAL_LAW
+  TAX_LAW
+  BANKRUPTCY_LAW
+}
+
+enum Language {
+  AMHARIC
+  OROMO
+  TIGRINYA
+  SOMALI
+  SIDAMO
+  WOLAYTTA
+  GURAGE
+  AFAR
+  HADIYYA
+  GAMO
+}
+
+enum Court {
+  SUPREME_COURT
+  APPELLATE_COURT
+  HIGH_COURT
+  DISTRICT_COURT
+  SMALL_CLAIMS_COURT
+  ADMINISTRATIVE_COURT
+}
+
+enum DisputeStatus {
+  PENDING
+  ACCEPTED
+  RESOLVED
+}
+
+enum LawyerStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum ChatUser {
+  CLIENT
+  LAWYER
+}
+
+enum CaseStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  DELIVERED
+  FINISHED
+  PAID
+}
+
+enum TransactionStatus {
+  PENDING
+  TRANSFERRED
+}
+
+enum WithdrawRequestStatus {
+  PENDING
+  TRANSFERRED
+}
+
+model client {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  password     String
+  created_at   DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  full_name    String
+  photo        String?
+  phone_number String    @unique
+  disputes     dispute[]
+  cases        Case[]    @relation("case_for")
+  ratings      Rating[]
+  messages     Message[] @relation(name: "ClientMessages")
+}
+
+model lawyer {
+  id                  Int               @id @default(autoincrement())
+  email               String            @unique
+  password            String
+  full_name           String
+  phone_number        String            @unique
+  balance             Float             @default(0)
+  identification_card String
+  qualification       String
+  cv                  String?
+  resume              String?
+  languages           Language[]        @default([])
+  specialties         Specialty[]       @default([])
+  courts              Court[]           @default([])
+  isVerified          LawyerStatus      @default(PENDING)
+  created_at          DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  photo               String
+  description         String
+  disputes            dispute[]
+  cases               Case[]            @relation("case_from")
+  ratings             Rating[]
+  withdrawRequests    WithdrawRequest[]
+  Message             Message[]         @relation(name: "LawyerMessages")
+}
+
+model admin {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  password String
+}
+
+model faq {
+  id       Int     @id @default(autoincrement())
+  question String
+  reply    String?
+}
+
+model dispute {
+  id            Int           @id @default(autoincrement())
+  client_id     Int
+  lawyer_id     Int
+  creator_email String
+  created_at    DateTime      @default(now())
+  status        DisputeStatus @default(PENDING)
+  content       String
+  lawyer        lawyer        @relation(fields: [lawyer_id], references: [id])
+  client        client        @relation(fields: [client_id], references: [id])
+}
+
+model Case {
+  id           Int           @id @default(autoincrement())
+  client_id    Int
+  lawyer_id    Int
+  status       CaseStatus    @default(PENDING)
+  title        String
+  description  String
+  price        Float
+  payment_id   String?       @unique
+  lawyer       lawyer        @relation(name: "case_from", fields: [lawyer_id], references: [id])
+  client       client        @relation(name: "case_for", fields: [client_id], references: [id])
+  trials       Trial[]
+  ratings      Rating[]
+  created_at   DateTime      @default(now())
+  transactions Transaction[]
+}
+
+model Trial {
+  id          Int      @id @default(autoincrement())
+  trial_date  DateTime
+  case_id     Int
+  description String?
+  location    String
+  case        Case     @relation(fields: [case_id], references: [id])
+}
+
+model Rating {
+  id         Int      @id @default(autoincrement())
+  client_id  Int
+  lawyer_id  Int
+  rate       Int
+  comment    String
+  case_id    Int
+  created_at DateTime @default(now())
+  lawyer     lawyer   @relation(fields: [lawyer_id], references: [id])
+  client     client   @relation(fields: [client_id], references: [id])
+  case       Case     @relation(fields: [case_id], references: [id])
+}
+
+model WithdrawRequest {
+  id         Int                   @id @default(autoincrement())
+  lawyer_id  Int
+  amount     Float
+  status     WithdrawRequestStatus @default(PENDING)
+  created_at DateTime              @default(now())
+  lawyer     lawyer                @relation(fields: [lawyer_id], references: [id])
+}
+
+model Transaction {
+  id         Int               @id @default(autoincrement())
+  payment_id String            @unique
+  case_id    Int
+  case       Case              @relation(fields: [case_id], references: [id])
+  status     TransactionStatus @default(PENDING)
+  created_at DateTime          @default(now())
+  paid_at    DateTime
+}
+
+model Message {
+  id            String  @id @default(uuid())
+  message       String
+  messageType   String
+  fileType      String?
+  sender_email  String
+  reciver_email String
+  clientId      Int
+  lawyerId      Int
+
+  client client? @relation(name: "ClientMessages", fields: [clientId], references: [id])
+  lawyer lawyer? @relation(name: "LawyerMessages", fields: [lawyerId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([clientId, lawyerId])
+}
