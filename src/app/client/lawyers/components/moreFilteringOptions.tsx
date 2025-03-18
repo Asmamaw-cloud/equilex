@@ -66,9 +66,9 @@ const MoreFilteringOptions: React.FC<props> = ({
 }) => {
   return (
     <Sheet>
-      <SheetTrigger>More</SheetTrigger>
-      <SheetContent side={"left"} className="flex flex-col">
-        <SheetHeader>
+      <SheetTrigger className="cursor-pointer">More</SheetTrigger>
+      <SheetContent side={"left"} className="flex flex-col pl-4">
+        <SheetHeader className="pl-0">
           <SheetTitle>Filter lawyers with many options</SheetTitle>
           <SheetDescription>
             Here you can filter lawyers by their specilization domain, languages

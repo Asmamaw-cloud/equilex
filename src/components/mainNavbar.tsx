@@ -29,7 +29,7 @@ const MainNavbar = () => {
   return (
     <div className="sticky top-0 bg-background/95 md:backdrop-blur md:text-black z-50 flex justify-between items-center h-20 min-w-screen mx-auto px-4 text-white border ">
       <div className="w-[15%] lg:pl-12">
-        <Link href={"/client"}>
+        <Link href={"/"}>
           <h1 className="w-full text-3xl font-bold text-black ">
             <span className="text-[#7B3B99]">EQUI</span>LEX
           </h1>
@@ -40,30 +40,29 @@ const MainNavbar = () => {
         {session ? (
           <>
             <div className="w-[30%]  md:flex hidden">
-              {userType == "client" ? <SearchInput/> : null}
+              {userType == "client" ? <SearchInput /> : null}
             </div>
             <ul className="hidden md:flex items-center ">
-              <div className="relative p-2 ">
-              <Notification />
+              <div className="relative p-2 hover:scale-110 duration-300 text-slate-500  ">
+                <Notification />
               </div>
               <li className="py-4 px-2 rounded-xl m-1 cursor-pointer duration-300 hover:text-black hover:scale-110 ">
-                <ChatDropDown  />
+                <ChatDropDown />
               </li>
 
-              <li className="py-4 px-2 rounded-xl m-1 cursor-pointer duration-300 hover:text-black hover:scale-110  text-slate-500  ">
+              <li className="py-4 px-2 rounded-xl m-1 cursor-pointer duration-300   text-slate-500  ">
                 {currentRoute == "/" ? (
                   <>
-                    {" "}
                     {userType == "client" ? (
                       <Link href="/client/lawyers">
-                        <h3 className="text-2xl group-hover:font-bolder hover:text-[#7B3B99]">
+                        <h3 className="text-2xl group-hover:font-bolder hover:text-[#7B3B99] hover:scale-110">
                           Lawyer
                         </h3>
                       </Link>
                     ) : (
                       <div className="flex gap-4">
                         <Link href="/lawyer">
-                          <h3 className="text-xl group-hover:font-bolder hover:text-[#7B3B99]">
+                          <h3 className="text-xl group-hover:font-bolder hover:text-[#7B3B99] hover:scale-110">
                             MyPage
                           </h3>
                         </Link>
@@ -71,23 +70,22 @@ const MainNavbar = () => {
                     )}
                   </>
                 ) : (
-                  <div>
+                  <div className=" flex gap-2 ">
+                    <Link href="/">
+                      <h3 className="text-xl group-hover:font-bolder hover:text-[#7B3B99] duration-300 hover:scale-110">
+                        Home
+                      </h3>
+                    </Link>
                     {userType == "lawyer" && (
                       <div
                         onClick={() => router.push("/lawyer/withdraw")}
-                        className="  hover:text-white rounded-full p-1  hover:opacity-100 transition-opacity duration-300"
+                        className="  hover:text-white rounded-full p-1  hover:opacity-100 transition-opacity "
                       >
-                        <p className="text-gray-400  hover:text-[#7B3B99]">
+                        <p className="text-gray-400  hover:text-[#7B3B99] hover:scale-110 duration-300 ">
                           300 ETB
                         </p>
                       </div>
                     )}
-
-                    <Link href="/">
-                      <h3 className="text-xl group-hover:font-bolder hover:text-[#7B3B99]">
-                        Home
-                      </h3>
-                    </Link>
                   </div>
                 )}
               </li>

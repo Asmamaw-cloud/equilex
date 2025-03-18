@@ -32,7 +32,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { courts, languages, lawyerSpecialties } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -76,6 +76,7 @@ const SignupForm = () => {
   const [cv, setCv] = useState("");
   const [resume, setResume] = useState("");
   const [photo, setPhoto] = useState("");
+  const [showPassword, setShowPassword] = useState<boolean>(false)
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -183,6 +184,11 @@ const SignupForm = () => {
       );
     }
   };
+
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
 
   return (
     <div className="lg:h-screen flex items-center lg:mt-10 mt-16 justify-center px-2">
@@ -551,7 +557,26 @@ const SignupForm = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input {...field} type="password" />
+                        <div className="relative">
+                        <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            {...field}
+                            type={showPassword ? "text" : "password"}
+                            className="pl-10 pr-10"
+                            placeholder="••••••••"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute right-1 top-1 h-8 w-8 text-muted-foreground hover:text-foreground"
+                            onClick={togglePasswordVisibility}
+                            aria-label={showPassword ? "Hide password" : "Show password"}
+                          >
+                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </Button>
+                        </div>
+                          
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -564,7 +589,25 @@ const SignupForm = () => {
                       <FormItem>
                         <FormLabel>Repeat Password</FormLabel>
                         <FormControl>
-                          <Input {...field} type="password" />
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            {...field}
+                            type={showPassword ? "text" : "password"}
+                            className="pl-10 pr-10"
+                            placeholder="••••••••"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute right-1 top-1 h-8 w-8 text-muted-foreground hover:text-foreground"
+                            onClick={togglePasswordVisibility}
+                            aria-label={showPassword ? "Hide password" : "Show password"}
+                          >
+                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </Button>
+                        </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
