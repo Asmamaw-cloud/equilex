@@ -127,46 +127,60 @@
 
 // export default Signin;
 
-"use client"
+"use client";
 
-import * as z from "zod"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import React, { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Loader2, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react"
-import Link from "next/link"
-import { Account } from "@/server/user-management/Account"
-import { useRouter, useSearchParams } from "next/navigation"
-import { toast } from "sonner"
-import { signIn, useSession } from "next-auth/react"
-import { Separator } from "@/components/ui/separator"
+import * as z from "zod";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Loader2, Mail, Lock, ArrowRight, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
+import { Account } from "@/server/user-management/Account";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import { getSession, signIn, useSession } from "next-auth/react";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   email: z.string().email({
     message: "Invalid email address.",
   }),
   password: z.string().min(6, "Password must be at least 6 characters"),
-})
+});
 
 const Signin = () => {
-  const [registeringUser, setRegisteringUser] = useState<boolean>(false)
-  const [googleLoading, setGoogleLoading] = useState<boolean>(false)
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const error = searchParams.get("error")
-  const { data: session } = useSession()
+  const [registeringUser, setRegisteringUser] = useState<boolean>(false);
+  const [googleLoading, setGoogleLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+  const { data: session } = useSession();
 
   // Show error toast if there's an error in the URL
   React.useEffect(() => {
     if (error) {
-      toast.error(`Authentication error: ${error}`)
+      toast.error(`Authentication error: ${error}`);
     }
-  }, [error])
+  }, [error]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -174,78 +188,83 @@ const Signin = () => {
       email: "",
       password: "",
     },
-  })
+  });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      setRegisteringUser(true)
-      const res = await Account.login(values.email, values.password)
-      router.push("/")
-      router.refresh()
-    } catch (error) {
-      return toast("Couldn't log you in. Please check the credentials you provided.")
+      setRegisteringUser(true);
+      console.log("Email: ", values.email, "Password: ", values.password);
+      const res = await Account.login(values.email, values.password);
+      const session = await getSession();
+      // console.log("session AK: ", session)
+      // console.log("ROle of AK: ", session?.user.image.type)
+      // //@ts-ignore
+      // if (session?.user.image.type === "admin") {
+      //   router.push("/admin")
+      // }
+      //@ts-ignore
+      if (session?.user.image.type === "admin") {
+        router.push("/admin");
+        router.refresh();
+      } else {
+        router.push("/");
+        router.refresh();
+      }
+    } catch (e: any) {
+      return toast("Please check the credentials you provided.");
     } finally {
-      setRegisteringUser(false)
+      setRegisteringUser(false);
     }
   }
 
-console.log("session for auth: ", session?.user.image)
-
-// useEffect(() => {
-//   const userType = session?.user?.image?.type // Extract user type
-//   if (userType) {
-//     console.log("User type:", userType) // Debugging log
-//     const roleRedirects = {
-//       client: "/client",
-//       lawyer: "/lawyer",
-//       admin: "/admin",
-//     }
-
-//     const redirectPath = roleRedirects[userType] || "/"
-//     router.push(redirectPath)
-//   }
-// }, [session, router])
-
+  // console.log("session for auth: ", session?.user.image);
 
   const handleGoogleSignIn = async () => {
     try {
-      setGoogleLoading(true)
+      setGoogleLoading(true);
       // Log for debugging
-      console.log("Starting Google sign-in")
+      console.log("Starting Google sign-in");
 
       // Use the direct approach with explicit parameters
       await signIn("google", {
         callbackUrl: "/",
         redirect: true,
-      })
+      });
     } catch (error) {
-      console.error("Google sign-in error:", error)
-      toast("Failed to sign in with Google")
+      console.error("Google sign-in error:", error);
+      toast("Failed to sign in with Google");
     } finally {
-      setGoogleLoading(false)
+      setGoogleLoading(false);
     }
-  }
+  };
 
   const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword)
-  }
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-background to-muted/30">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Welcome back</h1>
-          <p className="text-muted-foreground">Sign in to your account to continue</p>
+          <p className="text-muted-foreground">
+            Sign in to your account to continue
+          </p>
         </div>
 
         <Card className="border-muted/40 shadow-lg">
           <CardHeader className="space-y-1 pb-6">
             <CardTitle className="text-xl">Sign in</CardTitle>
-            <CardDescription>Enter your credentials to access your account</CardDescription>
+            <CardDescription>
+              Enter your credentials to access your account
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <FormField
                   control={form.control}
                   name="email"
@@ -255,7 +274,11 @@ console.log("session for auth: ", session?.user.image)
                       <FormControl>
                         <div className="relative">
                           <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <Input {...field} className="pl-10" placeholder="name@example.com" />
+                          <Input
+                            {...field}
+                            className="pl-10"
+                            placeholder="name@example.com"
+                          />
                         </div>
                       </FormControl>
                       <FormMessage />
@@ -270,7 +293,10 @@ console.log("session for auth: ", session?.user.image)
                     <FormItem>
                       <div className="flex items-center justify-between">
                         <FormLabel>Password</FormLabel>
-                        <Link href="/forgot-password" className="text-xs text-primary hover:underline">
+                        <Link
+                          href="/forgot-password"
+                          className="text-xs text-primary hover:underline"
+                        >
                           Forgot password?
                         </Link>
                       </div>
@@ -289,9 +315,15 @@ console.log("session for auth: ", session?.user.image)
                             size="icon"
                             className="absolute right-1 top-1 h-8 w-8 text-muted-foreground hover:text-foreground"
                             onClick={togglePasswordVisibility}
-                            aria-label={showPassword ? "Hide password" : "Show password"}
+                            aria-label={
+                              showPassword ? "Hide password" : "Show password"
+                            }
                           >
-                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4" />
+                            ) : (
+                              <Eye className="h-4 w-4" />
+                            )}
                           </Button>
                         </div>
                       </FormControl>
@@ -300,7 +332,12 @@ console.log("session for auth: ", session?.user.image)
                   )}
                 />
 
-                <Button disabled={registeringUser} type="submit" className="w-full cursor-pointer" size="lg">
+                <Button
+                  disabled={registeringUser}
+                  type="submit"
+                  className="w-full cursor-pointer"
+                  size="lg"
+                >
                   {registeringUser ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
@@ -314,7 +351,9 @@ console.log("session for auth: ", session?.user.image)
             <div className="relative my-6">
               <Separator />
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="bg-card px-2 text-xs text-muted-foreground">OR CONTINUE WITH</span>
+                <span className="bg-card px-2 text-xs text-muted-foreground">
+                  OR CONTINUE WITH
+                </span>
               </div>
             </div>
 
@@ -329,7 +368,11 @@ console.log("session for auth: ", session?.user.image)
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="absolute left-4 h-5 w-5">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    className="absolute left-4 h-5 w-5"
+                  >
                     <path
                       fill="#EA4335"
                       d="M5.26620003,9.76452941 C6.19878754,6.93863203 8.85444915,4.90909091 12,4.90909091 C13.6909091,4.90909091 15.2181818,5.50909091 16.4181818,6.49090909 L19.9090909,3 C17.7818182,1.14545455 15.0545455,0 12,0 C7.27006974,0 3.1977497,2.69829785 1.23999023,6.65002441 L5.26620003,9.76452941 Z"
@@ -355,17 +398,26 @@ console.log("session for auth: ", session?.user.image)
           <CardFooter className="flex flex-col space-y-4 border-t bg-muted/50 p-6">
             <div className="text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Link href="/signup" className="font-medium text-primary hover:underline">
+              <Link
+                href="/signup"
+                className="font-medium text-primary hover:underline"
+              >
                 Create an account
               </Link>
             </div>
             <p className="text-center text-xs text-muted-foreground">
               By signing in, you agree to our{" "}
-              <Link href="/terms" className="underline underline-offset-4 hover:text-primary">
+              <Link
+                href="/terms"
+                className="underline underline-offset-4 hover:text-primary"
+              >
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link href="/privacy" className="underline underline-offset-4 hover:text-primary">
+              <Link
+                href="/privacy"
+                className="underline underline-offset-4 hover:text-primary"
+              >
                 Privacy Policy
               </Link>
               .
@@ -374,8 +426,7 @@ console.log("session for auth: ", session?.user.image)
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Signin
-
+export default Signin;

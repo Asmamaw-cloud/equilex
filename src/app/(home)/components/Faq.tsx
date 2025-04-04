@@ -7,18 +7,22 @@ import {
 import mokeData from "./FAQMokeData";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { ArrowRight, PlusCircle } from "lucide-react";
 
 const Faq = () => {
   return (
-    <div className="p-8 flex flex-col">
+    <div id="faq" className="p-8 flex flex-col">
       <div className=" mx-auto py-8 ">
         <h1 className=" text-4xl font-bold text-black">
           Frequently Asked Questions
         </h1>
+        <p className="max-w-[800px] text-muted-foreground md:text-xl/relaxed">
+            Find answers to common questions about EQUILEX and its services.
+          </p>
       </div>
       <Accordion
         type="multiple"
-        className=" grid  md:grid-cols-2 lg:grid-cols-3  grid-cols-1 "
+        className=" grid  md:grid-cols-1 lg:grid-cols-2  grid-cols-1 "
       >
         {mokeData?.map((data) => {
           return (
@@ -33,14 +37,35 @@ const Faq = () => {
           );
         })}
       </Accordion>
-      <div className="grid w-full gap-2 px-4 my-4">
+
+      <div className="mt-12 rounded-xl border bg-background p-6 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#7B3B99]/10 text-[#7B3B99]">
+                <PlusCircle className="h-6 w-6" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-bold mb-2">Still have questions?</h3>
+                <p className="text-muted-foreground mb-4">
+                  If you couldn't find the answer to your question, feel free to contact our support team.
+                </p>
+                <a
+                  href="mailto:akassahun2023@gmail.com"
+                  className="inline-flex items-centerter text-[#7B3B99] hover:underline font-medium"
+                >
+                  Contact Support
+                  <ArrowRight className="ml-1 h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          </div>
+      {/* <div className="grid w-full gap-2 px-4 my-4">
         <h3 className=" text-xl font-semibold text-black my-4 mx-auto">
           Ask questions, gain clarity, and empower your legal journey with us
           ...
         </h3>
         <Textarea placeholder="Type your question here." />
         <Button className="bg-[#7B3B99]">Ask Question</Button>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -1,6 +1,14 @@
 "use client";
 
-import { Bell, MessageSquare, MessageSquarePlus, User } from "lucide-react";
+import {
+  Bell,
+  Menu,
+  MessageSquare,
+  MessageSquarePlus,
+  Scale,
+  User,
+  X,
+} from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -26,12 +34,36 @@ const MainNavbar = () => {
 
   const handleNav = () => setNav(!nav);
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+      setMobileMenuOpen(false);
+    }
+  };
+
   return (
     <div className="sticky top-0 bg-background/95 md:backdrop-blur md:text-black z-50 flex justify-between items-center h-20 min-w-screen mx-auto px-4 text-white border ">
-      <div className="w-[15%] lg:pl-12">
-        <Link href={"/"}>
+      {/* <div className="w-[15%] lg:pl-12 ">
+        <Link className=" flex flex-row items-center gap-2 " href={"/"}>
+          <Scale className="h-6 w-6 text-[#7B3B99]" size={300} />
           <h1 className="w-full text-3xl font-bold text-black ">
             <span className="text-[#7B3B99]">EQUI</span>LEX
+          </h1>
+        </Link>
+      </div> */}
+
+      <div className=" lg:pl-4">
+        <Link
+          className="flex items-center gap-2"
+          href="/"
+          aria-label="EQUILEX Home"
+        >
+          <Scale className="h-6 w-6 text-[#333333]" />
+          <h1 className="text-xl md:text-2xl font-bold">
+              <span className="text-[#7B3B99]">EQUI</span><span className="text-[#2C2C2C]">LEX</span>
           </h1>
         </Link>
       </div>
@@ -100,12 +132,95 @@ const MainNavbar = () => {
             </div>
           </>
         ) : (
-          <Button
-            onClick={() => router.push("/signin")}
-            className=" rounded bg-[#7B3B99] px-8 py-3 text-sm font-medium text-white shadow hover:text-white focus:outline-none focus:ring  sm:w-auto"
-          >
-            Sign In
-          </Button>
+          <>
+            <nav className="hidden md:flex items-center gap-8">
+              {[
+                { name: "Features", id: "features" },
+                { name: "How It Works", id: "how-it-works" },
+                { name: "Testimonials", id: "testimonials" },
+                { name: "FAQ", id: "faq" },
+              ].map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className="text-sm font-medium relative group transition-colors hover:text-[#7B3B99]"
+                >
+                  {item.name}
+                  <span className="absolute inset-x-0 bottom-0 h-0.5 bg-[#7B3B99] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
+                </button>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-4">
+              <a
+                href="/signin"
+                className="text-sm font-medium transition-colors hover:text-[#7B3B99] hidden md:block"
+              >
+                Login
+              </a>
+              <Button
+                className=" rounded bg-[#7B3B99] px-8 py-3 text-sm font-medium text-white shadow hover:text-white focus:outline-none focus:ring  sm:w-auto cursor-pointer hidden md:block"
+                onClick={() => router.push("/signup")}
+              >
+                Sign Up
+              </Button>
+
+              {/* Mobile Menu Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden text-foreground cursor-pointer"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              >
+                {mobileMenuOpen ? (
+                  <X className="h-10 w-10 " />
+                ) : (
+                  <Menu className="h-5 w-5 " />
+                )}
+              </Button>
+            </div>
+
+            {/* Mobile Menu */}
+            {mobileMenuOpen && (
+              <div
+                id="mobile-menu"
+                className="fixed inset-0 top-20 z-40 bg-white border-t md:hidden"
+              >
+                <nav className="flex flex-col p-4 space-y-4">
+                  {[
+                    { name: "Features", id: "features" },
+                    { name: "How It Works", id: "how-it-works" },
+                    { name: "Testimonials", id: "testimonials" },
+                    { name: "FAQ", id: "faq" },
+                  ].map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => scrollToSection(item.id)}
+                      className="flex justify-start p-3 rounded-lg hover:bg-[#333333]/10 text-lg font-medium w-full text-left text-foreground  cursor-pointer"
+                    >
+                      {item.name}
+                    </button>
+                  ))}
+                  <Link
+                    href="/signin"
+                    className="flex items-center p-3 rounded-lg hover:bg-[#333333]/10 text-lg text-foreground font-medium "
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Button
+                    className="mt-2 w-full bg-[#7B3B99] hover:bg-[#444444]  cursor-pointer"
+                    onClick={() => {
+                      router.push("/signup");
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                </nav>
+              </div>
+            )}
+          </>
         )}
       </>
       <ul
@@ -115,7 +230,7 @@ const MainNavbar = () => {
             : "ease-in-out w-[60%] duration-500 fixed top-0 bottom-0 left-[-100%]"
         }
       >
-        <h1 className="w-full text-3xl font-bold text-white m-4">Guddumalee</h1>
+        <h1 className="w-full text-3xl font-bold text-white m-4">EQUILEX</h1>
 
         <li className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600">
           <Link href={"/chat2"}>Chat</Link>

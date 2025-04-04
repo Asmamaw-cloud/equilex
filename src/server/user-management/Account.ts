@@ -7,6 +7,7 @@ export class Account {
       email,
       password,
     });
+    console.log("here is the response form signIn: ",res)
     if (!res?.ok) {
       throw new Error("Invalid credentials");
     }

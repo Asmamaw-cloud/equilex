@@ -44,3 +44,24 @@ export async function POST(req: Request, res: Response) {
     );
   }
 }
+
+
+
+
+export async function GET(rew: Request, res: Response) {
+  try {
+
+      const lawyers = await Lawyer.getUnverfiedLawyers()
+      return NextResponse.json({ id: "GET", lawyers })
+
+  } catch(error) {
+    if (error instanceof Error) {
+      console.log(`${error.message}`);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json(
+      { error: "Couldn't get lawyers" },
+      { status: 500 }
+    );
+  }
+}

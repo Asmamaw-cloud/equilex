@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReactQueryProvider from "./context/ReactQueryProvider";
 import AuthSessionProvider from "./context/AuthSessionProvider";
+import { NotificationProvider } from "./context/NotificationContext";
+
+const inter = Inter({ subsets: ["latin"] });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,18 +28,20 @@ export default function RootLayout({
   session,
 }: Readonly<{
   children: React.ReactNode;
-  session: any
+  session: any;
 }>) {
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReactQueryProvider>
-          <AuthSessionProvider session={session}>
-            {children}
-          </AuthSessionProvider>
-        </ReactQueryProvider>
+        <NotificationProvider>
+          <ReactQueryProvider>
+            <AuthSessionProvider session={session}>
+              {children}
+            </AuthSessionProvider>
+          </ReactQueryProvider>
+        </NotificationProvider>
       </body>
     </html>
   );
