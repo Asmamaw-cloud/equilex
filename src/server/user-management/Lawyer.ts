@@ -79,4 +79,31 @@ export class Lawyer extends Account {
     return lawyers
   }
 
+
+  static async verify(id: number) {
+    await isAdmin();
+    const lawyer = await db.lawyer.update({
+      where: {
+        id,
+      },
+      data: {
+        isVerified: "VERIFIED",
+      },
+    });
+    return lawyer;
+  }
+
+  static async reject(id:number) {
+    await isAdmin()
+    const lawyer = await db.lawyer.update({
+      where: {
+        id,
+      },
+      data: {
+        isVerified: "REJECTED"
+      }
+    })
+    return lawyer
+  }
+
 }

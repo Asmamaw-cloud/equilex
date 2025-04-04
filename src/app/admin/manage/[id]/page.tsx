@@ -1,14 +1,17 @@
 "use client";
 
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, UseMutationResult, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React from "react";
-import { getLawyerById } from "../../api/lawyers";
+import { getLawyerById, rejectLawyer, verifyLawyer } from "../../api/lawyers";
+import { toast } from "sonner";
+import { ErrorComponent, LoadingComponent } from "@/components/LoadingErrorComponents";
 
 const ManageEachLawyers = () => {
-
+    const queryClient = useQueryClient()
+    const router = useRouter()
     const param = useParams()
     const { id } = param
     console.log("params: ", param)
@@ -18,6 +21,48 @@ const ManageEachLawyers = () => {
         queryFn: () => getLawyerById(id),
       });
       console.log("Get lawyer by Id: ", data)
+
+      const VerifyMutationFn = async () => {
+        return verifyLawyer(id)
+      }
+      const rejectMutationFn = async () => {
+        return rejectLawyer(id)
+      }
+
+      const VerifyMutation:UseMutationResult<void, unknown> = useMutation({
+        mutationFn: VerifyMutationFn,
+        onSuccess: (data:any) => {
+          queryClient.invalidateQueries({queryKey: ["lawyers"]})
+          router.back();
+        },
+        onError: () => {
+          toast.error("Failed to accept the lawyer.")
+        }
+      })
+
+      const RejectMutation:UseMutationResult<void, unknown> = useMutation({
+        mutationFn: rejectMutationFn,
+        onSuccess:() => {
+          queryClient.invalidateQueries({ queryKey: ["lawyers"] });
+          router.back();
+        },
+        onError: () => {
+          toast.error("Failed to reject the lawyer.");
+        },
+      })
+
+      const handleVerify = async () => {
+        await VerifyMutation.mutateAsync(id)
+      }
+
+      const handleReject = async () => {
+        await RejectMutation.mutateAsync(id)
+      }
+
+      if(isLoading) return <LoadingComponent/>
+      if (error) {
+        return <ErrorComponent errorMessage="Failed to load data. Please try again."/>
+      }
 
   return (
     <div className="min-h-screen bg-[#f2f6fa] text-black flex items-center justify-center font-sans pt-24 px-10">
@@ -115,16 +160,17 @@ const ManageEachLawyers = () => {
           </div>
           <hr className="border-gray-300" />
         </div>
+
         <div className="flex items-center justify-between p-4 mt-4 ">
           <button
-            className="px-6 py-2  rounded-2xl outline outline-[#c156f3] text-[#61207f]"
-            onClick={() => null}
+            className="px-6 py-2  rounded-2xl outline outline-[#c156f3] text-[#61207f] cursor-pointer"
+            onClick={handleReject}
           >
             REJECT
           </button>
           <button
-            className="px-6 py-2  rounded-2xl outline bg-[#5e207b] text-white"
-            onClick={() => null}
+            className="px-6 py-2  rounded-2xl outline bg-[#5e207b] text-white cursor-pointer"
+            onClick={handleVerify}
           >
             ACCEPT
           </button>

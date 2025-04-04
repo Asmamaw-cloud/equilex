@@ -48,7 +48,7 @@ export async function POST(req: Request, res: Response) {
 
 
 
-export async function GET(rew: Request, res: Response) {
+export async function GET(req: Request, res: Response) {
   try {
 
       const lawyers = await Lawyer.getUnverfiedLawyers()

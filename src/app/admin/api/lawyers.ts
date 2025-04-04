@@ -36,3 +36,28 @@ export async function getLawyerById(id: any) {
   }
 
 }
+
+export async function verifyLawyer(id:any) {
+  axios.put(`/api/lawyers/${id}/verify`).then((res:any) => {
+    console.log(res)
+    return res
+  }).catch((err:any) => {
+    console.log(err)
+    return err
+  })
+}
+
+export async function rejectLawyer(id:any) {
+  axios
+    .put(`/api/lawyers/${id}/reject`)
+    .then((res: any) => {
+      console.log(res);
+
+      return res;
+    })
+    .catch((err: any) => {
+      console.log(err);
+
+      return err;
+    });
+}

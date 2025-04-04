@@ -57,7 +57,7 @@ const ManageLawyers = () => {
               />
               <h1>{lawyer.email}</h1>
             </div>
-            <p>{"2025/03/19"}</p>
+            <p>{ lawyer.date }</p>
           </div>
         </Link>
       ))}

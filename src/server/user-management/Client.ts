@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { Account } from "./Account";
 import bcrypt from "bcrypt";
+import { isAdmin } from "../checkRole";
 
 
 export class Client extends Account {
@@ -27,4 +28,21 @@ export class Client extends Account {
     });
     return newUser;
   }
+
+  static async getAll() {
+    await isAdmin()
+
+    const clients = await db.client.findMany({
+      select: {
+        created_at: true,
+        email: true,
+        id: true,
+        updatedAt: true,
+        full_name: true,
+        phone_number: true
+      }
+    })
+    return clients
+  }
+
 }
