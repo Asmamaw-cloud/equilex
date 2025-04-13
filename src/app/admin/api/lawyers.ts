@@ -6,10 +6,9 @@ export async function getNewLawyers() {
     if (response.status !== 200) {
       throw new Error(`Error: ${response.statusText}`);
     }
-    const data = response;
-    console.log("Lawyers data: ",data);
+    console.log("New Lawyers are: ",response);
 
-    return data.data;
+    return response.data;
   } catch (err) {
     console.error(err);
     throw err; // Ensure errors are propagated correctly
@@ -60,4 +59,22 @@ export async function rejectLawyer(id:any) {
 
       return err;
     });
+}
+
+
+export async function getVerifiedLawyers() {
+    try {
+
+        const response = await axios.get("/api/lawyers/verified")
+        if (response.status !== 200) {
+            throw new Error(`Error: ${response.statusText}`);
+          }
+          console.log("this is from verifyd lawyers...", response);
+      
+          return response.data.lawyers;
+
+    } catch(error) {
+        console.error(error);
+        throw error; // Ensure errors are propagated correctly
+    }
 }

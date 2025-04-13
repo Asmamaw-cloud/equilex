@@ -1,3 +1,4 @@
+import { Account } from "@/server/user-management/Account";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -8,6 +9,10 @@ interface props {
 const AdminSidebar: React.FC<props> = ({ isVisible }) => {
   const path = usePathname();
   console.log(isVisible);
+
+  const handleLogout = async () => {
+    await Account.logout();
+  };
 
   return (
     <>
@@ -245,6 +250,7 @@ const AdminSidebar: React.FC<props> = ({ isVisible }) => {
                       ? "text-white flex-1 ms-3 whitespace-nowrap"
                       : "flex-1 ms-3 whitespace-nowrap"
                   }
+                  onClick={handleLogout}
                 >
                   Sign Out
                 </span>

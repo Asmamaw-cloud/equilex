@@ -48,6 +48,40 @@ export class Lawyer extends Account {
     return newUser;
   }
 
+  static async getVerified() {
+    
+    const lawyers = await db.lawyer.findMany({
+      select: {
+        created_at: true,
+        cv: true,
+        email: true,
+        phone_number: true,
+        photo: true,
+        full_name: true,
+        description: true,
+        id: true,
+        identification_card: true,
+        isVerified: true,
+        qualification: true,
+        resume: true,
+        courts: true,
+        languages: true,
+        specialties: true,
+        updatedAt: true,
+        balance: true,
+        ratings: {
+          select: {
+            rate: true,
+          },
+        },
+      },
+      where: {
+        isVerified: "VERIFIED"
+      }
+    })
+    return lawyers
+  }
+
 
   static async getUnverfiedLawyers() {
     await isAdmin()

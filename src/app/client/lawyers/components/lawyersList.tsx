@@ -1,5 +1,11 @@
-import { data } from "@/app/data/lawyersMockData";
+// import { data } from "@/app/data/lawyersMockData";
 import LawyersCard from "./lawyersCard";
+import { useQuery } from "@tanstack/react-query";
+import { getVerifiedLawyers } from "@/app/admin/api/lawyers";
+import {
+  ErrorComponent,
+  LoadingComponent,
+} from "@/components/LoadingErrorComponents";
 
 interface Props {
   selectedSpecialization: string;
@@ -12,19 +18,42 @@ const LawyersList: React.FC<Props> = ({
   selectedCourt,
   selectedLanguage,
 }) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["clientlawyers"],
+    queryFn: () => getVerifiedLawyers(),
+    refetchInterval: 3000,
+  });
+  console.log("Client lawyers: ", data);
+
+  const filteredLawyers = data?.filter((lawyer: any) => {
+    return (
+      (!selectedLanguage || lawyer.languages.includes(selectedLanguage)) &&
+      (!selectedSpecialization ||
+        lawyer.specialties.includes(selectedSpecialization)) &&
+      (!selectedCourt || lawyer.courts.includes(selectedCourt))
+    );
+  });
+  console.log("Filtered lawyers: ", filteredLawyers);
+
+  if (isLoading) return <LoadingComponent />;
+  if (error)
+    return (
+      <ErrorComponent errorMessage="Failed to load data. Please try again." />
+    );
+
   return (
     <div className="container px-5 py-5 mx-auto mt-4">
       <div className="flex flex-wrap -m-4 text-center mx-auto justify-center">
-        {data?.length > 0 ? (
-          data.map((item: any, index: any) => {
+        {filteredLawyers?.length > 0 ? (
+          filteredLawyers.map((item: any, index: any) => {
             return (
               <LawyersCard
                 key={index}
                 id={item.id}
-                name={item.name}
-                imageUrl={item.imageUrl}
-                des={item.des}
-                rate={item.rate}
+                name={item.full_name}
+                imageUrl={item.photo}
+                des={item.description}
+                rate={item.rating}
               />
             );
           })

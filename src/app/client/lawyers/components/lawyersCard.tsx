@@ -7,7 +7,7 @@ export interface LawyerProps {
   name: string;
   des: string;
   imageUrl: string;
-  rate: number;
+  rate: number[];
 }
 
 const LawyersCard: React.FC<LawyerProps> = ({
@@ -20,16 +20,20 @@ const LawyersCard: React.FC<LawyerProps> = ({
 
     console.log("des: ", des)
     
-//   const rateValues = rate.map((item) => item?.rate);
-//   const averageRate =
-//     rateValues.reduce((sum, rate) => sum + rate, 0) / rateValues.length;
-
+    const rateValues = rate?.map((item) => item?.rate);
+    const averageRate =
+      rateValues?.reduce((sum, rate) => sum + rate, 0) / rateValues?.length;
+  
+    console.log("this rate av", averageRate);
+    console.log("this rate", rate);
 
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 0; i < 5; i++) {
       stars.push(<FaStar key={i} color={i < rating ? "#ffd700" : "#e4e5e9"} />);
     }
+    console.log("Stars: ", stars)
+
     return stars;
   };
 
@@ -41,7 +45,7 @@ const LawyersCard: React.FC<LawyerProps> = ({
       <div className="w-full">
         <Image
           src={imageUrl}
-          alt="Mountain"
+          alt="Profile picture"
           width={400}
           height={400}
           className="w-full h-64 object-cover"

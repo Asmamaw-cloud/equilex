@@ -1,24 +1,37 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { LawyerProps } from "./lawyersCard";
 import Link from "next/link";
 import { data } from "@/app/data/lawyersMockData";
 import { useParams } from "next/navigation";
-
-
+import { useQuery } from "@tanstack/react-query";
+import { getLawyerById } from "@/app/admin/api/lawyers";
+import { useSession } from "next-auth/react";
 
 const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
   const [hoveredLawyer, setHoveredLawyer] = useState<LawyerProps | null>(null);
 
-  const param = useParams()
-  const { id } = param
-  const lawyer_id = Number(id)
-  console.log("id: ", id)
-  console.log("lawyer_id: : ", lawyer_id)
-  console.log("params: ", param)
+  const param = useParams();
+  const { id } = param;
 
+  const {
+    data: lawyerData,
+    isLoading: lawyerLoading,
+    error: lawyerError,
+  } = useQuery({
+    queryKey: ["clientlawyer"],
+    queryFn: () => getLawyerById(id),
+  });
+
+  const lawyer_id = Number(id);
+  console.log("id: ", id);
+  console.log("lawyer_id: : ", lawyer_id);
+  console.log("params: ", param);
+
+  const { data: session } = useSession();
+  const filteredLawyers = lawyers?.filter((item) => item.id !== lawyerData?.id);
 
   return (
     <motion.div
@@ -50,7 +63,7 @@ const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
                     href={`/client/lawyers/${otherLawyer.id}`}
                     className=" text-blue-500 hover:underline "
                   >
-                    {otherLawyer?.name}
+                    {otherLawyer?.full_name}
                   </Link>
                   {hoveredLawyer && hoveredLawyer.id === otherLawyer.id && (
                     <motion.div
@@ -59,7 +72,7 @@ const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
                       transition={{ duration: 0.3 }}
                       className=" text-sm bg-white shadow rounded-lg p-2 "
                     >
-                      <p>{otherLawyer.des}</p>
+                      <p>{otherLawyer.description}</p>
                     </motion.div>
                   )}
                 </li>

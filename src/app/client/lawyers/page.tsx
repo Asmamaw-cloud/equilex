@@ -56,7 +56,6 @@ const Lawyers = () => {
 
         <li className="p-2 md:p-4 text-sm md:text-xl rounded-xl md:m-2 cursor-pointer duration-300 hover:text-black relative inline-flex items-center justify-start overflow-hidden transition-all bg-white  hover:bg-white group">
           <MoreFilteringOptions
-          
             setSelectedCourt={setSelectedCourt}
             setSelectedLanguage={setSelectedLanguage}
             setSelectedSpecialization={setSelectedSpecialization}

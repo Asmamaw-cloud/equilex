@@ -45,3 +45,31 @@ export async function GET(req: Request, res: Response) {
     );
   }
 }
+
+export async function PUT(req: Request) {
+  try {
+    const userInput = await req.json();
+    console.log("User Input data: ", userInput)
+
+    const {  full_name, phone_number, photo } = userInput;
+    console.log( "FullName: ", full_name, "phone_number: ", phone_number, "photo: ", photo)
+
+    const clientUpdated = await Client.update(
+      full_name,
+      phone_number,
+      photo
+    );
+    console.log("User Input Client updated: ", clientUpdated)
+
+    return NextResponse.json({ clientUpdated });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(`${error.message}`);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json(
+      { error: "Couldn't update client" },
+      { status: 500 }
+    );
+  }
+}
