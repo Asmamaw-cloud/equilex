@@ -94,7 +94,7 @@ const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
               </Link>
               <div>
                 <Link
-                  href={`/chat2/${""}`}
+                  href={`/chat/${lawyerData?.id}`}
                   className=" bg-[#7B3B99] text-white font-bold py-2 px-4 rounded hover:bg-purple-700 inline-block mr-2 "
                 >
                   Chat with Lawyer

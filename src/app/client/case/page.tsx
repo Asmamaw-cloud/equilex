@@ -46,7 +46,7 @@ const Cases: React.FC = () => {
                     currentCases?.map((clientcase:any) => (
                         <Link href={`/client/case/${clientcase.id}`} key={clientcase?.id}>
               <div className="block p-6 bg-white hover:bg-blue-50 relative">
-                <div classNameAsmamaw="flex items-center gap-4 w-1/3">
+                <div className="flex items-center gap-4 w-1/3">
                   <p className="text-xl text-[#7B3B99] font-semibold">Case</p>
                   <p className="text-gray-800">{clientcase?.title}</p>
                 </div>
