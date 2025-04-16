@@ -38,7 +38,7 @@ const Cases: React.FC = () => {
             <h1 className=' text-4xl font-bold mb-8 text-center text-[#7B3B99] '> Client Cases</h1>
 
             <div className=' bg-white p-10 flex gap-4 mb-12 '>
-                <button className=' bg-[#7B3B99] text-white font-bold py-2 px-4 rounded transition duration-300 hover:bg-purple-700 inline-block mb-2 md:mb0 cursor-pointer w-20 '>
+                <button onClick={() => router.back()} className=' bg-[#7B3B99] text-white font-bold py-2 px-4 rounded transition duration-300 hover:bg-purple-700 inline-block mb-2 md:mb0 cursor-pointer w-20 '>
                     Back
                 </button>
                 <h2 className=' text-3xl font-semibold mb-4  text-[#7B3B99] '>Current Case</h2>
@@ -46,7 +46,7 @@ const Cases: React.FC = () => {
                     currentCases?.map((clientcase:any) => (
                         <Link href={`/client/case/${clientcase.id}`} key={clientcase?.id}>
               <div className="block p-6 bg-white hover:bg-blue-50 relative">
-                <div className="flex items-center gap-4 w-1/3">
+                <div classNameAsmamaw="flex items-center gap-4 w-1/3">
                   <p className="text-xl text-[#7B3B99] font-semibold">Case</p>
                   <p className="text-gray-800">{clientcase?.title}</p>
                 </div>
