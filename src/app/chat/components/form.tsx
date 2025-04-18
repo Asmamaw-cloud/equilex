@@ -1,4 +1,5 @@
-import React from "react";
+import { useSession } from "next-auth/react";
+import React, { useRef, useState } from "react";
 
 
 interface Props {
@@ -13,8 +14,22 @@ interface Props {
   }
 
 const ChatForm:React.FC<Props> = ({recipient_id}) => {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
+
+  //@ts-ignore
+  const userType = session?.user?.image?.type;
+
+
   return (
-    <div>ChatForm</div>
+    <form action="">
+      <div>
+        <div>
+          
+        </div>
+      </div>
+    </form>
   )
 }
 

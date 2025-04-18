@@ -3,6 +3,7 @@ import React from 'react'
 import getData from '../components/helpers'
 import ChatComponent from '../components/chat'
 import ChatForm from '../components/form'
+import { redirect } from 'next/navigation'
 
 const ChatHomepage = async({params} : {params: {id: string}}) => {
 
@@ -11,6 +12,9 @@ const ChatHomepage = async({params} : {params: {id: string}}) => {
     const data = await getData(recepientId)
 
     console.log("data: ", data)
+    if (!session) {
+      redirect("/signin")
+    }
 
   return (
     <div className=' h-screen flex flex-row relative bg-gray-200 '>
