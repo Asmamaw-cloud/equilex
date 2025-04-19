@@ -12,6 +12,12 @@ export async function postData(formData?: FormData, fileData?: any) {
 
   let message, recipientId, messageType, fileType;
 
+  console.log("Pusher Key (server):", process.env.PUSHER_SECRET_KEY);
+  console.log("Pusher Secret (server):", process.env.PUSHER_SECRET);
+  console.log("Form data: ", formData);
+  console.log("File data: ", fileData);
+
+
   if (formData) {
     message = formData.get("message");
     recipientId = Number(formData.get("recipient_id"));
@@ -84,7 +90,7 @@ export async function postData(formData?: FormData, fileData?: any) {
 
   const pusher = new Pusher({
     appId: process.env.NEXT_PUBLIC_PUSHER_APP_ID!,
-    key: process.env.NEXT_PUBLIC_PUSHER_KEY!,
+    key: process.env.PUSHER_KEY!,
     secret: process.env.NEXT_PUBLIC_PUSHER_SECRET!,
     cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
     useTLS: true,

@@ -1,3 +1,5 @@
+"use client";
+
 import { useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
 import { FileUploader } from "@/components/file-uploader";
@@ -5,19 +7,18 @@ import { postData } from "./action";
 import { Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-
 interface Props {
-    recipient_id: number;
-  }
-  
-  interface OfferProps {
-    caseId: string;
-    title: string;
-    describtion: string;
-    price: number;
-  }
+  recipient_id: number;
+}
 
-const ChatForm:React.FC<Props> = ({recipient_id}) => {
+interface OfferProps {
+  caseId: string;
+  title: string;
+  describtion: string;
+  price: number;
+}
+
+const ChatForm: React.FC<Props> = ({ recipient_id }) => {
   const formRef = useRef<HTMLFormElement>(null);
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
@@ -55,14 +56,36 @@ const ChatForm:React.FC<Props> = ({recipient_id}) => {
   };
 
   return (
-    <form action="">
+    <form
+      action={async (formData) => {
+        //@ts-ignore
+        formData.append("recipient_id", recipient_id);
+
+        formData.append("messageType", "text");
+
+        await postData(formData);
+        formRef.current?.reset();
+      }}
+      ref={formRef}
+      className="p-6 absolute bottom-0 left-0 w-full bg-white"
+    >
       <div className="flex flex-row items-center ">
         <div className=" cursor-pointer">
-          {
-            open ? (
-              <FileUploader
-              
-              onUploadComplete={(urls) => {
+          {open ? (
+            // <FileUploader
+            //   className=" bg-transparent-100 "
+            //   endpoint="fileUploader"
+            //   onClientUploadComplete={(res) => {
+            //     console.log(res[0].url, res[0].type);
+            //     HandleFileSend(res[0].url, res[0].type);
+            //     setOpen(!open);
+            //   }}
+            //   onUploadError={(error: Error) => {
+            //     toast({ title: `ERROR! ${error.message}` });
+            //   }}
+            // />
+            <FileUploader
+              onUploadComplete={(res) => {
                 console.log(res[0].url, res[0].type);
                 HandleFileSend(res[0].url, res[0].type);
                 setOpen(!open);
@@ -70,12 +93,12 @@ const ChatForm:React.FC<Props> = ({recipient_id}) => {
               maxFiles={5}
               maxSize={4}
               fileTypes={["image", "pdf"]}
-              />
-            ) : (
-              <Paperclip onClick={() => setOpen(!open)} />
-            )
-          }
+            />
+          ) : (
+            <Paperclip onClick={() => setOpen(!open)} />
+          )}
         </div>
+
         <input
           type="text"
           name="message"
@@ -101,8 +124,14 @@ const ChatForm:React.FC<Props> = ({recipient_id}) => {
           )}
         </div>
       </div>
-    </form>
-  )
-}
 
-export default ChatForm
+      {/* <OfferModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        client_id={recipent_id}
+      /> */}
+    </form>
+  );
+};
+
+export default ChatForm;

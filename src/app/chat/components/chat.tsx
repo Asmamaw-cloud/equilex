@@ -29,6 +29,9 @@ const ChatComponent = ({ data }: iAppProps) => {
   const userEmail = session?.user?.image?.id;
   const userType = session?.user.image?.type;
 
+  console.log("Pusher Key:", process.env.PUSHER_KEY);
+console.log("Pusher Secret:", process.env.NEXT_PUBLIC_PUSHER_SECRET);
+
   return (
     <div>
       <div>
