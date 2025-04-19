@@ -1,102 +1,68 @@
 "use client";
 
-import { useSession } from "next-auth/react";
 import React, { useRef, useState } from "react";
-import { FileUploader } from "@/components/file-uploader";
-import { postData } from "./action";
+import { useSession } from "next-auth/react";
 import { Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { FileUploader } from "@/components/file-uploader";
 import OfferModal from "@/app/lawyer/offer/offer";
+import { postData } from "./action";
 
 interface Props {
   recipient_id: number;
 }
 
-interface OfferProps {
-  caseId: string;
-  title: string;
-  describtion: string;
-  price: number;
-}
-
 const ChatForm: React.FC<Props> = ({ recipient_id }) => {
   const formRef = useRef<HTMLFormElement>(null);
-  const [open, setOpen] = useState(false);
   const { data: session } = useSession();
 
-  //@ts-ignore
   const userType = session?.user?.image?.type;
 
-  const HandleFileSend = (url: string, fileType: string) => {
-    if (fileType === "image/png") {
-      console.log("file type");
-      fileType = "png";
-    }
-    if (fileType == "application/pdf") {
-      fileType = "pdf";
-    }
+  const [isUploaderOpen, setIsUploaderOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleFileSend = (url: string, fileType: string) => {
+    const simplifiedType = fileType === "image/png" ? "png" : fileType === "application/pdf" ? "pdf" : fileType;
 
     const fileData = {
-      recipient_id: recipient_id,
+      recipient_id,
       message: url,
-      fileType: fileType,
+      fileType: simplifiedType,
       messageType: "file",
     };
-    //@ts-ignore
+
     postData(undefined, fileData);
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
 
   return (
     <form
+      ref={formRef}
       action={async (formData) => {
-        //@ts-ignore
-        formData.append("recipient_id", recipient_id);
-
+        formData.append("recipient_id", recipient_id.toString());
         formData.append("messageType", "text");
 
         await postData(formData);
         formRef.current?.reset();
       }}
-      ref={formRef}
-      className="p-6 absolute bottom-0 left-0 w-full bg-white"
+      className="p-4 sm:p-6 absolute bottom-0 left-0 w-full bg-white border-t"
     >
-      <div className="flex flex-row items-center ">
-        <div className=" cursor-pointer">
-          {open ? (
-            // <FileUploader
-            //   className=" bg-transparent-100 "
-            //   endpoint="fileUploader"
-            //   onClientUploadComplete={(res) => {
-            //     console.log(res[0].url, res[0].type);
-            //     HandleFileSend(res[0].url, res[0].type);
-            //     setOpen(!open);
-            //   }}
-            //   onUploadError={(error: Error) => {
-            //     toast({ title: `ERROR! ${error.message}` });
-            //   }}
-            // />
+      <div className="flex items-center gap-3">
+        <div className="cursor-pointer">
+          {isUploaderOpen ? (
             <FileUploader
               onUploadComplete={(res) => {
-                console.log(res[0].url, res[0].type);
-                HandleFileSend(res[0].url, res[0].type);
-                setOpen(!open);
+                handleFileSend(res[0].url, res[0].type);
+                setIsUploaderOpen(false);
               }}
               maxFiles={5}
               maxSize={4}
               fileTypes={["image", "pdf"]}
             />
           ) : (
-            <Paperclip onClick={() => setOpen(!open)} />
+            <Paperclip onClick={() => setIsUploaderOpen(true)} className="text-gray-600 hover:text-gray-800" />
           )}
         </div>
 
@@ -104,33 +70,34 @@ const ChatForm: React.FC<Props> = ({ recipient_id }) => {
           type="text"
           name="message"
           placeholder="Type your message..."
-          className="flex-grow py-2 px-4 outline-none"
+          className="flex-grow border rounded-full py-2 px-4 outline-none focus:ring-2 focus:ring-teal-500"
         />
-        <div className="flex items-center ">
-          <button
-            type="submit"
-            className="bg-teal-500 hover:bg-teal-600 text-white py-2 px-4 rounded-full mr-2"
+
+        <button
+          type="submit"
+          className="bg-teal-500 hover:bg-teal-600 text-white py-2 px-4 rounded-full"
+        >
+          Send
+        </button>
+
+        {userType === "lawyer" && (
+          <Button
+            type="button"
+            onClick={handleOpenModal}
+            className="bg-teal-500 hover:bg-teal-600 text-white py-2 px-4 rounded-full"
           >
-            Send
-          </button>
-          {userType === "lawyer" ? (
-            <Button
-              onClick={handleOpenModal}
-              className="bg-teal-500 hover:bg-teal-600 text-white py-2 px-4 rounded-full"
-            >
-              Create Offer
-            </Button>
-          ) : (
-            ""
-          )}
-        </div>
+            Create Offer
+          </Button>
+        )}
       </div>
 
-      <OfferModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        client_id={recipient_id}
-      />
+      {isModalOpen && (
+        <OfferModal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          client_id={recipient_id}
+        />
+      )}
     </form>
   );
 };
