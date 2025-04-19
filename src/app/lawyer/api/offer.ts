@@ -40,3 +40,32 @@ export async function getCaseById(id:number) {
         
     }
 }
+
+
+export async function acceptOffer(id:number) {
+    try {
+        const response = await axios.post(`/api/case/${id}/accept`)
+        if (response.status < 200 || response.status >= 300) {
+            throw new Error(`Error: ${response.statusText}`);
+          }
+          return response.data; // Return response data if needed
+    } catch (error) {
+        console.error("Error accepting offer:", error)
+        throw error
+        
+    }
+}
+
+export async function rejectOffer(id:number) {
+    try {
+        const response = await axios.post(`/api/case/${id}/reject`)
+        if (response.status < 200 || response.status >= 300) {
+            throw new Error(`Error: ${response.statusText}`);
+          }
+          return response.data; // Return response data if needed
+    } catch (error) {
+        console.error("Error rejecting offer:", error)
+        throw error
+        
+    }
+}

@@ -35,4 +35,27 @@ export class Case {
         })
         return cases
     }
+
+    static async acceptOffer(case_id:number) {
+        const acceptedCase = await db.case.update({
+            where: {
+                id: case_id
+            },
+            data: {
+                status: "ACCEPTED"
+            }
+        })
+    }
+
+    static async rejectOffer(case_id:number) {
+        const rejectedCase = await db.case.update({
+            where: {
+                id: case_id
+            },
+            data: {
+                status: "REJECTED"
+            }
+        })
+        return rejectedCase
+    }
 }
