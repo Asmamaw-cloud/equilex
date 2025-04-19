@@ -25,3 +25,18 @@ export async function createOffer(data:object) {
         
     }
 }
+
+export async function getCaseById(id:number) {
+    try {
+        const response = await axios.get(`/api/case/${id}`)
+        console.log("Response from getCaseById:", response.data)
+        if (response.status !== 200) {
+            throw new Error(`Error: ${response.statusText}`);
+          }
+          return response.data.caseById;
+    } catch (error) {
+        console.error("Error fetching case by ID:", error)
+        throw error
+        
+    }
+}

@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 import FileDownloader from "./fileDownloader";
 import Image from "next/image";
+import OfferDisplay from "@/app/lawyer/offer/offerDisplay";
 interface iAppProps {
   data: {
     messageType: string;
@@ -30,8 +31,8 @@ const ChatComponent = ({ data }: iAppProps) => {
   const userType = session?.user.image?.type;
 
   return (
-    <div>
-      <div>
+    <div className=" p-6 flex-grow h-[80vh] overflow-y-auto py-24 ">
+      <div className=" flex flex-col gap-4 ">
         {totalComments?.map(
           (message, index) =>
             message.message && (
@@ -39,13 +40,18 @@ const ChatComponent = ({ data }: iAppProps) => {
                 {
                   //@ts-ignore
                   message.sender_email == userEmail ? (
-                    <div>
+                    <div className=" flex items-center justify-end ">
                       {message.messageType === "text" ? (
-                        <div>{message.message}</div>
+                        <div className=" ml-3 rounded-lg bg-white p-4 shadow-md self-start mr-4 ">
+                          {message.message}
+                        </div>
                       ) : message.messageType === "offer" ? (
-                        <h1>OfferDisplay</h1>
+                        <OfferDisplay
+                          caseId={Number(message.message)}
+                          userType={userType}
+                        />
                       ) : (
-                        <div>
+                        <div className=" flex flex-col ">
                           <DocViewer
                             documents={[{ uri: message.message }]}
                             pluginRenderers={DocViewerRenderers}
@@ -72,7 +78,7 @@ const ChatComponent = ({ data }: iAppProps) => {
                       )}
                     </div>
                   ) : (
-                    <div>
+                    <div className=" flex items-center ">
                       {userType === "lawyer" ? (
                         <Image
                           src={message?.lawyer.photo}

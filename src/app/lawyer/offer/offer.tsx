@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import React from "react";
+import { createOffer } from "../api/offer";
 
 interface OfferModalProps {
   isOpen: boolean;

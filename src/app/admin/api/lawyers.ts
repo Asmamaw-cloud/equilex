@@ -3,6 +3,8 @@ import axios from "axios";
 export async function getNewLawyers() {
   try {
     const response = await axios.get("/api/lawyers");
+
+    console.log("Response from getNewLawyers:", response.data);
     if (response.status !== 200) {
       throw new Error(`Error: ${response.statusText}`);
     }
