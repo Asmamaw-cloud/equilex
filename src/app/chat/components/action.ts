@@ -1,73 +1,85 @@
-"use server";
-import { db } from "@/lib/db";
-import { getServerAuthSession } from "@/server/auth";
-import Pusher from "pusher";
+"use server"
 
-export async function postData(formData?: FormData, fileData?: any) {
-  "use server";
+import { db } from "@/lib/db"
+import { getServerAuthSession } from "@/server/auth"
+import Pusher from "pusher"
 
-  const session = await getServerAuthSession();
-  //@ts-ignore
-  const userType = session?.user.image.type;
+interface FileData {
+  message: string
+  recipient_id: number
+  messageType: string
+  fileType?: string
+}
 
-  let message, recipientId, messageType, fileType;
+export async function postData(formData?: FormData, fileData?: FileData) {
+  const session = await getServerAuthSession()
 
-  console.log("Pusher Key (server):", process.env.PUSHER_SECRET_KEY);
-  console.log("Pusher Secret (server):", process.env.PUSHER_SECRET);
-  console.log("Form data: ", formData);
-  console.log("File data: ", fileData);
+  if (!session || !session.user) {
+    throw new Error("Unauthorized")
+  }
 
+  const userType = session.user.image?.type
+  const email = session.user.email
+  const userId = session.user.image?.id
+
+  if (!email || !userType || !userId) {
+    throw new Error("Invalid user session")
+  }
+
+  let message: string
+  let recipientId: number
+  let messageType: string
+  let fileType: string | undefined
 
   if (formData) {
-    message = formData.get("message");
-    recipientId = Number(formData.get("recipient_id"));
-    messageType = formData.get("messageType");
+    message = formData.get("message") as string
+    recipientId = Number(formData.get("recipient_id"))
+    messageType = formData.get("messageType") as string
+  } else if (fileData) {
+    message = fileData.message
+    recipientId = fileData.recipient_id
+    messageType = fileData.messageType
+    fileType = fileData.fileType
   } else {
-    message = fileData.message;
-    recipientId = Number(fileData.recipient_id);
-    messageType = fileData.messageType;
-    fileType = fileData.fileType;
+    throw new Error("No data provided")
   }
-
-  const email = session?.user?.email;
 
   // Check if the user exists based on the userType
-  let user = null;
-  let clientId = "";
-  let lawyerId = "";
+  let clientId: number
+  let lawyerId: number
 
-  if (userType === "client" && email) {
-    user = await db.client.findUnique({
-      where: { email },
-    });
-    //@ts-ignore
-    clientId = user?.id;
-    //@ts-ignore
-    lawyerId = recipientId;
-  } else if (userType === "lawyer" && email) {
-    user = await db.lawyer.findUnique({
-      where: { email },
-    });
-    //@ts-ignore
-    clientId = recipientId;
-    //@ts-ignore
-    lawyerId = user?.id;
+  if (userType === "client") {
+    clientId = Number(userId)
+    lawyerId = recipientId
+  } else if (userType === "lawyer") {
+    clientId = recipientId
+    lawyerId = Number(userId)
+  } else {
+    throw new Error("Invalid user type")
   }
 
-  if (!user) {
-    throw new Error("User not found");
+  // Get recipient email
+  let recipientEmail = ""
+  if (userType === "client") {
+    const lawyer = await db.lawyer.findUnique({
+      where: { id: lawyerId },
+      select: { email: true },
+    })
+    recipientEmail = lawyer?.email || ""
+  } else {
+    const client = await db.client.findUnique({
+      where: { id: clientId },
+      select: { email: true },
+    })
+    recipientEmail = client?.email || ""
   }
 
   const data = await db.message.create({
     data: {
       message,
-      //@ts-ignore
       lawyerId,
-      //@ts-ignore
       clientId,
-      //@ts-ignore
-      reciver_email: "lla@gmail.com",
-      //@ts-ignore
+      reciver_email: recipientEmail,
       sender_email: email,
       messageType,
       fileType,
@@ -86,17 +98,20 @@ export async function postData(formData?: FormData, fileData?: any) {
         },
       },
     },
-  });
+  })
 
+  // Initialize Pusher with the correct environment variables
   const pusher = new Pusher({
     appId: process.env.NEXT_PUBLIC_PUSHER_APP_ID!,
     key: process.env.PUSHER_KEY!,
     secret: process.env.NEXT_PUBLIC_PUSHER_SECRET!,
     cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
     useTLS: true,
-  });
+  })
 
   await pusher.trigger("chat", "message", {
-    message: `${JSON.stringify(data)}\n\n`,
-  });
+    message: JSON.stringify(data),
+  })
+
+  return data
 }

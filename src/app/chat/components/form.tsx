@@ -6,6 +6,7 @@ import { FileUploader } from "@/components/file-uploader";
 import { postData } from "./action";
 import { Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import OfferModal from "@/app/lawyer/offer/offer";
 
 interface Props {
   recipient_id: number;
@@ -125,11 +126,11 @@ const ChatForm: React.FC<Props> = ({ recipient_id }) => {
         </div>
       </div>
 
-      {/* <OfferModal
+      <OfferModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        client_id={recipent_id}
-      /> */}
+        client_id={recipient_id}
+      />
     </form>
   );
 };
