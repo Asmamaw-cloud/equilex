@@ -2,7 +2,7 @@ import { Case } from "@/server/case-management/Case";
 import { NextResponse } from "next/server";
 
 
-export async function POST({params}: {params: {id:number}}) {
+export async function POST(req: Request,{params}: {params: {id:number}}) {
     try {
         const id = params.id
         const acceptedCase = await Case.acceptOffer(Number(id))

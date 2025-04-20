@@ -56,7 +56,7 @@ const OfferDisplay = ({
       queryClient.invalidateQueries({ queryKey: ["offer-chat"] });
     },
   });
-
+  
   if (isLoading) {
     return <LoadingComponent />;
   }

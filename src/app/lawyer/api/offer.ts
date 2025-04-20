@@ -62,6 +62,7 @@ export async function rejectOffer(id:number) {
         if (response.status < 200 || response.status >= 300) {
             throw new Error(`Error: ${response.statusText}`);
           }
+          console.log("Response from rejectOffer:", response.data)
           return response.data; // Return response data if needed
     } catch (error) {
         console.error("Error rejecting offer:", error)
