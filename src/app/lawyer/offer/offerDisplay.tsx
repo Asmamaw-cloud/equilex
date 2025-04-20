@@ -72,6 +72,8 @@ const OfferDisplay = ({
   const handleReject = (id: number) => {
     setIsRejecting(true);
     rejectMutation.mutate(id);
+  };
+
 
     return (
       <Card className=" w-[50%] ">
@@ -106,6 +108,5 @@ const OfferDisplay = ({
         </CardContent>
       </Card>
     );
-  };
 };
 export default OfferDisplay;

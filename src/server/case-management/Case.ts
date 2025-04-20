@@ -37,7 +37,7 @@ export class Case {
     }
 
     static async acceptOffer(case_id:number) {
-        const acceptedCase = await db.case.update({
+       await db.case.update({
             where: {
                 id: case_id
             },
