@@ -2,7 +2,9 @@
 
 import { db } from "@/lib/db"
 import { getServerAuthSession } from "@/server/auth"
-import Pusher from "pusher"
+import PusherServer from "pusher"
+import Pusher from "pusher-js"
+import { use } from "react"
 
 interface FileData {
   message: string
@@ -18,8 +20,10 @@ export async function postData(formData?: FormData, fileData?: FileData) {
     throw new Error("Unauthorized")
   }
 
+  //@ts-ignore
   const userType = session.user.image?.type
   const email = session.user.email
+  //@ts-ignore
   const userId = session.user.image?.id
 
   if (!email || !userType || !userId) {
@@ -101,17 +105,23 @@ export async function postData(formData?: FormData, fileData?: FileData) {
   })
 
   // Initialize Pusher with the correct environment variables
-  const pusher = new Pusher({
+  const pusherServer = new PusherServer({
     appId: process.env.NEXT_PUBLIC_PUSHER_APP_ID!,
-    key: process.env.PUSHER_KEY!,
-    secret: process.env.NEXT_PUBLIC_PUSHER_SECRET!,
+    key: process.env.NEXT_PUBLIC_PUSHER_KEY!,
+    secret: process.env.PUSHER_SECRET!,
     cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
     useTLS: true,
   })
 
-  await pusher.trigger("chat", "message", {
-    message: JSON.stringify(data),
-  })
+  // await pusher.trigger("chat", "message", {
+  //   message: JSON.stringify(data),
+  // })
+
+  const pusherClient = new Pusher(process.env.NEXT_PUBLIC_PUSHER_APP_ID!, {
+    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
+  },
+)
+
 
   return data
 }
