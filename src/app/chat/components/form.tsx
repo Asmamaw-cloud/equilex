@@ -105,7 +105,6 @@ const ChatForm: React.FC<Props> = ({ recipient_id }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("inputs", inputMessage);
 
     if (!inputMessage.trim()) return;
 
