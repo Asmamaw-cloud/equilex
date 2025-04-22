@@ -12,7 +12,7 @@ import { pusherClient } from "@/lib/pusher";
 import ChatComponent from "./chat";
 
 interface Props {
-  recipient_id: number;
+  recipient_id: string;
 }
 
 interface Message {
@@ -114,6 +114,7 @@ const ChatForm: React.FC<Props> = ({ recipient_id }) => {
       messageType: "text",
       sender_email: userEmail!,
     };
+    console.log("newMessage", newMessage);
 
     // Add to local state for immediate display
     setMessages((prev) => [...prev, newMessage]);
@@ -124,6 +125,9 @@ const ChatForm: React.FC<Props> = ({ recipient_id }) => {
     formData.append("message", inputMessage);
     formData.append("recipient_id", recipient_id.toString());
     formData.append("messageType", "text");
+
+    console.log("FormData length", [...formData.entries()].length);
+
 
     // Reset input
     setInputMessage("");

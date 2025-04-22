@@ -8,7 +8,7 @@ import ChatUserList from '../components/chatUserList'
 const ChatHomepage = async({params} : {params: {id: string}}) => {
 
     const session = await getServerAuthSession()
-    const recepientId = Number(params.id)
+    const recepientId = (params.id)
 
     if (!session) {
       redirect("/signin")
