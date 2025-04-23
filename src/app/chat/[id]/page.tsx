@@ -23,7 +23,7 @@ const ChatHomepage = async({params} : {params: {id: string}}) => {
         </div>
         <div className=' h-[85vh] bg-white border rounded-md flex flex-col w-[73%] relative mt-3 '>
             {/* <ChatComponent data= {data as any} /> */}
-            <ChatForm recipient_id = {recipientId} initialMessages={data as Message[]} />
+            <ChatForm recipient_id = {recipientId} initialMessages={data as any} />
         </div>
     </div>
   )

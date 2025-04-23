@@ -87,6 +87,7 @@ const ChatComponent = ({ data }: iAppProps ) => {
 
 
   console.log("this is the final stage of the message", messages)
+  console.log("message.message: ", messages.message)
 
   return (
     <div className="p-6 flex-grow h-[80vh] overflow-y-auto py-24">
