@@ -25,10 +25,10 @@ interface Message {
 }
 
 interface iAppProps {
-  data: Message[]
+  data: Message[],
 }
 
-const ChatComponent = ({ data }: iAppProps) => {
+const ChatComponent = ({ data }: iAppProps ) => {
 
   console.log("pusherClient object:", pusherClient)
 

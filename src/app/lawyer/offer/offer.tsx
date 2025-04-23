@@ -47,6 +47,7 @@ const OfferModal: React.FC<OfferModalProps> = ({
       lawyer_id: lawyer_id,
       client_id: client_id,
     };
+    console.log("offer data: ", data)
     createCaseMutation.mutate(data);
   };
 

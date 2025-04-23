@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request, res: Response) {
   try {
     const userInput = await request.json();
+    console.log("user input: ", userInput)
     if (
       !userInput.client_id ||
       !userInput.lawyer_id ||
@@ -15,7 +16,7 @@ export async function POST(request: Request, res: Response) {
     }
 
     const newCase = await Case.create(
-      userInput.client_id,
+      Number(userInput.client_id),
       userInput.lawyer_id,
       userInput.title,
       userInput.description,
