@@ -63,7 +63,7 @@ export async function postData(formData?: FormData, fileData?: any) {
       console.log("File data received:", fileData);
       const { recipient_id, message, fileType, messageType } = fileData;
 
-      await pusherServer.trigger("private-chat", "chat-message", {
+      await pusherServer.trigger("public-chat", "chat-message", {
         message,
         recipientId: recipient_id,
         messageType,

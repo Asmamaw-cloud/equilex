@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import React, { useRef, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
@@ -42,7 +42,6 @@ const ChatForm: React.FC<Props> = ({ recipient_id, initialMessages }) => {
   const userType = session?.user?.image?.type;
   const userEmail = session?.user?.email;
 
-  // Real-time updates via Pusher
   useEffect(() => {
     pusherClient.subscribe("public-chat");
 
@@ -66,31 +65,38 @@ const ChatForm: React.FC<Props> = ({ recipient_id, initialMessages }) => {
     };
   }, []);
 
-  const handleFileSend = (url: string, fileType: string) => {
-    const simplifiedType =
-      fileType === "image/png"
-        ? "png"
-        : fileType === "application/pdf"
-        ? "pdf"
-        : fileType;
+  const handleFileSend = async (file: any) => {
+    const mimeType = await detectMimeType(file);
+    let fileType = "unknown";
+
+    if (mimeType?.includes("pdf")) fileType = "pdf";
+    else if (mimeType?.includes("image")) fileType = "image";
+
+    console.log("File type detected:", fileType);
+
+    const url = typeof file === "string" ? file : file?.url;
+
+    if (!url) return;
 
     const newMessage: Message = {
       message: url,
       messageType: "file",
-      fileType: simplifiedType,
+      fileType: fileType,
       sender_email: userEmail!,
     };
 
+    // 💬 Instantly add to chat
     setMessages((prev) => [...prev, newMessage]);
 
+    // 🔄 Then send to server
     const fileData = {
       recipient_id,
       message: url,
-      fileType: simplifiedType,
+      fileType: fileType,
       messageType: "file",
     };
 
-    postData(undefined, fileData);
+    await postData(undefined, fileData);
     setIsUploaderOpen(false);
   };
 
@@ -119,6 +125,16 @@ const ChatForm: React.FC<Props> = ({ recipient_id, initialMessages }) => {
     await postData(formData);
   };
 
+  const detectMimeType = async (url: string): Promise<string | null> => {
+    try {
+      const response = await fetch(url, { method: "HEAD" });
+      return response.headers.get("Content-Type");
+    } catch (error) {
+      console.error("Failed to fetch file type:", error);
+      return null;
+    }
+  };
+
   return (
     <>
       <ChatComponent data={messages} />
@@ -133,7 +149,7 @@ const ChatForm: React.FC<Props> = ({ recipient_id, initialMessages }) => {
             {isUploaderOpen ? (
               <FileUploader
                 onUploadComplete={(res) => {
-                  handleFileSend(res[0], res[0].type);
+                  handleFileSend(res[0]);
                 }}
                 maxFiles={5}
                 maxSize={4}
