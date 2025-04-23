@@ -17,6 +17,13 @@ export async function createOffer(data:object) {
             message:newCase.id + "",
             messageType: "offer",
         }
+        await pusherServer.trigger("public-chat", "chat-message", {
+                message,
+                recipientId: recipient_id,
+                messageType,
+                fileType,
+                sender_email: userEmail,
+              });
         postData(undefined, offerData)
         return response.data
     } catch (error) {
