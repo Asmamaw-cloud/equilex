@@ -15,7 +15,6 @@ interface FileData {
 
 export async function postData(formData?: FormData, fileData?: FileData) {
   const session = await getServerAuthSession()
-
   if (!session || !session.user) {
     throw new Error("Unauthorized")
   }
