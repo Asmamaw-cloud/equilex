@@ -26,3 +26,15 @@ export async function isClient() {
     }
     return session
 }
+
+export async function isLawyer() {
+    let session = await getServerSession(authOptions);
+    if (!session) {
+      throw new Error("You're not authenticated!");
+    }
+    //@ts-ignore
+    if (session.user.image.type !== "lawyer") {
+      throw new Error("You're not authorized!");
+    }
+    return session;
+  }

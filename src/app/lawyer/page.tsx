@@ -3,8 +3,41 @@
 import DoughnutChart from "@/components/chart/DoughnutChart";
 import LineChart from "@/components/chart/LineChart";
 import { Icon } from "@iconify/react";
+import { useQuery } from "@tanstack/react-query";
+import { getTrials } from "./api/trial";
+import { getStatistics } from "./api/statistics";
+import { ErrorComponent, LoadingComponent } from "@/components/LoadingErrorComponents";
 
 const Lawyer = () => {
+
+  const {
+    data: trialsData,
+    isLoading: isLoadingTrials,
+    error: trialsError,
+  } = useQuery({
+    queryKey: ["trials"],
+    queryFn: getTrials,
+    refetchInterval: 6000, // Refetch every 2 minutes
+  });
+
+  const {
+    data: statisticsData,
+    isLoading: isLoadingStatistics,
+    error: statisticsError,
+  } = useQuery({
+    queryKey: ["statistics"],
+    queryFn: getStatistics,
+    refetchInterval: 120000, // Refetch every 2 minutes
+  });
+
+  console.log("Statistics data: ", statisticsData)
+
+  if (isLoadingTrials) return <LoadingComponent />;
+  if (trialsError)
+    return (
+      <ErrorComponent errorMessage="Failed to load data. Please try again." />
+    );
+
   return (
     <div className="w-full font-sans min-h-screen  px-10 lg:pl-64 bg-[#f2f6fa]">
       <div className="w-full h-1/2 flex flex-col lg:flex-row gap-4 justify-between items-center pt-6">
@@ -16,7 +49,7 @@ const Lawyer = () => {
               height={30}
               color="#C075E3"
             />
-            <p>54</p>
+            <p>{23}</p>
             <p>Total cases</p>
           </div>
           <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">

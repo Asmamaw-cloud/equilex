@@ -17,13 +17,6 @@ export async function createOffer(data:object) {
             message:newCase.id + "",
             messageType: "offer",
         }
-        await pusherServer.trigger("public-chat", "chat-message", {
-                message,
-                recipientId: recipient_id,
-                messageType,
-                fileType,
-                sender_email: userEmail,
-              });
         postData(undefined, offerData)
         return response.data
     } catch (error) {
@@ -33,7 +26,21 @@ export async function createOffer(data:object) {
     }
 }
 
-export async function getCaseById(id:number) {
+export async function deliver(id: number) {
+    try {
+      const response = await axios.post(`/api/case/${id}/deliver`);
+      if (response.status < 200 || response.status >= 300) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      console.log(response);
+      return response.data; // Return response data if needed
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+export async function getCasesById(id:number) {
     try {
         const response = await axios.get(`/api/case/${id}`)
         console.log("Response from getCaseById:", response.data)
@@ -47,6 +54,21 @@ export async function getCaseById(id:number) {
         
     }
 }
+
+export async function getLawyerCaeses(id: number) {
+    try {
+      const response = await axios.get(`/api/case/lawyer/${id}`);
+      if (response.status !== 200) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      const data = response;
+  
+      return data.data.cases;
+    } catch (err) {
+      console.error(err);
+      throw err; // Ensure errors are propagated correctly
+    }
+  }
 
 
 export async function acceptOffer(id:number) {

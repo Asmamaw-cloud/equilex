@@ -7,7 +7,6 @@ import { revalidatePath } from "next/cache";
 
 export async function postData(formData?: FormData, fileData?: any) {
   try {
-    console.log("Offer data:", fileData)
 
     const session = await getServerAuthSession();
     if (!session || !session.user) throw new Error("Unauthorized");

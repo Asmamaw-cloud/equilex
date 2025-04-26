@@ -2,7 +2,7 @@ import { Court, Language, Specialty } from "@prisma/client";
 import { Account } from "./Account";
 import { db } from "@/lib/db";
 import bcrypt from "bcrypt";
-import { isAdmin } from "../checkRole";
+import { isAdmin, isLawyer } from "../checkRole";
 
 export class Lawyer extends Account {
   static async add(
@@ -19,8 +19,7 @@ export class Lawyer extends Account {
     phone_number: string,
     cv: string | undefined,
     resume: string | undefined
-  )
-  {
+  ) {
     const emailUsed =
       (await db.client.findFirst({ where: { email } })) ||
       (await db.lawyer.findFirst({ where: { email } }));
@@ -49,7 +48,6 @@ export class Lawyer extends Account {
   }
 
   static async getVerified() {
-    
     const lawyers = await db.lawyer.findMany({
       select: {
         created_at: true,
@@ -76,15 +74,14 @@ export class Lawyer extends Account {
         },
       },
       where: {
-        isVerified: "VERIFIED"
-      }
-    })
-    return lawyers
+        isVerified: "VERIFIED",
+      },
+    });
+    return lawyers;
   }
 
-
   static async getUnverfiedLawyers() {
-    await isAdmin()
+    await isAdmin();
 
     const lawyers = await db.lawyer.findMany({
       select: {
@@ -109,10 +106,9 @@ export class Lawyer extends Account {
       where: {
         isVerified: "PENDING",
       },
-    })
-    return lawyers
+    });
+    return lawyers;
   }
-
 
   static async verify(id: number) {
     await isAdmin();
@@ -127,17 +123,48 @@ export class Lawyer extends Account {
     return lawyer;
   }
 
-  static async reject(id:number) {
-    await isAdmin()
+  static async reject(id: number) {
+    await isAdmin();
     const lawyer = await db.lawyer.update({
       where: {
         id,
       },
       data: {
-        isVerified: "REJECTED"
-      }
-    })
-    return lawyer
+        isVerified: "REJECTED",
+      },
+    });
+    return lawyer;
   }
 
+  static async dashboard() {
+    const lawyerSession = await isLawyer();
+    const lawyer = await db.lawyer.findUnique({
+      where: {
+        //@ts-ignore
+        id: lawyerSession.user.image?.indexOf,
+      },
+    });
+    const totalCases = await db.case.count({
+      where: {
+        lawyer_id: lawyer?.id,
+      },
+    });
+    const completedCase = await db.case.count({
+      where: {
+        lawyer_id: lawyer?.id,
+        status: "FINISHED",
+      },
+    });
+    const inProgressCases = await db.case.count({
+      where: {
+        lawyer_id: lawyer?.id,
+        status: "ACCEPTED",
+      },
+    });
+    return {
+      inProgressCases,
+      completedCase,
+      totalCases,
+    };
+  }
 }

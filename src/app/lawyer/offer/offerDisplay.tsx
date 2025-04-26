@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { acceptOffer, getCaseById, rejectOffer } from "../api/offer";
+import { acceptOffer, getCasesById, rejectOffer } from "../api/offer";
 import {
   ErrorComponent,
   LoadingComponent,
@@ -38,7 +38,7 @@ const OfferDisplay = ({
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["offer-chat" + caseId],
-    queryFn: () => getCaseById(caseId),
+    queryFn: () => getCasesById(caseId),
   });
 
   const acceptMutation = useMutation({
