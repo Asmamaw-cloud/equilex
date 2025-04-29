@@ -1,4 +1,5 @@
 import { Lawyer } from "@/server/user-management/Lawyer";
+import { Language } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request, res: Response) {
@@ -70,12 +71,17 @@ export async function PUT(req: Request, res: Response) {
   try {
     const userInput = await req.json();
 
+    // Automatically filter valid enum values
+    const validLanguages = (userInput.languages || []).filter((lang: string) =>
+      Object.values(Language).includes(lang as Language)
+    );
+
     const lawyerUpdated = await Lawyer.update(
       userInput.full_name,
       userInput.phone_number,
       userInput.photo,
       userInput.description,
-      userInput.language,
+      validLanguages,
       userInput.resume
     );
     return NextResponse.json({ lawyerUpdated });
