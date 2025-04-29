@@ -65,3 +65,28 @@ export async function GET(req: Request) {
     );
   }
 }
+
+export async function PUT(req: Request, res: Response) {
+  try {
+    const userInput = await req.json();
+
+    const lawyerUpdated = await Lawyer.update(
+      userInput.full_name,
+      userInput.phone_number,
+      userInput.photo,
+      userInput.description,
+      userInput.language,
+      userInput.resume
+    );
+    return NextResponse.json({ lawyerUpdated });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log(`${error.message}`);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json(
+      { error: "Couldn't update client" },
+      { status: 500 }
+    );
+  }
+}

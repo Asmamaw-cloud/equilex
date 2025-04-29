@@ -6,6 +6,7 @@ import MainNavbar from "@/components/mainNavbar";
 import LawyerSidebar from "@/components/lawyerSidebar";
 import { usePathname } from "next/navigation";
 import { NotificationProvider } from "../context/NotificationContext";
+import { Toaster } from "@/components/ui/sonner";
 
 // export const metadata: Metadata = {
 //   title: "EQUILEX",
@@ -40,6 +41,7 @@ export default function LawyerLayout({
         {!shouldHideSidebar(pathname) && <LawyerSidebar />}
         <div className="relative max-w-screen-2xl flex min-h-screen  flex-col bg-background">
           {children}
+          <Toaster/>
         </div>
       </div>
     </NotificationProvider>

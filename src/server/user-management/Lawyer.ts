@@ -167,4 +167,30 @@ export class Lawyer extends Account {
       totalCases,
     };
   }
+
+  static async update(
+    full_name: string | undefined,
+    phone_number: string | undefined,
+    photo: string | undefined,
+    description: string | undefined,
+    languages: Language[] | undefined,
+    resume: string | undefined
+  ) {
+    const lawyer = await isLawyer();
+    const lawyerUpdated = await db.lawyer.update({
+      data: {
+        ...(full_name && { full_name }),
+        ...(phone_number && { phone_number }),
+        ...(photo && { photo }),
+        ...(languages?.length && { languages }),
+        ...(description && { description }),
+        ...(resume && { resume }),
+      },
+      where: {
+        //@ts-ignore
+        id: lawyer.user.image.id,
+      },
+    });
+    return lawyerUpdated;
+  }
 }
