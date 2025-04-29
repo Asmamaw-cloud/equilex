@@ -4,6 +4,23 @@ import { isAdmin } from "../checkRole";
 
 export class Admin {
 
+    static async caseCount() {
+        await isAdmin();
+        const totalCases = await db.case.count({});
+        const completedCases = await db.case.count({
+          where: {
+            status: "FINISHED",
+          },
+        });
+    
+        const inProgressCases = await db.case.count({
+          where: {
+            status: "ACCEPTED",
+          },
+        });
+        return { totalCases, completedCases, inProgressCases };
+      }
+
     static async lawyerCount() {
         await isAdmin()
         const verifiedLawyerCount = await db.lawyer.count({

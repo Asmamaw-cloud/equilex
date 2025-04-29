@@ -80,9 +80,8 @@ export class Lawyer extends Account {
     return lawyers;
   }
 
-  static async getUnverfiedLawyers() {
+  static async getUnverifiedLawyers() {
     await isAdmin();
-
     const lawyers = await db.lawyer.findMany({
       select: {
         created_at: true,
