@@ -30,7 +30,7 @@ const Lawyer = () => {
     refetchInterval: 120000, // Refetch every 2 minutes
   });
 
-  console.log("Statistics data: ", statisticsData)
+  console.log("StatistisData data: ", statisticsData)
 
   if (isLoadingTrials) return <LoadingComponent />;
   if (trialsError)
@@ -49,7 +49,7 @@ const Lawyer = () => {
               height={30}
               color="#C075E3"
             />
-            <p>{23}</p>
+            <p>{statisticsData?.totalCases}</p>
             <p>Total cases</p>
           </div>
           <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">
@@ -59,7 +59,7 @@ const Lawyer = () => {
               height={30}
               color="#C6EF67"
             />
-            <p>32</p>
+            <p>{statisticsData?.completedCases}</p>
             <p>Complated Cases</p>
           </div>
           <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">
@@ -69,7 +69,7 @@ const Lawyer = () => {
               height={30}
               color="#69BEF0"
             />
-            <p>22</p>
+            <p>{statisticsData?.inProgressCases}</p>
             <p>Pending case</p>
           </div>
         </div>
@@ -90,35 +90,35 @@ const Lawyer = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* {trialsData?.map((apointment: any, index: any) => ( */}
+                {trialsData?.map((apointment: any, index: any) => ( 
                   <tr
                     className={
-                      
-                         "relative bg-[#F4F4F4]"
-                        
+                      index % 2 === 0
+                        ? "relative bg-[#F4F4F4]"
+                        : "relative bg-white"
                     }
-                    key={""}
+                    key={index}
                   >
                     <td className="py-3 px-6 text-black text-center">
-                      {"2"}
+                      {apointment?.id}
                     </td>
                     {/* <td className="py-3 px-6 text-black text-center">
                       {apointment?.clientname}
                     </td> */}
                     <td className="py-3 px-6 text-black text-center">
-                      {"Bahir Dar"}
+                      {apointment?.location}
                     </td>
                     <td className="py-3 px-6 text-black max-w-[100px] text-center truncate hover:text-clip">
                       <span title={"hello"}>
                         {" "}
-                        {"hello"}
+                        {apointment?.description}
                       </span>
                     </td>
                     <td className="py-3 px-6 text-black text-center">
-                      {new Date("03/23/2025").toLocaleDateString()}
+                      {new Date(apointment?.trial_date).toLocaleDateString()}
                     </td>
                   </tr>
-                {/* ))} */}
+                 ))}
               </tbody>
             </table>
           </div>
@@ -127,7 +127,7 @@ const Lawyer = () => {
 
       <div className="w-full flex flex-col lg:flex-row gap-4 justify-between mt-6">
         <div className="w-full lg:w-1/2 h-full border-2 border-gray-300 px-2  bg-white flex justify-center ">
-          <DoughnutChart data={[54,32, 22]} />
+          <DoughnutChart data={[statisticsData?.totalCases,statisticsData?.completedCases, statisticsData?.inProgressCases]} />
         </div>
         <div className="w-full lg:w-1/2 h-full border-2 border-gray-300 px-10 p-2 bg-white">
           <LineChart data={[45000]} />

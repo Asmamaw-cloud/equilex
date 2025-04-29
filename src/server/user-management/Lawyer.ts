@@ -141,7 +141,7 @@ export class Lawyer extends Account {
     const lawyer = await db.lawyer.findUnique({
       where: {
         //@ts-ignore
-        id: lawyerSession.user.image?.indexOf,
+        id: lawyerSession.user.image?.id,
       },
     });
     const totalCases = await db.case.count({
