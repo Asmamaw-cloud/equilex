@@ -138,4 +138,28 @@ export class Case {
     })
     return trials
     }
+
+    static async getTodayTrialsForClient() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
+        const client = await isClient();
+
+        const trials = await db.trial.findMany({
+            where: {
+                case: {
+                    //@ts-ignore
+                    client_id: client.user.image.id
+                },
+                trial_date: {
+                    gte: today,
+                    lt: tomorrow
+                }
+            }
+        })
+        return trials
+    }
+
 }
