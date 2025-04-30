@@ -40,6 +40,19 @@ export async function deliver(id: number) {
     }
   }
 
+  export async function acceptDelivery(id: number) {
+    try {
+      const response = await axios.post(`/api/case/${id}/accept-delivery`);
+      if (response.status < 200 || response.status >= 300) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      return response.data; // Return response data if needed
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
 export async function getCasesById(id:number) {
     try {
         const response = await axios.get(`/api/case/${id}`)
