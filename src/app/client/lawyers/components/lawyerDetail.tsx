@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import React, { use, useState } from "react";
 import { LawyerProps } from "./lawyersCard";
 import Link from "next/link";
-import { data } from "@/app/data/lawyersMockData";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getLawyerById } from "@/app/admin/api/lawyers";
@@ -45,8 +44,6 @@ const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
     queryFn: () => getRatings(lawyer_id),
   });
 
-  console.log("Lawyer ratings: ", Lawyerratings);
-
   const {
     data: averageRate,
     isLoading: averageLoading,
@@ -59,10 +56,6 @@ const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
   const { data: session } = useSession();
   // @ts-ignore
   const client_id = session?.user?.image?.id;
-
-  const lawyerReviews = Lawyerratings?.filter(
-    (review) => String(review.lawyer_id) === lawyerData?.id
-  );
 
   const filteredLawyers = lawyers?.filter((item) => item.id !== lawyerData?.id);
 

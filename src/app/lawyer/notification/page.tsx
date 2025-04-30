@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { getCurrentDate } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -28,7 +28,7 @@ const LawyerNotifications = () => {
       </div>
     );
   }
-  console.log("notifications: ", data)
+  console.log("notifications: ", data);
   return (
     <div className="p-6 bg-gray-200 h-screen relative overflow-hidden">
       <div className="bg-white w-[80%] overflow-y-scroll h-[80vh] items-center justify-center rounded-xl m-auto p-10 relative flex flex-col gap-8">
@@ -37,16 +37,17 @@ const LawyerNotifications = () => {
             <b className="text-lg">Trials</b>
             <p className="text-sm">[{getCurrentDate()}]</p>
           </div>
-          {data.map((trial: any, index: number) => {
-            <div 
-            className="border-l-2 border-l-red-400 flex flex-col items-start p-3 rounded-l-md shadow-sm mb-2"
-            key={index}>
-              <div className="flex items-center font-bold gap-[3px]">
-                <MapPin  className="w-4 h-4  text-gray-400"  /> {trial.location}
-              </div>
-              <div className="text-gray-500">{trial.description}</div>
-            </div>;
-          })}
+          {data.map((trial: any, i: number) => (
+        <div
+          key={i}
+          className="border-l-2 border-l-red-400 flex flex-col items-start p-3 rounded-l-md shadow-sm mb-2"
+        >
+          <div className="flex items-center font-bold gap-[3px]">
+            <MapPin className="w-4 h-4  text-gray-400" /> {trial.location}
+          </div>
+          <div className="text-gray-500">{trial.description}</div>
+        </div>
+      ))}
         </div>
       </div>
     </div>
