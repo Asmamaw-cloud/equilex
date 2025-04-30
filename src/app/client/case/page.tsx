@@ -119,3 +119,164 @@ const Cases: React.FC = () => {
 };
 
 export default Cases;
+
+
+
+
+
+// "use client"
+
+// import type React from "react"
+// import Link from "next/link"
+// import { useSession } from "next-auth/react"
+// import { useQuery } from "@tanstack/react-query"
+// import { useRouter } from "next/navigation"
+// import { LoadingComponent, ErrorComponent } from "@/components/LoadingErrorComponents"
+// import { getClientCases } from "../api/case"
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+// import { Button } from "@/components/ui/button"
+// // import { Badge } from "@/components/ui/badge"
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+// import { ChevronLeft, Calendar, User, FileText, Clock, CheckCircle } from "lucide-react"
+// import { Separator } from "@/components/ui/separator"
+
+// const Cases: React.FC = () => {
+//   const { data: session } = useSession()
+//   const { data, isLoading, error } = useQuery({
+//     queryKey: ["clientcases"],
+//     // @ts-ignore
+//     queryFn: () => getClientCases(session?.user?.image?.id),
+//   })
+//   const router = useRouter()
+
+//   // Filter cases based on their status
+//   const currentCases = data?.filter((clientcase: any) => clientcase.status !== "FINISHED")
+//   const recentCases = data?.filter((clientcase: any) => clientcase.status === "FINISHED")
+
+//   if (isLoading) return <LoadingComponent />
+//   if (error) return <ErrorComponent errorMessage="Failed to load data. Please try again." />
+
+//   const formatDate = (dateString: string) => {
+//     if (!dateString) return "N/A"
+//     return new Date(dateString).toLocaleDateString("en-US", {
+//       year: "numeric",
+//       month: "long",
+//       day: "numeric",
+//     })
+//   }
+
+//   const CaseCard = ({ caseData }: { caseData: any }) => (
+//     <Link href={`/client/case/${caseData.id}`} className="block transition-all duration-200 hover:scale-[1.01]">
+//       <Card className="mb-4 border shadow-sm hover:shadow-md transition-shadow duration-200">
+//         <CardHeader className="pb-2">
+//           <div className="flex justify-between items-start">
+//             <div className="space-y-1">
+//               <CardTitle className="text-xl text-gray-800">{caseData.title}</CardTitle>
+//               <CardDescription className="flex items-center text-sm">
+//                 <User className="h-4 w-4 mr-1 text-purple-600" />
+//                 Lawyer: {caseData.lawyer_id}
+//               </CardDescription>
+//             </div>
+//             <div className="text-right">
+//               <div className="flex items-center text-sm text-gray-500 mb-1">
+//                 <Calendar className="h-4 w-4 mr-1" />
+//                 {formatDate(caseData.date)}
+//               </div>
+//               {caseData.status && (
+//                 <Badge
+//                   className={
+//                     caseData.status === "FINISHED"
+//                       ? "bg-green-500 hover:bg-green-600"
+//                       : caseData.status === "IN_PROGRESS"
+//                         ? "bg-blue-500 hover:bg-blue-600"
+//                         : "bg-yellow-500 hover:bg-yellow-600"
+//                   }
+//                 >
+//                   {caseData.status}
+//                 </Badge>
+//               )}
+//             </div>
+//           </div>
+//         </CardHeader>
+//         <CardContent>
+//           <div className="mt-2">
+//             <h4 className="text-sm font-medium text-gray-500 flex items-center mb-1">
+//               <FileText className="h-4 w-4 mr-1 text-purple-600" />
+//               Summary
+//             </h4>
+//             <p className="text-gray-700 text-sm line-clamp-2">{caseData.description}</p>
+//           </div>
+//         </CardContent>
+//       </Card>
+//     </Link>
+//   )
+
+//   return (
+//     <div className="p-6 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
+//       <div className="max-w-4xl mx-auto">
+//         <div className="flex items-center mb-6">
+//           <Button variant="ghost" onClick={() => router.back()} className="mr-4">
+//             <ChevronLeft className="h-4 w-4 mr-2" />
+//             Back
+//           </Button>
+//           <h1 className="text-3xl font-bold text-gray-800">Client Cases</h1>
+//         </div>
+
+//         <Tabs defaultValue="current" className="w-full">
+//           <TabsList className="grid w-full grid-cols-2 mb-6">
+//             <TabsTrigger value="current" className="flex items-center">
+//               <Clock className="h-4 w-4 mr-2" />
+//               Current Cases ({currentCases?.length || 0})
+//             </TabsTrigger>
+//             <TabsTrigger value="recent" className="flex items-center">
+//               <CheckCircle className="h-4 w-4 mr-2" />
+//               Recent Cases ({recentCases?.length || 0})
+//             </TabsTrigger>
+//           </TabsList>
+
+//           <TabsContent value="current" className="mt-0">
+//             <Card>
+//               <CardHeader className="pb-3">
+//                 <CardTitle className="text-2xl text-purple-700">Current Cases</CardTitle>
+//                 <CardDescription>
+//                   These are your active cases that are currently in progress or pending resolution.
+//                 </CardDescription>
+//                 <Separator className="mt-2" />
+//               </CardHeader>
+//               <CardContent className="pt-2">
+//                 {currentCases?.length > 0 ? (
+//                   currentCases.map((clientcase: any) => <CaseCard key={clientcase.id} caseData={clientcase} />)
+//                 ) : (
+//                   <div className="text-center py-8 text-gray-500">
+//                     <p>You don't have any current cases.</p>
+//                   </div>
+//                 )}
+//               </CardContent>
+//             </Card>
+//           </TabsContent>
+
+//           <TabsContent value="recent" className="mt-0">
+//             <Card>
+//               <CardHeader className="pb-3">
+//                 <CardTitle className="text-2xl text-purple-700">Recent Cases</CardTitle>
+//                 <CardDescription>These are your completed cases that have been resolved.</CardDescription>
+//                 <Separator className="mt-2" />
+//               </CardHeader>
+//               <CardContent className="pt-2">
+//                 {recentCases?.length > 0 ? (
+//                   recentCases.map((clientcase: any) => <CaseCard key={clientcase.id} caseData={clientcase} />)
+//                 ) : (
+//                   <div className="text-center py-8 text-gray-500">
+//                     <p>You don't have any completed cases yet.</p>
+//                   </div>
+//                 )}
+//               </CardContent>
+//             </Card>
+//           </TabsContent>
+//         </Tabs>
+//       </div>
+//     </div>
+//   )
+// }
+
+// export default Cases

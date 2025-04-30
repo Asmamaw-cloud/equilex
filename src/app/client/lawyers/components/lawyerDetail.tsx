@@ -9,9 +9,18 @@ import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getLawyerById } from "@/app/admin/api/lawyers";
 import { useSession } from "next-auth/react";
+import { getAverageRating, getRatings } from "../../api/rating";
+import { FaStar } from "react-icons/fa";
+import {
+  ErrorComponent,
+  LoadingComponent,
+} from "@/components/LoadingErrorComponents";
+import ReviewSectionCard from "@/components/reviewCard";
+import RatingPopup from "@/components/ratingPopup";
 
 const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
   const [hoveredLawyer, setHoveredLawyer] = useState<LawyerProps | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   const param = useParams();
   const { id } = param;
@@ -26,12 +35,55 @@ const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
   });
 
   const lawyer_id = Number(id);
-  console.log("id: ", id);
-  console.log("lawyer_id: : ", lawyer_id);
-  console.log("params: ", param);
+
+  const {
+    data: Lawyerratings,
+    isLoading: ratingsLoading,
+    error: ratingsError,
+  } = useQuery({
+    queryKey: ["ratings"],
+    queryFn: () => getRatings(lawyer_id),
+  });
+
+  console.log("Lawyer ratings: ", Lawyerratings);
+
+  const {
+    data: averageRate,
+    isLoading: averageLoading,
+    error: averageError,
+  } = useQuery({
+    queryKey: ["average"],
+    queryFn: () => getAverageRating(lawyer_id),
+  });
 
   const { data: session } = useSession();
+  // @ts-ignore
+  const client_id = session?.user?.image?.id;
+
+  const lawyerReviews = Lawyerratings?.filter(
+    (review) => String(review.lawyer_id) === lawyerData?.id
+  );
+
   const filteredLawyers = lawyers?.filter((item) => item.id !== lawyerData?.id);
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    for (let i = 0; i < 5; i++) {
+      stars.push(<FaStar key={i} color={i < rating ? "#ffd700" : "#e4e5e9"} />);
+    }
+    return stars;
+  };
+
+  if (averageLoading && lawyerLoading && ratingsLoading)
+    return <LoadingComponent />;
+  if (averageError && lawyerError && ratingsError)
+    return (
+      <ErrorComponent errorMessage="Failed to load data. Please try again." />
+    );
 
   return (
     <motion.div
@@ -52,7 +104,7 @@ const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
               Other Lawyers
             </h3>
             <ul>
-              {lawyers?.map((otherLawyer: any) => (
+              {filteredLawyers?.map((otherLawyer: any) => (
                 <li
                   key={otherLawyer.id}
                   onMouseEnter={() => setHoveredLawyer(otherLawyer)}
@@ -125,14 +177,16 @@ const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
                   Personal Information
                 </h3>
                 <p className="text-gray-600 mt-2">{lawyerData?.description}</p>
-                {/* <div className="flex items-center mt-4">
+                <div className="flex items-center mt-4">
                   <div className="flex items-center mt-2">
                     {renderStars(averageRate)}
                   </div>
-                </div> */}
+                </div>
                 <hr className="my-6 border-t border-gray-200" />
                 <>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Languages</h3>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-4">
+                    Languages
+                  </h3>
                   <ul className="list-disc pl-5">
                     {lawyerData?.languages?.map((language: any) => (
                       <li key={language} className="text-gray-600">
@@ -162,31 +216,32 @@ const LawyerDetail: React.FC<{ lawyers: LawyerProps[] }> = ({ lawyers }) => {
                     ))}
                   </ul>
                 </>
-
               </div>
             </div>
           </motion.div>
         </motion.div>
 
         <div className=" p-4 mt-8 ">
-          <h2 className="text-xl font-semibold mb-4 text-black text-center">Client Comments and Reviews</h2>
-          {/* {Lawyerratings?.map((clientName: any, index: any) => (
+          <h2 className="text-xl font-semibold mb-4 text-black text-center">
+            Client Comments and Reviews
+          </h2>
+          {Lawyerratings?.map((clientName: any, index: any) => (
             <ReviewSectionCard
               key={index}
               clientName={clientName?.client?.full_name}
               rating={clientName.rate}
               comment={clientName.comment}
             />
-          ))} */}
+          ))}
         </div>
       </motion.div>
 
-      {/* <RatingPopup
+      <RatingPopup
         show={showPopup}
         onClose={handleClosePopup}
         case_id={client_id}
         lawyer_id={lawyerData?.id}
-      /> */}
+      />
     </motion.div>
   );
 };

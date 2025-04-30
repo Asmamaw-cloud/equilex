@@ -23,7 +23,7 @@ const LawyersList: React.FC<Props> = ({
     queryFn: () => getVerifiedLawyers(),
     refetchInterval: 3000,
   });
-  console.log("Client lawyers: ", data);
+  
 
   const filteredLawyers = data?.filter((lawyer: any) => {
     return (
@@ -33,6 +33,7 @@ const LawyersList: React.FC<Props> = ({
       (!selectedCourt || lawyer.courts.includes(selectedCourt))
     );
   });
+  console.log("Client lawyers: ", data);
   console.log("Filtered lawyers: ", filteredLawyers);
 
   if (isLoading) return <LoadingComponent />;
@@ -53,7 +54,7 @@ const LawyersList: React.FC<Props> = ({
                 name={item.full_name}
                 imageUrl={item.photo}
                 des={item.description}
-                rate={item.rating}
+                rate={item.ratings}
               />
             );
           })

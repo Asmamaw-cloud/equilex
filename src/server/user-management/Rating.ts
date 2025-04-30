@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { isClient } from "../checkRole";
+import { isAuthenticated, isClient } from "../checkRole";
 
 
 export class Rating {
@@ -23,4 +23,35 @@ export class Rating {
         })
         return newRating;
     }
+
+    static async lawyerList(lawyer_id: number) {
+        await isAuthenticated();
+        const ratings = await db.rating.findMany({
+          where: {
+            lawyer_id,
+          },
+          include: {
+            client: {
+              select: {
+                full_name: true,
+              },
+            },
+          },
+        });
+        return ratings;
+      }
+
+
+      static async lawyerAverage(lawyer_id: number) {
+        await isAuthenticated();
+        const ratings = await db.rating.aggregate({
+          _avg: {
+            rate: true,
+          },
+          where: {
+            lawyer_id,
+          },
+        });
+        return ratings._avg.rate;
+      }
 }

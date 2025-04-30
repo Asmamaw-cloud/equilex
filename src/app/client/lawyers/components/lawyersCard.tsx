@@ -55,7 +55,7 @@ const LawyersCard: React.FC<LawyerProps> = ({
           <p className="text-gray-700 text-sm leading-tight mb-4">{des}</p>
           <div className="flex felx-row">
             <div className="flex items-center mt-2">
-              {renderStars(rate)}
+              {renderStars(averageRate)}
             </div>
           </div>
         </div>

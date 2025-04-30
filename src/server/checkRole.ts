@@ -38,3 +38,13 @@ export async function isLawyer() {
     }
     return session;
   }
+
+  export async function isAuthenticated() {
+    let session = await getServerSession(authOptions);
+    if (session) {
+      return true;
+    }
+    if (!session) {
+      throw new Error("You're not authenticated!");
+    }
+  }
