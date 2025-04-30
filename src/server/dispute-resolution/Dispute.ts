@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { isLawyer } from "../checkRole";
+import { isAdmin, isLawyer } from "../checkRole";
 
 export class Dispute {
 
@@ -18,6 +18,40 @@ export class Dispute {
       },
     });
     return newDispute;
+  }
+
+  static async getAll() {
+    await isAdmin();
+    const disputes = await db.dispute.findMany({
+      include: {
+        lawyer: {
+          select: {
+            email: true,
+            full_name: true,
+            phone_number: true,
+          },
+        },
+        client: {
+          select: {
+            email: true,
+            full_name: true,
+            phone_number: true,
+          },
+        },
+      },
+    });
+    return disputes;
+  }
+
+  static async accept(id: number) {
+    await isAdmin();
+    const acceptedDispute = await db.dispute.update({
+      where: { id },
+      data: {
+        status: "ACCEPTED",
+      },
+    });
+    return acceptedDispute;
   }
 
   static async getForClient(clientId: number) {
@@ -55,5 +89,16 @@ export class Dispute {
       },
     });
     return disputes;
+  }
+
+  static async resolve(id: number) {
+    await isAdmin();
+    const resolvedDispute = await db.dispute.update({
+      where: { id },
+      data: {
+        status: "RESOLVED",
+      },
+    });
+    return resolvedDispute;
   }
 }

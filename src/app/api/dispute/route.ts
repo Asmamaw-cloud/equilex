@@ -34,3 +34,19 @@ export async function POST(req: Request, res: Response) {
       );
     }
   }
+
+  export async function GET(req: Request, res: Response) {
+    try {
+      const disputes = await Dispute.getAll();
+      return NextResponse.json({ disputes });
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(`${error.message}`);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+      return NextResponse.json(
+        { error: "Couldn't get disputes" },
+        { status: 500 }
+      );
+    }
+  }
