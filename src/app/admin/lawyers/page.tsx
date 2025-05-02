@@ -16,7 +16,6 @@ const Lawyers = () => {
     queryFn: getVerifiedLawyers,
   });
 
-  console.log("Verified lawyers: ", data);
 
   const pageSize = 5;
   const visiblePages = 3;

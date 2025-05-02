@@ -7,7 +7,6 @@ export async function getCaseData() {
       throw new Error(`Error: ${response.statusText}`);
     }
     const data = response;
-    console.log('from dashboard ',data);
 
     return data.data.analytics;
   } catch (err) {
@@ -23,7 +22,6 @@ export async function getClientData() {
       throw new Error(`Error: ${response.statusText}`);
     }
     const data = response;
-    console.log("from dashboard client", data);
 
     return data.data.analytics;
   } catch (error) {
@@ -38,7 +36,6 @@ export async function getLawyerData() {
         if (response.status !== 200) {
             throw new Error(`Error: ${response.statusText}`);
           }
-          console.log("from dashboard client", response);
       
           return response.data.analytics;
         } catch (error) {

@@ -14,7 +14,6 @@ const Clients = () => {
     queryKey: ["client"],
     queryFn: getClients,
   });
-  console.log("Here is the useQuery data: ", data);
 
   const pageSize = 5;
   const visiblePages = 3;

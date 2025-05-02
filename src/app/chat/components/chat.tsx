@@ -30,13 +30,10 @@ interface iAppProps {
 
 const ChatComponent = ({ data }: iAppProps ) => {
 
-  console.log("pusherClient object:", pusherClient)
 
   const [messages, setMessages] = useState<Message[]>(data || [])
   const messageEndRef = useRef<HTMLDivElement>(null)
   const { data: session } = useSession()
-
-  console.log("this is from the input form", data)
 
   const userEmail = session?.user?.email
   // @ts-ignore
@@ -58,7 +55,6 @@ const ChatComponent = ({ data }: iAppProps ) => {
 
     // Handle incoming messages
     const handleMessage = (newMessage: Message) => {
-      console.log("Received new message from Pusher:", newMessage)
       // Only add the message if it's not already in the messages array
       // This prevents duplicate messages
       setMessages((prev) => {
@@ -81,13 +77,8 @@ const ChatComponent = ({ data }: iAppProps ) => {
     return () => {
       pusherClient.unbind("chat-message", handleMessage)
       pusherClient.unsubscribe("public-chat")
-      console.log("Subscribed to private-chat")
     }
   }, [])
-
-
-  console.log("this is the final stage of the message", messages)
-  console.log("message.message: ", messages.message)
 
   return (
     <div className="p-6 flex-grow h-[80vh] overflow-y-auto py-24">

@@ -13,18 +13,15 @@ import Link from "next/link";
 
 const ManageLawyers = () => {
   const { setLawyerNotifications } = useNotifications();
-  console.log("set LAWYER NOTIFICATION", setLawyerNotifications);
   const { data, error, isLoading } = useQuery({
     queryKey: ["lawyers"],
     queryFn: getNewLawyers,
     refetchInterval: 6000,
   });
 
-  console.log("Here is the lawyers info: ", data);
 
   useEffect(() => {
     if (data) {
-      console.log("length", data?.lawyers?.length);
 
       setLawyerNotifications(data?.lawyers?.length);
     }

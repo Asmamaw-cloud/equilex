@@ -40,7 +40,6 @@ const AdminNavbar: React.FC<Props> = ({ toggleShowSideBar }) => {
     setShowDropdown(false);
   };
 
-  console.log("disputeNotifications", disputeNotifications);
 
   if (!isClient) return null;
 

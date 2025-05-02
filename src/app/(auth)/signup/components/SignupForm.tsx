@@ -106,7 +106,6 @@ const SignupForm = () => {
     },
   });
 
-  console.log("Here are the files: ", id, qualification, cv, resume);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (values.password !== values.confirm) {
@@ -117,7 +116,6 @@ const SignupForm = () => {
     }
 
     setRegisteringUser(true);
-    console.log(values);
 
     if (values.type == "CLIENT") {
       createClient.mutate({
@@ -133,7 +131,6 @@ const SignupForm = () => {
           setRegisteringUser(false)
         },
         onError: async (e) => {
-          console.log(e);
 
           toast(
              "Couldn't create account"+ e.message );
@@ -166,7 +163,6 @@ const SignupForm = () => {
               email: values.email,
               password: values.password,
             });
-            console.log(res);
             if (!res?.ok) {
               {
                 throw new Error("");
@@ -219,10 +215,6 @@ const SignupForm = () => {
                             <FileUploader
                               onUploadComplete={(urls) => {
                                 setId(urls[0]);
-                                console.log(
-                                  "Upload complete! Files available at:",
-                                  urls[0]
-                                );
                               }}
                               maxFiles={5}
                               maxSize={4}
@@ -237,10 +229,7 @@ const SignupForm = () => {
                             <FileUploader
                               onUploadComplete={(urls) => {
                                 setQualification(urls[0]);
-                                console.log(
-                                  "Upload complete! Files available at:",
-                                  urls
-                                );
+
                               }}
                               maxFiles={5}
                               maxSize={4}
@@ -258,10 +247,7 @@ const SignupForm = () => {
                             <FileUploader
                               onUploadComplete={(urls) => {
                                 setCv(urls[0]);
-                                console.log(
-                                  "Upload complete! Files available at:",
-                                  urls
-                                );
+
                               }}
                               maxFiles={5}
                               maxSize={4}
@@ -276,10 +262,7 @@ const SignupForm = () => {
                             <FileUploader
                               onUploadComplete={(urls) => {
                                 setResume(urls[0]);
-                                console.log(
-                                  "Upload complete! Files available at:",
-                                  urls
-                                );
+
                               }}
                               maxFiles={5}
                               maxSize={4}
@@ -294,10 +277,7 @@ const SignupForm = () => {
                           <FileUploader
                             onUploadComplete={(urls) => {
                               setPhoto(urls[0]);
-                              console.log(
-                                "Upload complete! Files available at:",
-                                urls[0]
-                              );
+
                             }}
                             maxFiles={5}
                             maxSize={4}

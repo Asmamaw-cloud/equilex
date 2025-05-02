@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request, res: Response) {
   try {
     const userInput = await request.json();
-    console.log("user input: ", userInput)
     if (
       !userInput.client_id ||
       !userInput.lawyer_id ||

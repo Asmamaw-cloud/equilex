@@ -10,7 +10,6 @@ export async function addTrial(data: object) {
       if (response.status < 200 || response.status >= 300) {
         throw new Error(`Error: ${response.statusText}`);
       }
-      console.log(response);
       return response.data; // Return response data if needed
     } catch (err) {
       console.error(err);
@@ -26,7 +25,6 @@ export async function getTrials() {
         throw new Error(`Error: ${response.statusText}`);
       }
       const data = response;
-      console.log(data);
   
       return data.data.upcomingTrials;
     } catch (err) {
@@ -43,7 +41,6 @@ export async function getTrials() {
         throw new Error(`Error: ${response.statusText}`);
       }
       const data = response;
-      console.log(data);
   
       return data.data.trials;
     } catch (err) {

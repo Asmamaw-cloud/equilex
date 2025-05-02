@@ -33,8 +33,7 @@ const LawyersList: React.FC<Props> = ({
       (!selectedCourt || lawyer.courts.includes(selectedCourt))
     );
   });
-  console.log("Client lawyers: ", data);
-  console.log("Filtered lawyers: ", filteredLawyers);
+
 
   if (isLoading) return <LoadingComponent />;
   if (error)

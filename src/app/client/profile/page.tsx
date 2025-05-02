@@ -33,18 +33,15 @@ const ClientProfileForm = () => {
     queryFn: () => getClientById(client_id),
   });
 
-  console.log("Profile data: ", profileData)
 
   const updateMutation: UseMutationResult<void, unknown, object> = useMutation({
     mutationFn: (data: object) => updateClient(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       toast(`Profile Updated successfully!`);
-      console.log("SUccess")
     },
     onError: (error: any) => {
       toast(`ERROR! "Failed to update profile."`);
-      console.log("SUccess")
 
     },
   });
@@ -60,7 +57,6 @@ const ClientProfileForm = () => {
   const [newFullName, setNewFullName] = useState(profileData?.full_name);
 
   useEffect(() => {
-    console.log("thi if fuck", profileData?.phone_number);
     setProfilePhoto(profileData?.photo);
     setPhoneNumber(profileData?.phone_number);
     setNewFullName(profileData?.full_name);
@@ -86,7 +82,6 @@ const ClientProfileForm = () => {
             <FileUploader
               onUploadComplete={(urls) => {
                 setProfilePhoto(urls[0]);
-                console.log("Upload complete! Files available at:", urls[0]);
               }}
               maxFiles={5}
               maxSize={4}

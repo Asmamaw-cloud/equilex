@@ -7,7 +7,6 @@ export async function rate(data:object) {
     if (response.status < 200 || response.status >= 300) {
       throw new Error(`Error: ${response.statusText}`);
     }
-    console.log(response);
     return response.data; // Return response data if needed
     } catch (error) {
         console.error("Error creating rating:", error);
@@ -24,7 +23,6 @@ export async function getRatings(id: number) {
         throw new Error(`Error: ${response.statusText}`);
       }
       const data = response;
-      console.log('this is from lawyer rating',data);
   
       return data.data.ratings;
     } catch (err) {
@@ -42,7 +40,6 @@ export async function getRatings(id: number) {
         throw new Error(`Error: ${response.statusText}`);
       }
       const data = response;
-      console.log('this is from lawyer average rating',data);
   
       return data.data.rating;
     } catch (err) {

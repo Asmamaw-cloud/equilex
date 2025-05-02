@@ -97,7 +97,6 @@ const ProfileForm = () => {
       setIsEditingResume(false);
     }
 
-    console.log("this is languages 11", languages);
 
     const updatedProfile = {
       full_name: newFullName.toUpperCase(),
@@ -108,7 +107,6 @@ const ProfileForm = () => {
       resume: newResume,
     };
 
-    console.log("this is languages 22", updatedProfile);
 
     await updateMutation.mutateAsync(updatedProfile);
   };

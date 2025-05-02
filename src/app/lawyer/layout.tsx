@@ -1,6 +1,5 @@
 'use client'
 
-import type { Metadata } from "next";
 import "../globals.css";
 import MainNavbar from "@/components/mainNavbar";
 import LawyerSidebar from "@/components/lawyerSidebar";

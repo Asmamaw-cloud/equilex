@@ -72,7 +72,6 @@ const ChatForm: React.FC<Props> = ({ recipient_id, initialMessages }) => {
     if (mimeType?.includes("pdf")) fileType = "pdf";
     else if (mimeType?.includes("image")) fileType = "image";
 
-    console.log("File type detected:", fileType);
 
     const url = typeof file === "string" ? file : file?.url;
 

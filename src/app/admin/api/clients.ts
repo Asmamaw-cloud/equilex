@@ -7,7 +7,6 @@ export async function getClients() {
         if(response.status !== 200) {
             throw new Error(`Error: ${response.statusText}`)
         }
-        console.log('clinets', response)
 
         return response.data;
     }catch(error) {

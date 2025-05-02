@@ -8,8 +8,6 @@ async function getData(recipient_id: number) {
   const email = session?.user.email;
   const userId = session?.user.image?.id;
 
-  console.log(`userId: ${userId}`);
-  console.log("recepient id: ",recipient_id);
   let data;
 
   if (userType === "client") {

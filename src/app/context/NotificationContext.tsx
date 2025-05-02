@@ -11,6 +11,8 @@ import React, {
 } from "react";
 import { getNewLawyers } from "../admin/api/lawyers";
 import { getDisputes } from "../lawyer/api/dispute";
+import { getSession } from "next-auth/react";
+
 
 // Define types for context state
 interface NotificationContextType {
@@ -55,17 +57,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   const fetchNotifications = async () => {
     try {
       const lawyers = await getNewLawyers();
-      console.log("from the provider ............", lawyers.lawyers.length);
 
       setLawyerNotifications(lawyers.lawyers.length); // Update lawyer notifications count
 
-      // const faqs = await getFaqs();
-      // console.log('faq for nitification',faqs.length);
-
-      // setFaqNotifications(faqs.length); // Example count
-
       const disputs = await getDisputes();
-      console.log("dispute noti................", disputs.length);
 
       setDisputeNotifications(disputs.length); // Example count
     } catch (error) {
@@ -73,8 +68,17 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     }
   };
 
+
   useEffect(() => {
-    fetchNotifications();
+    //this is to check if the user is admin or not i.e if the user is not admin getNewLawyers doesn't called
+    const checkAndFetch = async () => {
+      const session = await getSession();
+      if (!session || session.user?.image?.type !== "admin") return;
+  
+      fetchNotifications();
+    };
+  
+    checkAndFetch();
   }, []);
 
   return (

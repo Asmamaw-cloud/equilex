@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request, res: Response) {
   try {
     const userInput = await req.json();
-    console.log("Here is the recieved user input json: ", userInput)
     if (
       !userInput.email ||
       !userInput.password ||
@@ -51,9 +50,7 @@ export async function POST(req: Request, res: Response) {
 
 export async function GET(req: Request) {
   try {
-
       const lawyers = await Lawyer.getUnverifiedLawyers()
-      console.log(" Unverified Lawyers are: ", lawyers)
       return NextResponse.json({ id: "GET", lawyers })
 
   } catch(error) {

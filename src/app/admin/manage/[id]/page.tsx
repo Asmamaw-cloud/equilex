@@ -14,13 +14,11 @@ const ManageEachLawyers = () => {
     const router = useRouter()
     const param = useParams()
     const { id } = param
-    console.log("params: ", param)
 
     const { data, isLoading, error } = useQuery({
         queryKey: ["lawyer"],
         queryFn: () => getLawyerById(id),
       });
-      console.log("Get lawyer by Id: ", data)
 
       const VerifyMutationFn = async () => {
         return verifyLawyer(id)

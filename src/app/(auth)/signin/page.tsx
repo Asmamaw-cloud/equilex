@@ -193,16 +193,8 @@ const Signin = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       setRegisteringUser(true);
-      console.log("Email: ", values.email, "Password: ", values.password);
       const res = await Account.login(values.email, values.password);
       const session = await getSession();
-      // console.log("session AK: ", session)
-      // console.log("ROle of AK: ", session?.user.image.type)
-      // //@ts-ignore
-      // if (session?.user.image.type === "admin") {
-      //   router.push("/admin")
-      // }
-      //@ts-ignore
       if (session?.user.image.type === "admin") {
         router.push("/admin");
         router.refresh();
@@ -217,7 +209,6 @@ const Signin = () => {
     }
   }
 
-  // console.log("session for auth: ", session?.user.image);
 
   const handleGoogleSignIn = async () => {
     try {

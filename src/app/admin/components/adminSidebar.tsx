@@ -8,7 +8,6 @@ interface props {
 
 const AdminSidebar: React.FC<props> = ({ isVisible }) => {
   const path = usePathname();
-  console.log(isVisible);
 
   const handleLogout = async () => {
     await Account.logout();

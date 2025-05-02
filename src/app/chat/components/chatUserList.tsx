@@ -18,7 +18,6 @@ const ChatUserList = () => {
     },
   });
   const chatList = chat ? chat : [];
-  console.log("chatList: ", chat);
 
   return (
     <div className="flex flex-col bg-white shadow-md items-start m-3 h-[85vh] overflow-scroll rounded-md">

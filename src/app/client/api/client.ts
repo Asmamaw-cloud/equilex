@@ -7,7 +7,6 @@ export async function getClientById(id: number) {
       throw new Error(`Error: ${response.statusText}`);
     }
     const data = response;
-    console.log("this is from clieant id", data.data.client);
 
     return data.data.client;
   } catch (err) {
@@ -23,7 +22,6 @@ interface ClientData {
 export async function updateClient(data: ClientData) {
   try {
     const response = await axios.put(`/api/clients`, data);
-    console.log("Client profile response: ", response)
     if (response.status !== 200) {
       throw new Error(`Error: ${response.statusText}`);
     }

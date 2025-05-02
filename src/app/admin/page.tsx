@@ -33,9 +33,6 @@ const Admin = () => {
     refetchInterval: 6000,
   });
 
-  console.log("CLient data: ", clientdata);
-  console.log("Lawyer count: ", lawyerdata);
-
   const data1 = [clientdata, lawyerdata, 15];
 
   return (

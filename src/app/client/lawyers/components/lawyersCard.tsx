@@ -18,21 +18,17 @@ const LawyersCard: React.FC<LawyerProps> = ({
   rate,
 }) => {
 
-    console.log("des: ", des)
     
     const rateValues = rate?.map((item) => item?.rate);
     const averageRate =
       rateValues?.reduce((sum, rate) => sum + rate, 0) / rateValues?.length;
-  
-    console.log("this rate av", averageRate);
-    console.log("this rate", rate);
+
 
   const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 0; i < 5; i++) {
       stars.push(<FaStar key={i} color={i < rating ? "#ffd700" : "#e4e5e9"} />);
     }
-    console.log("Stars: ", stars)
 
     return stars;
   };

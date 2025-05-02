@@ -28,7 +28,6 @@ const LawyerNotifications = () => {
       </div>
     );
   }
-  console.log("notifications: ", data);
   return (
     <div className="p-6 bg-gray-200 h-screen relative overflow-hidden">
       <div className="bg-white w-[80%] overflow-y-scroll h-[80vh] items-center justify-center rounded-xl m-auto p-10 relative flex flex-col gap-8">

@@ -36,7 +36,6 @@ const OfferModal: React.FC<OfferModalProps> = ({
         description: "",
         price: 0,
       });
-      console.log("Offer created successfully", data);
     },
   });
 
@@ -47,7 +46,6 @@ const OfferModal: React.FC<OfferModalProps> = ({
       lawyer_id: lawyer_id,
       client_id: client_id,
     };
-    console.log("offer data: ", data)
     createCaseMutation.mutate(data);
   };
 

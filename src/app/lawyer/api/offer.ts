@@ -32,7 +32,6 @@ export async function deliver(id: number) {
       if (response.status < 200 || response.status >= 300) {
         throw new Error(`Error: ${response.statusText}`);
       }
-      console.log(response);
       return response.data; // Return response data if needed
     } catch (err) {
       console.error(err);
@@ -56,7 +55,6 @@ export async function deliver(id: number) {
 export async function getCasesById(id:number) {
     try {
         const response = await axios.get(`/api/case/${id}`)
-        console.log("Response from getCaseById:", response.data)
         if (response.status !== 200) {
             throw new Error(`Error: ${response.statusText}`);
           }
@@ -104,7 +102,6 @@ export async function rejectOffer(id:number) {
         if (response.status < 200 || response.status >= 300) {
             throw new Error(`Error: ${response.statusText}`);
           }
-          console.log("Response from rejectOffer:", response.data)
           return response.data; // Return response data if needed
     } catch (error) {
         console.error("Error rejecting offer:", error)

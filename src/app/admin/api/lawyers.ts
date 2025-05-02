@@ -4,11 +4,9 @@ export async function getNewLawyers() {
   try {
     const response = await axios.get("/api/lawyers");
 
-    console.log("Response from getNewLawyers:", response.data);
     if (response.status !== 200) {
       throw new Error(`Error: ${response.statusText}`);
     }
-    console.log("New Lawyers are: ",response);
 
     return response.data;
   } catch (err) {
@@ -28,7 +26,6 @@ export async function getLawyerById(id: any) {
       throw new Error(`Error: ${response.statusText}`);
 
       const data = response;
-    console.log(data);
 
     return data.data.user;
   } catch (err) {
@@ -40,7 +37,6 @@ export async function getLawyerById(id: any) {
 
 export async function verifyLawyer(id:any) {
   axios.put(`/api/lawyers/${id}/verify`).then((res:any) => {
-    console.log(res)
     return res
   }).catch((err:any) => {
     console.log(err)
@@ -71,7 +67,6 @@ export async function getVerifiedLawyers() {
         if (response.status !== 200) {
             throw new Error(`Error: ${response.statusText}`);
           }
-          console.log("this is from verifyd lawyers...", response);
       
           return response.data.lawyers;
 
