@@ -6,10 +6,16 @@ import { redirect } from 'next/navigation'
 import ChatUserList from '../components/chatUserList'
 import getData from '../components/helpers'
 
-const ChatHomepage = async({params} : {params: {id: string}}) => {
+type PageProps = {
+  params: { id: string }
+}
+
+const ChatHomepage = async({ params }: PageProps) => {
 
     const session = await getServerAuthSession()
-    const recipientId = Number((params.id))
+    // let recipientId = Number(params.id)
+    const { id } = await params
+    const recipientId = Number(id)
     const data = await getData(recipientId);
 
     if (!session) {

@@ -1,5 +1,6 @@
 import { db } from "@/lib/db";
 import { isClient, isLawyer } from "../checkRole";
+import { Payment } from "../payment-management/Payment";
 
 export class Case {
   static async create(
@@ -60,7 +61,7 @@ export class Case {
   }
 
   static async acceptOffer(case_id: number) {
-    await db.case.update({
+    const acceptedCase = await db.case.update({
       where: {
         id: case_id,
       },
@@ -68,6 +69,18 @@ export class Case {
         status: "ACCEPTED",
       },
     });
+
+    const checkout_url = await Payment.initiate(
+      "admin@gmail.com",
+      "Asmamaw",
+      "Kassahun",
+      "0900000000",
+      acceptedCase.id
+    );
+    console.log("checkout_url: ", checkout_url)
+
+    return checkout_url
+
   }
 
   static async rejectOffer(case_id: number) {

@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getTrials } from "./api/trial";
 import { getStatistics } from "./api/statistics";
 import { ErrorComponent, LoadingComponent } from "@/components/LoadingErrorComponents";
+import TrialNotify from "@/components/TrialNotify";
 
 const Lawyer = () => {
 
@@ -132,7 +133,7 @@ const Lawyer = () => {
           <LineChart data={[45000]} />
         </div>
       </div>
-      {/* <TrialNotify show={true} /> */}
+      <TrialNotify show={true} />
     </div>
   );
 };

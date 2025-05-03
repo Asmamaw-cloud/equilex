@@ -1,15 +1,23 @@
+export const dynamic = "force-dynamic";
+
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: number } }
+  { params }: { params: { id: string } }
 ) {
   try {
-    const id = Number(params.id);
+    const { id } = await params;
+    const caseId = Number(id);
+
+    if (isNaN(caseId)) {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    }
+
     const caseById = await db.case.findUnique({
       where: {
-        id,
+        id: caseId,
       },
       include: {
         lawyer: {
@@ -24,6 +32,7 @@ export async function GET(
         },
       },
     });
+
     return NextResponse.json({ caseById }, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {

@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 export async function GET(req: Request, res: Response) {
   try {
     let session = await getServerSession(authOptions);
-
     if (!session) {
       throw new Error("Not authenticated");
     }

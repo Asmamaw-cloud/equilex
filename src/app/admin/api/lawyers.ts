@@ -22,6 +22,7 @@ export async function getLawyerById(id: any) {
   try {
 
     const response = await axios.get(`/api/lawyers/${id}`)
+    console.log("response from api/lawyers/id", response)
     if (response.status < 200 || response.status >= 300) 
       throw new Error(`Error: ${response.statusText}`);
 
