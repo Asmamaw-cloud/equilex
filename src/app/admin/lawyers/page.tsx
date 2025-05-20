@@ -88,7 +88,7 @@ const Lawyers = () => {
     );
 
   return (
-    <div className="w-full font-sans min-h-screen pt-24 pl-10 lg:pl-72 bg-[#f2f6fa]">
+    <div className="w-full font-sans min-h-screen pt-24 pl-10 lg:pl-16 bg-[#f2f6fa]">
       <div  className="w-full p-4">
         <h1  className="font-bold text-3xl  text-black">Lawyers</h1>
       </div>

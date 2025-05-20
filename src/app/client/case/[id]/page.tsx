@@ -263,6 +263,10 @@
 
 // export default CaseDetail;
 
+
+
+
+
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
@@ -300,6 +304,7 @@ import {
   User,
   FileText,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 const CaseDetail: React.FC = () => {
   const queryClient = useQueryClient();
@@ -316,7 +321,12 @@ const CaseDetail: React.FC = () => {
   const acceptMutation: UseMutationResult<void, unknown, number> = useMutation({
     mutationFn: (id: number) => acceptDelivery(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["case"] });
+      // queryClient.invalidateQueries({ queryKey: ["case"] });
+      // toast.success("Delivery accepted successfully!");
+      queryClient.setQueryData(["case"], (oldData: any) => ({
+        ...oldData,
+        status: "FINISHED",
+      }));
       toast.success("Delivery accepted successfully!");
     },
     onError: () => {
@@ -343,6 +353,8 @@ const CaseDetail: React.FC = () => {
     return (
       <ErrorComponent errorMessage="Failed to load case data. Please try again." />
     );
+
+    console.log("data for client: ", data);
 
   return (
     <div className="p-6 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen">
@@ -384,7 +396,7 @@ const CaseDetail: React.FC = () => {
                   <User className="h-5 w-5 mr-2 text-purple-600" />
                   <span className="font-medium">Lawyer</span>
                 </div>
-                <p className="text-lg font-medium pl-7">{data?.lawyer_id}</p>
+                <p className="text-lg font-medium pl-7">{data?.lawyer?.full_name}</p>
               </div>
 
               <div className="space-y-2">
@@ -392,7 +404,18 @@ const CaseDetail: React.FC = () => {
                   <FileText className="h-5 w-5 mr-2 text-purple-600" />
                   <span className="font-medium">Status</span>
                 </div>
-                <div className="pl-7">{data?.status}</div>
+                <Badge
+                    className={`${
+                      data?.status === "DELIVERED"
+                        ? "bg-green-100 text-green-800 border-green-200"
+                        : data?.status === "DELIVERED"
+                          ? "bg-blue-100 text-blue-800 border-blue-200"
+                          : "bg-amber-100 text-amber-800 border-amber-200"
+                    } px-3 py-1 text-sm font-medium`}
+                  >
+                    {data?.status}
+                  </Badge>
+                {/* <div className="pl-7">{data?.status}</div> */}
               </div>
             </div>
 

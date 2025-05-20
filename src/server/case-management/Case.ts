@@ -70,6 +70,21 @@ export class Case {
       },
     });
 
+    console.log("acceptedCase: ", acceptedCase)
+
+
+    // Create initial contract
+    const contract = await db.contract.create({
+      data: {
+        case_id: acceptedCase.id,
+        lawyer_id: acceptedCase.lawyer_id,
+        client_id: acceptedCase.client_id,
+        terms: `This contract is for the case "${acceptedCase.title}". The agreed price is ${acceptedCase.price} ETB. The lawyer will provide legal services as described in the case description.`,
+        status: "DRAFT",
+      },
+    });
+    console.log("contract: ", contract)
+
     const checkout_url = await Payment.initiate(
       "admin@gmail.com",
       "Asmamaw",
@@ -138,28 +153,28 @@ export class Case {
           }
 
           // update lawyer balance
-    await db.lawyer.update({
-        where: {
-          id: acceptedCase.lawyer_id,
-        },
-        data: {
-          balance: {
-            increment: acceptedCase.price - acceptedCase.price * 0.2,
-          },
-        },
-      });
+    // await db.lawyer.update({
+    //     where: {
+    //       id: acceptedCase.lawyer_id,
+    //     },
+    //     data: {
+    //       balance: {
+    //         increment: acceptedCase.price - acceptedCase.price * 0.2,
+    //       },
+    //     },
+    //   });
 
 
       // update transaction status
-    await db.transaction.update({
-        where: {
-          payment_id: acceptedCase.payment_id + "",
-        },
-        data: {
-          status: "TRANSFERRED",
-          paid_at: new Date(),
-        },
-      });
+    // await db.transaction.update({
+    //     where: {
+    //       payment_id: acceptedCase.payment_id + "",
+    //     },
+    //     data: {
+    //       status: "TRANSFERRED",
+    //       paid_at: new Date(),
+    //     },
+    //   });
       return acceptedCase;
 
     }

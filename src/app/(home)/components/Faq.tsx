@@ -1,15 +1,27 @@
+'use client'
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import mokeData from "./FAQMokeData";
+// import mokeData from "./FAQMokeData";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, PlusCircle } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { getFaq } from "@/app/admin/api/faq";
+import Link from "next/link";
 
 const Faq = () => {
+
+  const {data: faq, isLoading, error} = useQuery({
+    queryKey: ["faq"],
+    queryFn: () => getFaq()
+  })
+  console.log("The response from the faq database: ", faq)
+
   return (
     <div id="faq" className="p-8 flex flex-col">
       <div className=" mx-auto py-8 ">
@@ -24,11 +36,11 @@ const Faq = () => {
         type="multiple"
         className=" grid  md:grid-cols-1 lg:grid-cols-2  grid-cols-1 "
       >
-        {mokeData?.map((data) => {
+        {faq?.map((data) => {
           return (
             <AccordionItem
               value={data.answer}
-              key={data.index}
+              key={data.id}
               className=" p-4 mx-4 shadow-md transform transition duration-500 hover:scale-105 h-auto px-3 "
             >
               <AccordionTrigger> {data.question} </AccordionTrigger>
@@ -48,13 +60,13 @@ const Faq = () => {
                 <p className="text-muted-foreground mb-4">
                   If you couldn't find the answer to your question, feel free to contact our support team.
                 </p>
-                <a
-                  href="mailto:akassahun2023@gmail.com"
+                <Link
+                  href="mailto:asmamawkassahun2016@gmail.com"
                   className="inline-flex items-centerter text-[#7B3B99] hover:underline font-medium"
                 >
                   Contact Support
                   <ArrowRight className="ml-1 h-4 w-4" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>

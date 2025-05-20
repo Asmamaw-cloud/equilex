@@ -13,7 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 enum user_type {
   CLIENT
   LAWYER
@@ -93,18 +92,19 @@ enum WithdrawRequestStatus {
 }
 
 model client {
-  id           Int       @id @default(autoincrement())
-  email        String    @unique
+  id           Int        @id @default(autoincrement())
+  email        String     @unique
   password     String
-  created_at   DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  created_at   DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   full_name    String
   photo        String?
-  phone_number String    @unique
+  phone_number String     @unique
   disputes     dispute[]
-  cases        Case[]    @relation("case_for")
+  cases        Case[]     @relation("case_for")
   ratings      Rating[]
-  messages     Message[] @relation(name: "ClientMessages")
+  messages     Message[]  @relation(name: "ClientMessages")
+  contracts    Contract[]
 }
 
 model lawyer {
@@ -131,6 +131,7 @@ model lawyer {
   ratings             Rating[]
   withdrawRequests    WithdrawRequest[]
   Message             Message[]         @relation(name: "LawyerMessages")
+  contracts           Contract[]
 }
 
 model admin {
@@ -142,7 +143,7 @@ model admin {
 model faq {
   id       Int     @id @default(autoincrement())
   question String
-  reply    String?
+  answer    String?
 }
 
 model dispute {
@@ -172,6 +173,29 @@ model Case {
   ratings      Rating[]
   created_at   DateTime      @default(now())
   transactions Transaction[]
+  contract     Contract?
+}
+
+model Contract {
+  id         Int            @id @default(autoincrement())
+  case_id    Int            @unique
+  lawyer_id  Int
+  client_id  Int
+  terms      String
+  status     ContractStatus @default(DRAFT)
+  created_at DateTime       @default(now())
+  updated_at DateTime       @updatedAt
+  signed_at  DateTime?
+  lawyer     lawyer         @relation(fields: [lawyer_id], references: [id])
+  client     client         @relation(fields: [client_id], references: [id])
+  case       Case           @relation(fields: [case_id], references: [id])
+}
+
+enum ContractStatus {
+  DRAFT
+  PENDING
+  SIGNED
+  TERMINATED
 }
 
 model Trial {

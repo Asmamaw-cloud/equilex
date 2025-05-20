@@ -3,7 +3,7 @@ import React from 'react'
 const TransactionPage = () => {
     const data = []
   return (
-    <div className="w-full font-sans min-h-screen pt-28 pl-10 lg:pl-72 bg-[#f2f6fa] text-black overflow-auto">
+    <div className="w-full font-sans min-h-screen pt-28 pl-10 lg:pl-16 bg-[#f2f6fa] text-black overflow-auto">
       <h1 className="text-2xl font-bold mb-4">Transaction History</h1>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200">

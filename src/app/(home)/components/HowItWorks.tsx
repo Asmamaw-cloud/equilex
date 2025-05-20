@@ -58,7 +58,7 @@ const HowItWorks = () => {
 
         <div ref={ref} className="relative mx-auto max-w-6xl mt-12">
           {/* Connection line */}
-          <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#333333] to-[#555555]/30 hidden lg:block"></div>
+          {/* <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-[#333333] to-[#555555]/30 hidden lg:block"></div> */}
 
           <div className="grid gap-12 py-8 md:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, index) => (

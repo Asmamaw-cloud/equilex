@@ -2,10 +2,7 @@
 import React, { useEffect } from "react";
 import Link from "next/link";
 import {
-  QueryClient,
-  useMutation,
   useQuery,
-  UseMutationResult,
   useQueryClient,
 } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
@@ -18,7 +15,6 @@ import {
 function Complated() {
   const { data: session } = useSession();
 
-  const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery({
     queryKey: ["lawyercases"],
 

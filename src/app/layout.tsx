@@ -3,6 +3,7 @@ import "./globals.css";
 import ReactQueryProvider from "./context/ReactQueryProvider";
 import AuthSessionProvider from "./context/AuthSessionProvider";
 import { NotificationProvider } from "./context/NotificationContext";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "EQUILEX",
@@ -22,6 +23,7 @@ export default function RootLayout({
         <NotificationProvider>
           <ReactQueryProvider>
             <AuthSessionProvider session={session}>
+              <Toaster/>
               {children}
             </AuthSessionProvider>
           </ReactQueryProvider>

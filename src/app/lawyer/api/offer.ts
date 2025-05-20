@@ -1,5 +1,6 @@
 import { postData } from "@/app/chat/components/action";
 import axios from "axios";
+import { toast } from "sonner";
 
 
 export async function createOffer(data:object) {
@@ -45,6 +46,7 @@ export async function deliver(id: number) {
       if (response.status < 200 || response.status >= 300) {
         throw new Error(`Error: ${response.statusText}`);
       }
+      console.log("Delivery accepted sucessfully")
       return response.data; // Return response data if needed
     } catch (err) {
       console.error(err);

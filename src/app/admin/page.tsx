@@ -36,7 +36,7 @@ const Admin = () => {
   const data1 = [clientdata, lawyerdata, 15];
 
   return (
-    <div className="min-w-max min-h-screen pt-24 pl-10 lg:pl-72 bg-[#f2f6fa]        ">
+    <div className="min-w-max min-h-screen pt-24 pl-10 lg:pl-16 bg-[#f2f6fa]        ">
       <div className="w-full h-fit text-black p-4">
         <h1 className="font-bold text-3xl ">Dashboard</h1>
       </div>

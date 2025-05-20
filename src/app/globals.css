@@ -113,7 +113,7 @@
 
 .bg-hero-section {
   @apply bg-cover bg-center bg-no-repeat w-full relative;
-  background-image: url('/banner1.jpg');
+  background-image: url('/images/banner1.jpg');
 }
 
 @layer base {

@@ -279,6 +279,7 @@ import ProfileDropDown from "./profileDropDown"
 import SearchInput from "./searchInput"
 import Notification from "./Notification"
 import ChatDropDown from "./chatDropDown"
+import { Account } from "@/server/user-management/Account"
 
 const MainNavbar = () => {
   const [nav, setNav] = useState(false)
@@ -299,6 +300,10 @@ const MainNavbar = () => {
       element.scrollIntoView({ behavior: "smooth" })
       setMobileMenuOpen(false)
     }
+  }
+
+  const handleLogOut = async() => {
+    await Account.logout()
   }
 
   return (
@@ -330,8 +335,8 @@ const MainNavbar = () => {
                   <>
                     {userType == "client" ? (
                       <Link href="/client/lawyers">
-                        <h3 className="text-2xl group-hover:font-bolder hover:text-[#7B3B99] hover:scale-110">
-                          Lawyer
+                        <h3 className="text-2xl group-hover:font-bolder hover:text-[#7B3B99] duration-300 hover:scale-110">
+                          View Lawyers
                         </h3>
                       </Link>
                     ) : (
@@ -484,6 +489,9 @@ const MainNavbar = () => {
 
         <li className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600">
           <Link href={userType === "client" ? "/client/profile" : "/lawyer/profile"}>Profile</Link>
+        </li>
+        <li onClick={handleLogOut} className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600">
+          <span >Log Out</span>
         </li>
       </ul>
     </div>

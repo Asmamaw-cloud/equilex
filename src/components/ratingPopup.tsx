@@ -4,6 +4,7 @@ import { rate } from "@/app/client/api/rating";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
+import { toast } from "sonner";
 
 interface ratingProps {
   show: any;
@@ -27,6 +28,7 @@ const RatingPopup: React.FC<ratingProps> = ({
     mutationFn: (id: object) => rate(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["rating"] });
+      toast.success("rating sucessfull!")
       onClose();
     },
   });
