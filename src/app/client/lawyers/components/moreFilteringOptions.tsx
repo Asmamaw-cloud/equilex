@@ -228,7 +228,7 @@ const MoreFilteringOptions: React.FC<Props> = ({
           </SheetDescription>
         </SheetHeader>
 
-        <div className="space-y-6 py-6">
+        <div className="space-y-6 py-6 px-4">
           {/* Specialization Filter */}
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-3">Specialization</h3>
