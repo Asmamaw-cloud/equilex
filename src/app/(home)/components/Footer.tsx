@@ -87,7 +87,7 @@ const Footer = () => {
                 "Legal Resources",
                 "Client Reviews",
                 "Success Stories",
-                "Support",
+                "Supports",
               ].map((item) => (
                 <li key={item}>
                   <Link
