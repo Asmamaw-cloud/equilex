@@ -288,6 +288,12 @@ const MainNavbar = () => {
   const { data: session } = useSession()
   const currentRoute = usePathname()
   const router = useRouter()
+  const path = usePathname();
+    const [showCase, setShowCase] = useState(false);
+
+
+    const toggleShowCase = () => setShowCase((prev) => !prev);
+
 
   //@ts-ignore
   const userType = session?.user.image.type
@@ -494,6 +500,50 @@ const MainNavbar = () => {
         <li className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600">
           <Link href={"/chat"}>Chat</Link>
         </li>
+
+
+
+        <li className="flex flex-col text-gray-900 rounded-lg group">
+            <div
+              className="w-full px-2 flex items-center justify-between p-2 rounded-lg hover:bg-[#f0f0f0] cursor-pointer"
+              onClick={toggleShowCase}
+            >
+              <div className="flex items-center gap-4">
+                {/* <FaBriefcase className="text-gray-500 w-5 h-5 group-hover:text-gray-600" /> */}
+                <span className="whitespace-nowrap">Communicate</span>
+              </div>
+              {/* <Icon
+                icon={showCase ? "mingcute:up-line" : "mingcute:down-line"}
+                style={{ color: "black" }}
+              /> */}
+            </div>
+
+            {showCase && (
+              <ul className="space-y-2 mt-2 pl-4">
+                <li className={path.startsWith("/chat") ? "bg-[#7B3B99] rounded-xl text-white" : ""}>
+                  <Link
+                    href="/lawyer/completed"
+                    className="flex gap-3 items-center p-2 rounded-lg hover:bg-[#f0f0f0] hover:text-black"
+                  >
+                    {/* <FaBriefcase className="text-gray-500 w-5 h-5 group-hover:text-gray-600" /> */}
+                    Chat
+                  </Link>
+                </li>
+                <li className={path.startsWith("/videoCall") ? "bg-[#7B3B99] rounded-xl text-white" : ""}>
+                  <Link
+                    href="/lawyer/inProgress"
+                    className="flex gap-3 items-center p-2 rounded-lg hover:bg-[#f0f0f0] hover:text-black"
+                  >
+                    {/* <FaBriefcase className="text-gray-500 w-5 h-5 group-hover:text-gray-600" /> */}
+                    VideoCall
+                  </Link>
+                </li>
+              </ul>
+            )}
+            <hr />
+          </li>
+
+
 
         <li className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600">
           {userType == "client" ? <Link href="/client/lawyers">Get Lawyers</Link> : <Link href="/lawyer">My Page</Link>}
