@@ -9,13 +9,11 @@ import {
 } from "@/components/LoadingErrorComponents";
 import { Icon } from "@iconify/react";
 
-
 const Lawyers = () => {
   const { data, error, isLoading } = useQuery({
     queryKey: ["lawyers"],
     queryFn: getVerifiedLawyers,
   });
-
 
   const pageSize = 5;
   const visiblePages = 3;
@@ -88,84 +86,111 @@ const Lawyers = () => {
     );
 
   return (
-    <div className="w-full font-sans min-h-screen pt-24 pl-10 lg:pl-16 bg-[#f2f6fa]">
-      <div  className="w-full p-4">
-        <h1  className="font-bold text-3xl  text-black">Lawyers</h1>
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 pt-24 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-extrabold text-gray-900 mb-10 tracking-tight">
+          Lawyers
+        </h1>
 
-      <div className="rounded-2xl overflow-auto py-10 pr-10">
-        <table className="w-full text-left rounded-xl">
-          <thead>
-            <tr>
-              <th className=" py-3 px-6 ">ID</th>
-              <th className=" py-3 px-6 ">NAME</th>
-              <th className=" py-3 px-6 ">PHONE</th>
-              <th className=" py-3 px-6 ">EMAIL</th>
-              <th className=" py-3 px-6 ">STATUS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedLawyers?.map((lawyer: any, index: any) => (
-              <tr
-                className={
-                  index % 2 === 0
-                    ? "relative bg-[#F4F4F4]"
-                    : "relative bg-white"
-                }
-                key={index}
-              >
-                <td className=" py-3 px-6 text-black "> {lawyer.id} </td>
-
-                <td className=" py-3 px-6 text-black "> {lawyer.full_name} </td>
-                <td className=" py-3 px-6 text-black ">
-                  {" "}
-                  {lawyer.phone_number}{" "}
-                </td>
-                <td className=" py-3 px-6 text-black "> {lawyer.email} </td>
-                <td className=" py-3 px-6 text-black ">
-                  <button
-                    className={
-                      lawyer.isVerified
-                        ? "w-[100px] px-4 py-2 rounded-full outline outline-[#7B3B99]"
-                        : "w-[100px] px-4 py-2 bg-[#7B3B99] text-white rounded-full "
-                    }
+        <div className="bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-gradient-to-r from-purple-50 to-indigo-50">
+                <tr>
+                  <th className="py-5 px-6 text-sm font-semibold text-gray-800 uppercase tracking-wider">
+                    ID
+                  </th>
+                  <th className="py-5 px-6 text-sm font-semibold text-gray-800 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="py-5 px-6 text-sm font-semibold text-gray-800 uppercase tracking-wider">
+                    Phone
+                  </th>
+                  <th className="py-5 px-6 text-sm font-semibold text-gray-800 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="py-5 px-6 text-sm font-semibold text-gray-800 uppercase tracking-wider">
+                    Status
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {paginatedLawyers?.map((lawyer: any, index: any) => (
+                  <tr
+                    className={`${
+                      index % 2 === 0 ? "bg-gray-50" : "bg-white"
+                    } hover:bg-purple-50 transition-colors duration-200 ease-in-out`}
+                    key={index}
                   >
-                    {lawyer.isVerified}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    <td className="py-5 px-6 text-sm text-gray-900 font-medium">
+                      {lawyer.id}
+                    </td>
+                    <td className="py-5 px-6 text-sm text-gray-900 font-medium">
+                      {lawyer.full_name}
+                    </td>
+                    <td className="py-5 px-6 text-sm text-gray-900 font-medium">
+                      {lawyer.phone_number}
+                    </td>
+                    <td className="py-5 px-6 text-sm text-gray-900 font-medium">
+                      {lawyer.email}
+                    </td>
+                    <td className="py-5 px-6 text-sm">
+                      <button
+                        className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 ${
+                          lawyer.isVerified
+                            ? "border-2 border-purple-500 text-purple-500 hover:bg-purple-50"
+                            : "bg-gradient-to-r from-purple-500 to-indigo-500 text-white hover:from-purple-600 hover:to-indigo-600"
+                        }`}
+                      >
+                        {lawyer.isVerified ? "Verified" : "Not Verified"}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        <div className="flex justify-between w-full bg-white p-3">
-        <div className="flex items-center text-black gap-4">
-              <p>Showing Page</p>
-              <div className="px-2 h-fit text-[#7B3B99] border-2">
+          <div className="flex flex-col sm:flex-row justify-between items-center p-6 bg-white border-t border-gray-200">
+            <div className="flex items-center gap-4 text-gray-700 mb-4 sm:mb-0">
+              <span className="text-sm font-medium">Showing Page</span>
+              <span className="px-4 py-1.5 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold">
                 {currentPage}
-              </div>
-              <p>Out of {totalPages}</p>
+              </span>
+              <span className="text-sm font-medium">of {totalPages}</span>
             </div>
-            <div className="flex items-center gap-2  text-black">
-              <div onClick={prevPage} className="cursor-pointer">
-                <Icon icon="ep:arrow-left-bold" />
-              </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={prevPage}
+                disabled={currentPage === 1}
+                className="p-2 rounded-full bg-gray-100 hover:bg-purple-100 text-gray-600 hover:text-purple-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                <Icon icon="ep:arrow-left-bold" className="w-5 h-5" />
+              </button>
               {pages.map((page, index) => (
-                <div
+                <button
                   key={index}
-                  className={
+                  onClick={() => typeof page === "number" && setCurrentPage(page)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${
                     currentPage === page
-                      ? "px-1 bg-[#7B3B99]  border-2 rounded-lg text-white"
-                      : "px-1 text-black"
-                  }
+                      ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white"
+                      : typeof page === "number"
+                      ? "text-gray-700 hover:bg-purple-100 hover:text-purple-600"
+                      : "text-gray-400 cursor-default"
+                  }`}
                 >
                   {page}
-                </div>
+                </button>
               ))}
-              <div onClick={nextPage} className="cursor-pointer">
-                <Icon icon="ep:arrow-right-bold" />
-              </div>
+              <button
+                onClick={nextPage}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-full bg-gray-100 hover:bg-purple-100 text-gray-600 hover:text-purple-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                <Icon icon="ep:arrow-right-bold" className="w-5 h-5" />
+              </button>
             </div>
+          </div>
         </div>
       </div>
     </div>
