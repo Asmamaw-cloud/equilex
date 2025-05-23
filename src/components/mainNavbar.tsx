@@ -489,12 +489,23 @@ const MainNavbar = () => {
         <h1 className="w-full text-3xl font-bold text-white m-4">EQUILEX</h1>
 
         <li className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600">
+          <Link href={userType === "client" ?"/app/client/notification": "/app/lawyer/notification"}>Notification</Link>
+        </li>
+        <li className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600">
           <Link href={"/chat"}>Chat</Link>
         </li>
 
         <li className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600">
-          {userType == "client" ? <Link href="/client/lawyers">Lawyers</Link> : <Link href="/lawyer">My Page</Link>}
+          {userType == "client" ? <Link href="/client/lawyers">Get Lawyers</Link> : <Link href="/lawyer">My Page</Link>}
+        </li>{
+          userType == "client" ? (
+            <li className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600">
+          <Link href={"/app/client/case"}>Cases</Link>
         </li>
+          ):
+          ""
+        }
+        
 
         <li className="p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600">
           <Link href={userType === "client" ? "/client/profile" : "/lawyer/profile"}>Profile</Link>
