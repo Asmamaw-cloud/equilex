@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import MoreFilteringOptions from "./components/moreFilteringOptions";
 import LawyersList from "./components/lawyersList";
 
@@ -63,11 +63,14 @@ const Lawyers = () => {
           />
         </li>
       </ul>
-      <LawyersList
-        selectedSpecialization={selectedSpecialization}
-        selectedLanguage={selectedLanguage}
-        selectedCourt={selectedCourt}
-      />
+      <Suspense fallback={<div>Loading lawyers...</div>}>
+        <LawyersList
+          selectedSpecialization={selectedSpecialization}
+          selectedLanguage={selectedLanguage}
+          selectedCourt={selectedCourt}
+        />
+      </Suspense>
+
     </div>
   );
 };
