@@ -192,7 +192,6 @@ import { Search, Filter } from "lucide-react"
 import LawyersCard from "./lawyersCard"
 import { getVerifiedLawyers } from "@/app/admin/api/lawyers"
 import { ErrorComponent, LoadingComponent } from "@/components/LoadingErrorComponents"
-import type { Lawyer, LawyersListProps } from "@/types/lawyer"
 
 interface Rating {
   rate: number
