@@ -1,5 +1,6 @@
 import { Case } from "@/server/case-management/Case";
 import { NextResponse } from "next/server";
+import { use } from "react";
 
 export async function POST(request: Request, res: Response) {
   try {
@@ -9,7 +10,8 @@ export async function POST(request: Request, res: Response) {
       !userInput.lawyer_id ||
       !userInput.title ||
       !userInput.description ||
-      !userInput.price
+      !userInput.price ||
+      !userInput.location
     ) {
       throw new Error("Please provide all the necessary information.");
     }
@@ -19,7 +21,8 @@ export async function POST(request: Request, res: Response) {
       userInput.lawyer_id,
       userInput.title,
       userInput.description,
-      userInput.price
+      userInput.price,
+      userInput.location
     );
 
     return NextResponse.json({message: "New case created", newCase}, {status: 200})

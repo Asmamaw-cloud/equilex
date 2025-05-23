@@ -5,6 +5,8 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try {
         const trials = await Case.getTodayTrialsForClient();
+            console.log("Here are client trials: ",trials);
+
         return NextResponse.json({trials})
     } catch (error) {
         if (error instanceof Error) {

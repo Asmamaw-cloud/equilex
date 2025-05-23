@@ -162,6 +162,7 @@ model Case {
   id           Int           @id @default(autoincrement())
   client_id    Int
   lawyer_id    Int
+  location     String?
   status       CaseStatus    @default(PENDING)
   title        String
   description  String

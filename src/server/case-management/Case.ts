@@ -8,7 +8,8 @@ export class Case {
     lawyer_id: number,
     title: string,
     description: string,
-    price: number
+    price: number,
+    location: string
   ) {
     const newCase = await db.case.create({
       data: {
@@ -17,6 +18,7 @@ export class Case {
         title,
         description,
         price,
+        location,
       },
     });
     return newCase;
@@ -70,8 +72,7 @@ export class Case {
       },
     });
 
-    console.log("acceptedCase: ", acceptedCase)
-
+    console.log("acceptedCase: ", acceptedCase);
 
     // Create initial contract
     const contract = await db.contract.create({
@@ -83,19 +84,37 @@ export class Case {
         status: "DRAFT",
       },
     });
-    console.log("contract: ", contract)
+    console.log("contract: ", contract);
+
+    const client = await db.client.findUnique({
+      where: {
+        id: acceptedCase.client_id,
+      },
+
+      select: {
+        email: true,
+        full_name: true,
+        phone_number: true,
+      },
+    });
+    const firstName = client?.full_name.split(" ")[0];
+    const lastName = client?.full_name.split(" ")[1];
+
+    console.log("client info for a specific accepted case: ", client);
 
     const checkout_url = await Payment.initiate(
-      "admin@gmail.com",
-      "Asmamaw",
-      "Kassahun",
-      "0900000000",
+      // @ts-ignore
+      client.email,
+      // @ts-ignore
+      firstName,
+      lastName,
+      // @ts-ignore
+      client.phone_number,
       acceptedCase.id
     );
-    console.log("checkout_url: ", checkout_url)
+    console.log("checkout_url: ", checkout_url);
 
-    return checkout_url
-
+    return checkout_url;
   }
 
   static async rejectOffer(case_id: number) {
@@ -139,45 +158,42 @@ export class Case {
     return deliveredCase;
   }
 
-
-    static async acceptDelivery(case_id: number) {
-        await isClient();
-        const acceptedCase = await db.case.update({
-            where: { id: case_id },
-            data: {
-                status: "FINISHED",
-            },
-        })
-        if (!acceptedCase) {
-            throw new Error("Case doesn't exist");
-          }
-
-          // update lawyer balance
-    // await db.lawyer.update({
-    //     where: {
-    //       id: acceptedCase.lawyer_id,
-    //     },
-    //     data: {
-    //       balance: {
-    //         increment: acceptedCase.price - acceptedCase.price * 0.2,
-    //       },
-    //     },
-    //   });
-
-
-      // update transaction status
-    // await db.transaction.update({
-    //     where: {
-    //       payment_id: acceptedCase.payment_id + "",
-    //     },
-    //     data: {
-    //       status: "TRANSFERRED",
-    //       paid_at: new Date(),
-    //     },
-    //   });
-      return acceptedCase;
-
+  static async acceptDelivery(case_id: number) {
+    await isClient();
+    const acceptedCase = await db.case.update({
+      where: { id: case_id },
+      data: {
+        status: "FINISHED",
+      },
+    });
+    if (!acceptedCase) {
+      throw new Error("Case doesn't exist");
     }
+
+    // update lawyer balance
+    await db.lawyer.update({
+      where: {
+        id: acceptedCase.lawyer_id,
+      },
+      data: {
+        balance: {
+          increment: acceptedCase.price - acceptedCase.price * 0.05,
+        },
+      },
+    });
+
+    // update transaction status
+    await db.transaction.update({
+      where: {
+        payment_id: acceptedCase.payment_id + "",
+      },
+      data: {
+        status: "TRANSFERRED",
+        paid_at: new Date(),
+      },
+    });
+    return acceptedCase;
+  }
 
   static async getTodayTrialsForLawyer() {
     const today = new Date();
@@ -218,10 +234,11 @@ export class Case {
         },
         trial_date: {
           gte: today,
-          lt: tomorrow,
+          // lt: tomorrow,
         },
       },
     });
+    console.log("Here are client trials at the back: ", trials);
     return trials;
   }
 }

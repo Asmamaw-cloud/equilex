@@ -5,6 +5,9 @@ import { toast } from "sonner";
 
 export async function createOffer(data:object) {
     try {
+
+      console.log("data from create offer: ", data)
+
         const response = await axios.post("/api/case", data)
 
         if (response.status <200 || response.status >= 300) {

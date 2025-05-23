@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { isClient } from "../checkRole";
+import { isClient, isLawyer } from "../checkRole";
 import axios from "axios";
 
 export class Payment {
@@ -56,7 +56,6 @@ export class Payment {
       header
     );
 
-
     await db.case.update({
       where: {
         id: case_id,
@@ -69,8 +68,8 @@ export class Payment {
     return response.data.data.checkout_url;
   }
 
-    static async verify(transactionId: string) {
-        console.log(transactionId);
+  static async verify(transactionId: string) {
+    console.log("Transaction ID: ", transactionId);
 
     const config = {
       headers: {
@@ -79,27 +78,52 @@ export class Payment {
     };
 
     await axios.get(
-        "https://api.chapa.co/v1/transaction/verify/" + transactionId,
-        config
-      );
+      "https://api.chapa.co/v1/transaction/verify/" + transactionId,
+      config
+    );
 
-      const acceptedCase = await db.case.update({
-        where: {
-          payment_id: transactionId,
-        },
-        data: {
-          status: "ACCEPTED",
-        },
-      });
+    const acceptedCase = await db.case.update({
+      where: {
+        payment_id: transactionId,
+      },
+      data: {
+        status: "ACCEPTED",
+      },
+    });
 
-      await db.transaction.create({
-        data: {
-          payment_id: transactionId,
-          case_id: acceptedCase.id,
-          paid_at: new Date(),
-        },
-      });
-      return acceptedCase;
+    await db.transaction.create({
+      data: {
+        payment_id: transactionId,
+        case_id: acceptedCase.id,
+        paid_at: new Date(),
+      },
+    });
+    return acceptedCase;
+  }
+
+  static async requestWithdrawal(amount: number) {
+    const lawyerSession = await isLawyer();
+    const lawyer = await db.lawyer.findUnique({
+      where: {
+        //@ts-ignore
+        id: lawyerSession.user.image.id,
+      },
+    });
+
+    if (!lawyer) {
+      throw new Error("Lawyer doesn't exist");
+    }
+    if (lawyer?.balance < amount) {
+      throw new Error("Insufficient balance.");
     }
 
+    const newWithdrawRequest = await db.withdrawRequest.create({
+      data: {
+        amount,
+        //@ts-ignore
+        lawyer_id: lawyerSession.user.image.id,
+      },
+    });
+    return newWithdrawRequest;
+  }
 }

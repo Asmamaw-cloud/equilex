@@ -78,6 +78,7 @@ import {
   LogOut,
   User,
   HandHelping,
+  ReceiptText,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -140,6 +141,12 @@ export default function ProfileDropdown() {
           ) : (
             ""
           )}
+        </DropdownMenuGroup>
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <ReceiptText className="mr-2 h-4 w-4" />
+            <Link href="/lawyer/contract">My contracts</Link>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
