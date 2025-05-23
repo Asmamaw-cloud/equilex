@@ -49,6 +49,9 @@ export async function getAdminBalance() {
  
   try {
     const response = await axios.get(`/api/dashboard/admin/balance`);
+
+    console.log('this is from admin balance api: ',response);
+
     if (response.status < 200 || response.status >= 300) {
       throw new Error(`Error: ${response.statusText}`);
     }
