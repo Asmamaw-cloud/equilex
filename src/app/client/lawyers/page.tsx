@@ -114,7 +114,7 @@ const Lawyers = () => {
       {/* Filter Header */}
       <div className="sticky top-24 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         <div className="container mx-auto px-4 py-4">
-          {/* Active Filters Display */}
+          {/* Active Filters Display
           {hasActiveFilters && (
             <div className="mb-4 flex flex-wrap gap-2 items-center">
               <span className="text-sm font-medium text-muted-foreground">Active filters:</span>
@@ -152,7 +152,7 @@ const Lawyers = () => {
                 Clear all
               </button>
             </div>
-          )}
+          )} */}
 
           {/* Main Filter Buttons */}
           <div className="flex flex-wrap gap-2 items-center justify-center">
