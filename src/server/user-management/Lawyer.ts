@@ -73,6 +73,9 @@ export class Lawyer extends Account {
           },
         },
       },
+      orderBy: {
+        id: "asc"
+      },
       where: {
         isVerified: "VERIFIED",
       },

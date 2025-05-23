@@ -1,7 +1,43 @@
+'use client'
+
+import { getWithdraw } from '@/app/lawyer/api/withdraw';
+import { ErrorComponent, LoadingComponent } from '@/components/LoadingErrorComponents';
+import { useMutation, UseMutationResult, useQuery, useQueryClient } from '@tanstack/react-query';
 import React from 'react'
+import { toast } from 'sonner';
+import { pay } from '../api/withdraw';
 
 const WithdrawRequestsPage = () => {
-    const data = []
+  const queryClient = useQueryClient();
+    let {data, isLoading, error} = useQuery({
+      queryKey: ["withdraw"],
+      queryFn: () => getWithdraw()
+    })
+    data = data?.withdrawalRequests
+
+    console.log("withdraw data: ", data)
+
+      const payMutation: UseMutationResult<void, unknown, number> = useMutation({
+        mutationFn: async (id: number) => pay(id),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["withdraw"] });
+          toast.success("Withdraw request paid successfully!");
+        },
+        onError: (e:any) => {
+          toast.error("Failed to pay withdraw request");
+        }
+      })
+
+
+  const handlePay = async (id: number) => {
+    await payMutation.mutateAsync(id);
+  }
+
+    if (isLoading) return <LoadingComponent />;
+  if (error)
+    return (
+      <ErrorComponent errorMessage="Failed to load data. Please try again." />
+    );
   return (
     <div className="w-full font-sans min-h-screen pt-28 pl-10 lg:pl-16 bg-[#f2f6fa] text-black overflow-auto">
       <h1 className="text-2xl font-bold mb-4">Withdraw Request History</h1>
@@ -26,7 +62,7 @@ const WithdrawRequestsPage = () => {
                 } hover:bg-gray-200`}
               >
                 <td className="py-2 px-4 border-b">{request.id}</td>
-                <td className="py-2 px-4 border-b">{request.lawyer.name}</td>
+                <td className="py-2 px-4 border-b">{request.lawyer_id}</td>
                 <td className="py-2 px-4 border-b">
                   ${request.amount.toFixed(2)}
                 </td>
@@ -38,7 +74,7 @@ const WithdrawRequestsPage = () => {
                   <div className="flex gap-4 items-center justify-center ">
                     <button
                       className="rounded py-2 px-6 text-lg font-semibold outline-double outline-[#7B3B99]"
-                      onClick={() => null}
+                      onClick={() => handlePay(request.id)}
                     >
                       Pay
                     </button>

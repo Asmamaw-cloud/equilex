@@ -97,6 +97,7 @@ const Lawyers = () => {
         <table className="w-full text-left rounded-xl">
           <thead>
             <tr>
+              <th className=" py-3 px-6 ">ID</th>
               <th className=" py-3 px-6 ">NAME</th>
               <th className=" py-3 px-6 ">PHONE</th>
               <th className=" py-3 px-6 ">EMAIL</th>
@@ -113,6 +114,8 @@ const Lawyers = () => {
                 }
                 key={index}
               >
+                <td className=" py-3 px-6 text-black "> {lawyer.id} </td>
+
                 <td className=" py-3 px-6 text-black "> {lawyer.full_name} </td>
                 <td className=" py-3 px-6 text-black ">
                   {" "}

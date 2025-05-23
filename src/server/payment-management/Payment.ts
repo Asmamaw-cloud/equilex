@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { isClient, isLawyer } from "../checkRole";
+import { isAdmin, isClient, isLawyer } from "../checkRole";
 import axios from "axios";
 
 export class Payment {
@@ -126,4 +126,50 @@ export class Payment {
     });
     return newWithdrawRequest;
   }
+
+  static async withdrawalRequestHistory() {
+    await isAdmin();
+    const withdrawRequestHistory = await db.withdrawRequest.findMany();
+    return withdrawRequestHistory;
+  }
+
+  static async pay(withdrawRequestId: number) {
+    await isAdmin();
+    const withdrawRequest = await db.withdrawRequest.findUnique({
+      where: {
+        id: withdrawRequestId,
+        status: "PENDING",
+      },
+    });
+    await db.lawyer.update({
+      where: {
+        id: withdrawRequest?.lawyer_id,
+      },
+      data: {
+        balance: {
+          decrement: withdrawRequest?.amount,
+        },
+      },
+    });
+    const acceptedWithdrawRequest = await db.withdrawRequest.update({
+      where: {
+        id: withdrawRequest?.id,
+      },
+      data: {
+        status: "TRANSFERRED",
+      },
+    });
+    return acceptedWithdrawRequest;
+  }
+
+  static async getTransactionHistory() {
+    await isAdmin();
+    const transactionHistory = await db.transaction.findMany({
+      include: {
+        case: true,
+      },
+    });
+    return transactionHistory;
+  }
+
 }

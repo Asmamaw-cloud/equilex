@@ -428,7 +428,7 @@ const AdminSidebar: React.FC<Props> = ({ isVisible }) => {
       exact: false,
     },
     {
-      name: "Finance",
+      name: "Transaction",
       href: "/admin/transaction",
       icon: DollarSign,
       exact: false,

@@ -15,6 +15,8 @@ const Clients = () => {
     queryFn: getClients,
   });
 
+  console.log("client data: ", data);
+
   const pageSize = 5;
   const visiblePages = 3;
 
@@ -96,6 +98,7 @@ const Clients = () => {
         <table className=" w-full text-left rounded-xl ">
           <thead>
             <tr className=" bg-white text-gray-600 rounded-xl ">
+              <th className=" py-3 px-6 ">ID</th>
               <th className=" py-3 px-6 ">Name</th>
               <th className=" py-3 px-6 ">Phone</th>
               <th className=" py-3 px-6 ">Email</th>
@@ -111,6 +114,10 @@ const Clients = () => {
                 }
                 key={index}
               >
+                <td className="py-3 px-6 text-black" >
+                  {" "}
+                  {client?.id}{" "}
+                </td>
                 <td className="py-3 px-6 text-black" >
                   {" "}
                   {client?.full_name}{" "}

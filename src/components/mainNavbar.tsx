@@ -280,6 +280,8 @@ import SearchInput from "./searchInput"
 import Notification from "./Notification"
 import ChatDropDown from "./chatDropDown"
 import { Account } from "@/server/user-management/Account"
+import { useQuery } from "@tanstack/react-query"
+import { getLawyerById } from "@/app/admin/api/lawyers"
 
 const MainNavbar = () => {
   const [nav, setNav] = useState(false)
@@ -289,6 +291,13 @@ const MainNavbar = () => {
 
   //@ts-ignore
   const userType = session?.user.image.type
+  const lawyer_id = session?.user?.image?.id;
+
+
+  const {data:lawyerData, isLoading: lawyerLoading, error: lawyerError}  = useQuery({
+    queryKey: ["lawyer"],
+    queryFn: () => getLawyerById(lawyer_id)
+  })
 
   const handleNav = () => setNav(!nav)
 
@@ -361,7 +370,7 @@ const MainNavbar = () => {
                         onClick={() => router.push("/lawyer/withdraw")}
                         className="  hover:text-white rounded-full p-1  hover:opacity-100 transition-opacity "
                       >
-                        <p className="text-gray-400  hover:text-[#7B3B99] hover:scale-110 duration-300 ">300 ETB</p>
+                        <p className="text-gray-400  hover:text-[#7B3B99] hover:scale-110 duration-300 ">{lawyerData?.balance} ETB</p>
                       </div>
                     )}
                   </div>

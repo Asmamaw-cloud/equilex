@@ -1,7 +1,26 @@
+'use client'
+
+
+import { ErrorComponent, LoadingComponent } from '@/components/LoadingErrorComponents';
+import { useQuery } from '@tanstack/react-query';
 import React from 'react'
+import { transactionHistory } from '../api/transaction';
 
 const TransactionPage = () => {
-    const data = []
+    let { data, isLoading, error } = useQuery({
+    queryKey: ["transactionHistory"],
+    queryFn: () => transactionHistory(),
+  });
+  ;
+
+  console.log("transaction history: ", data);
+
+
+  if (isLoading) return <LoadingComponent />;
+  if (error)
+    return (
+      <ErrorComponent errorMessage="Failed to load data. Please try again." />
+    );
   return (
     <div className="w-full font-sans min-h-screen pt-28 pl-10 lg:pl-16 bg-[#f2f6fa] text-black overflow-auto">
       <h1 className="text-2xl font-bold mb-4">Transaction History</h1>
@@ -10,8 +29,8 @@ const TransactionPage = () => {
           <thead className="bg-gray-50">
             <tr>
               <th className="py-2 px-4 border-b text-left">ID</th>
-              <th className="py-2 px-4 border-b text-left">Lawyer</th>
-              <th className="py-2 px-4 border-b text-left">Client</th>
+              <th className="py-2 px-4 border-b text-left">Lawyer ID</th>
+              <th className="py-2 px-4 border-b text-left">Client ID</th>
               <th className="py-2 px-4 border-b text-left">Payment ID</th>
               <th className="py-2 px-4 border-b text-left">Amount</th>
             </tr>
@@ -26,16 +45,17 @@ const TransactionPage = () => {
               >
                 <td className="py-2 px-4 border-b">{transaction?.id}</td>
                 <td className="py-2 px-4 border-b">
-                  {transaction?.lawyer.name}
+                  {transaction.case.lawyer_id}
                 </td>
                 <td className="py-2 px-4 border-b">
-                  {transaction?.client.name}
+                  {transaction.case.client_id}
                 </td>
                 <td className="py-2 px-4 border-b">
                   {transaction?.payment_id}
                 </td>
                 <td className="py-2 px-4 border-b">
-                  ${transaction?.amount.toFixed(2)}
+                  {/* ${transaction?.amount.toFixed(2)} */}
+                  {transaction?.amount ? `$${transaction.amount.toFixed(2)}` : 'N/A'}
                 </td>
               </tr>
             ))}

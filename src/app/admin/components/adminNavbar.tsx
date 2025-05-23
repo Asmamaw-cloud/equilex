@@ -40,7 +40,6 @@
 //     setShowDropdown(false);
 //   };
 
-
 //   if (!isClient) return null;
 
 //   const totalNotifications =
@@ -137,9 +136,6 @@
 // };
 
 // export default AdminNavbar;
-
-
-
 
 // "use client"
 
@@ -281,20 +277,24 @@
 
 // export default AdminNavbar
 
+"use client";
 
+import type React from "react";
 
-
-
-"use client"
-
-import type React from "react"
-
-import { useEffect, useState } from "react"
-import Link from "next/link"
-import { useNotifications } from "@/app/context/NotificationContext"
-import { useSession } from "next-auth/react"
-import ProfileDropdown from "@/components/profileDropDown"
-import { Bell, Menu, X, MessageSquare, UserCheck, AlertTriangle, Wallet } from "lucide-react"
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useNotifications } from "@/app/context/NotificationContext";
+import { useSession } from "next-auth/react";
+import ProfileDropdown from "@/components/profileDropDown";
+import {
+  Bell,
+  Menu,
+  X,
+  MessageSquare,
+  UserCheck,
+  AlertTriangle,
+  Wallet,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -302,30 +302,49 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { getAdminBalance } from "../api/dashboard";
 
 interface Props {
-  toggleShowSideBar: () => void
-  isSidebarOpen: boolean
-  showToggle: boolean
+  toggleShowSideBar: () => void;
+  isSidebarOpen: boolean;
+  showToggle: boolean;
 }
 
-const AdminNavbar: React.FC<Props> = ({ toggleShowSideBar, isSidebarOpen, showToggle }) => {
-  const [isClient, setIsClient] = useState(false)
-  const { data: session } = useSession()
+const AdminNavbar: React.FC<Props> = ({
+  toggleShowSideBar,
+  isSidebarOpen,
+  showToggle,
+}) => {
+  const [isClient, setIsClient] = useState(false);
+  const { data: session } = useSession();
 
-  const { faqNotifications, lawyerNotifications, disputeNotifications, fetchNotifications } = useNotifications()
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["adminBalance"],
+    queryFn: () => getAdminBalance(),
+  });
+
+  console.log("this is from admin balance", data);
+
+  const {
+    faqNotifications,
+    lawyerNotifications,
+    disputeNotifications,
+    fetchNotifications,
+  } = useNotifications();
 
   useEffect(() => {
-    setIsClient(true)
-    fetchNotifications()
-  }, [fetchNotifications])
+    setIsClient(true);
+    fetchNotifications();
+  }, [fetchNotifications]);
 
-  if (!isClient) return null
+  if (!isClient) return null;
 
-  const totalNotifications = faqNotifications + lawyerNotifications + disputeNotifications
+  const totalNotifications =
+    faqNotifications + lawyerNotifications + disputeNotifications;
 
   return (
     <nav className="fixed top-4 left-10 lg:left-10 right-10 mx-auto z-40 p-2 w-[95vw] lg:w-[95vw] bg-white border border-gray-200 rounded-xl shadow-lg">
@@ -344,7 +363,9 @@ const AdminNavbar: React.FC<Props> = ({ toggleShowSideBar, isSidebarOpen, showTo
             </Button>
           )}
 
-          <div className="text-xl font-bold text-purple-700">Admin Dashboard</div>
+          <div className="text-xl font-bold text-purple-700">
+            Admin Dashboard
+          </div>
         </div>
 
         {/* Right section with notifications, balance, and profile */}
@@ -415,13 +436,17 @@ const AdminNavbar: React.FC<Props> = ({ toggleShowSideBar, isSidebarOpen, showTo
           {/* Balance */}
           <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-purple-50 rounded-full">
             <Wallet size={16} className="text-purple-700" />
-            <span className="text-sm font-medium text-purple-700">25,000 ETB</span>
+            <span className="text-sm font-medium text-purple-700">
+              {data} ETB
+            </span>
           </div>
 
           {/* User info and profile dropdown */}
           <div className="flex items-center gap-3">
             <div className="hidden md:block">
-              <p className="text-sm font-medium text-gray-700">{session?.user?.email}</p>
+              <p className="text-sm font-medium text-gray-700">
+                {session?.user?.email}
+              </p>
               <p className="text-xs text-gray-500">Administrator</p>
             </div>
             <ProfileDropdown />
@@ -429,7 +454,7 @@ const AdminNavbar: React.FC<Props> = ({ toggleShowSideBar, isSidebarOpen, showTo
         </div>
       </div>
     </nav>
-  )
-}
+  );
+};
 
-export default AdminNavbar
+export default AdminNavbar;

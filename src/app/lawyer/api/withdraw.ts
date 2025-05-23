@@ -16,3 +16,17 @@ export async function withdraw(amount: number) {
     throw err;
   }
 }
+
+
+export async function getWithdraw() {
+    try {
+        const response = await axios.get("/api/transaction/withdraw/admin");
+        if (response.status != 200) {
+        throw new Error(` ${response.statusText}`);
+        }
+        return response.data; // Return response data if needed
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
