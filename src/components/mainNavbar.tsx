@@ -503,14 +503,14 @@ const MainNavbar = () => {
 
 
 
-        <li className="flex flex-col text-gray-900 rounded-lg group">
+        <li className="flex flex-col text-white rounded-lg group border-gray-600">
             <div
               className="w-full px-2 flex items-center justify-between p-2 rounded-lg hover:bg-[#f0f0f0] cursor-pointer"
               onClick={toggleShowCase}
             >
               <div className="flex items-center gap-4">
                 {/* <FaBriefcase className="text-gray-500 w-5 h-5 group-hover:text-gray-600" /> */}
-                <span className="whitespace-nowrap">Communicate</span>
+                <span className=" p-4 border-b rounded-xl hover:bg-[#00df9a] duration-300 hover:text-black cursor-pointer border-gray-600 whitespace-nowrap">Communicate</span>
               </div>
               {/* <Icon
                 icon={showCase ? "mingcute:up-line" : "mingcute:down-line"}
