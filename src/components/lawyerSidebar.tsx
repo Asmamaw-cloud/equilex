@@ -574,7 +574,7 @@ const LawyerSideBar: React.FC<LawyerSideBarProps> = ({ showCase, toggleShowCase 
       {/* Mobile Menu Button - Only visible on small screens */}
       <button
         onClick={toggleMobileMenu}
-        className="fixed top-4 left-4 z-50 lg:hidden bg-white border border-gray-200 rounded-lg p-2 shadow-lg"
+        className="fixed top-4 left-4 z-50 md:hidden bg-white border border-gray-200 rounded-lg p-2 shadow-lg"
         aria-label="Toggle mobile menu"
       >
         {isMobileMenuOpen ? (
