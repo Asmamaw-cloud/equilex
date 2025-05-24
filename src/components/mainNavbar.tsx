@@ -704,7 +704,7 @@ const MainNavbar = () => {
             )}
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2 ml-6">
+            <nav className="hidden md:flex items-center ml-6">
               <div className="p-2 hover:scale-105 transition-transform">
                 <Notification />
               </div>
@@ -812,7 +812,7 @@ const MainNavbar = () => {
             {/* Landing Page Mobile Menu */}
             {isLandingMenuOpen && (
               <div className="fixed inset-0 top-20 z-40 bg-white border-t md:hidden">
-                <nav className="flex flex-col p-6 space-y-4">
+                <nav className="flex flex-col p-6 space-y-4 bg-white">
                   {landingNavItems.map((item) => (
                     <button
                       key={item.id}
