@@ -59,7 +59,7 @@ const Lawyer = () => {
               height={30}
               color="#C6EF67"
             />
-            <p>{!statisticsData?.completedCases && 0}</p>
+            <p>{statisticsData?.completedCases }</p>
             <p>Complated Cases</p>
           </div>
           <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">
@@ -130,7 +130,7 @@ const Lawyer = () => {
           <DoughnutChart data={[statisticsData?.totalCases,statisticsData?.completedCases, statisticsData?.inProgressCases]} />
         </div>
         <div className="w-full lg:w-1/2 h-full border-2 border-gray-300 px-10 p-2 bg-white">
-          <LineChart data={[45000]} />
+          <LineChart data={statisticsData?.filteredIncomePerMonth} />
         </div>
       </div>
       <TrialNotify show={true} />
