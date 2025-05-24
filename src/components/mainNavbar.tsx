@@ -704,7 +704,7 @@ const MainNavbar = () => {
             )}
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2 ml-6">
+            <nav className="hidden md:flex items-center gap-1 ">
               <div className="p-2 hover:scale-105 transition-transform">
                 <Notification />
               </div>
@@ -750,7 +750,7 @@ const MainNavbar = () => {
                 )}
               </div>
 
-              <div className="p-2 hover:scale-105 transition-transform">
+              <div className=" hover:scale-105 transition-transform">
                 <ProfileDropDown />
               </div>
             </nav>
