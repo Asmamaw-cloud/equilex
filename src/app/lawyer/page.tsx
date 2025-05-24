@@ -31,6 +31,8 @@ const Lawyer = () => {
     refetchInterval: 120000, // Refetch every 2 minutes
   });
 
+  console.log("statisticsData: ", statisticsData);
+
 
   if (isLoadingTrials) return <LoadingComponent />;
   if (trialsError)
