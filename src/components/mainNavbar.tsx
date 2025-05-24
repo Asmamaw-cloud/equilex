@@ -704,7 +704,7 @@ const MainNavbar = () => {
             )}
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2">
+            <nav className="hidden md:flex items-center gap-2 ml-6">
               <div className="p-2 hover:scale-105 transition-transform">
                 <Notification />
               </div>
