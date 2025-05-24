@@ -541,11 +541,12 @@
 
 
 'use client';
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
+// import { useRouter } from 'next/router';
 import { FaBriefcase } from 'react-icons/fa';
 import { Icon } from '@iconify/react';
 import { signOut } from 'next-auth/react';
@@ -556,7 +557,7 @@ interface LawyerSideBarProps {
 }
 
 const LawyerSideBar: React.FC<LawyerSideBarProps> = ({ showCase, toggleShowCase }) => {
-  const { pathname } = useRouter();
+  const  pathname  = usePathname();
   const path = pathname;
 
   const handleLogOut = async () => {
