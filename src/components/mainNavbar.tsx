@@ -811,7 +811,7 @@ const MainNavbar = () => {
 
             {/* Landing Page Mobile Menu */}
             {isLandingMenuOpen && (
-              <div className="fixed inset-0 top-20 z-40 bg-background border-t md:hidden">
+              <div className="fixed inset-0 top-20 z-40 bg-white border-t md:hidden">
                 <nav className="flex flex-col p-6 space-y-4">
                   {landingNavItems.map((item) => (
                     <button
@@ -867,7 +867,7 @@ const MainNavbar = () => {
             </div>
 
             {/* Mobile Menu Content */}
-            <nav className="flex flex-col p-6 space-y-2 bg-white">
+            <nav className="flex flex-col p-6 space-y-2 bg-white  ">
               {/* Search for clients */}
               {userType === "client" && (
                 <div className="mb-4">
@@ -917,7 +917,7 @@ const MainNavbar = () => {
                       Chat
                     </Link>
                     <Link
-                      href="/video-call"
+                      href="/videoCall"
                       onClick={closeMobileMenu}
                       className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted transition-colors text-sm"
                     >
