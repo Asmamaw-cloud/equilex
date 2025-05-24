@@ -1,146 +1,379 @@
-"use client";
+// "use client";
 
-import DoughnutChart from "@/components/chart/DoughnutChart";
-import LineChart from "@/components/chart/LineChart";
-import { Icon } from "@iconify/react";
-import { useQuery } from "@tanstack/react-query";
-import { getTrials } from "./api/trial";
-import { getStatistics } from "./api/statistics";
-import { ErrorComponent, LoadingComponent } from "@/components/LoadingErrorComponents";
-import TrialNotify from "@/components/TrialNotify";
+// import DoughnutChart from "@/components/chart/DoughnutChart";
+// import LineChart from "@/components/chart/LineChart";
+// import { Icon } from "@iconify/react";
+// import { useQuery } from "@tanstack/react-query";
+// import { getTrials } from "./api/trial";
+// import { getStatistics } from "./api/statistics";
+// import { ErrorComponent, LoadingComponent } from "@/components/LoadingErrorComponents";
+// import TrialNotify from "@/components/TrialNotify";
 
-const Lawyer = () => {
+// const Lawyer = () => {
 
+//   const {
+//     data: trialsData,
+//     isLoading: isLoadingTrials,
+//     error: trialsError,
+//   } = useQuery({
+//     queryKey: ["trials"],
+//     queryFn: getTrials,
+//     refetchInterval: 6000, // Refetch every 2 minutes
+//   });
+
+//   const {
+//     data: statisticsData,
+//     isLoading: isLoadingStatistics,
+//     error: statisticsError,
+//   } = useQuery({
+//     queryKey: ["statistics"],
+//     queryFn: getStatistics,
+//     refetchInterval: 120000, // Refetch every 2 minutes
+//   });
+
+//   console.log("statisticsData: ", statisticsData);
+
+
+//   if (isLoadingTrials) return <LoadingComponent />;
+//   if (trialsError)
+//     return (
+//       <ErrorComponent errorMessage="Failed to load data. Please try again." />
+//     );
+
+//   return (
+//     <div className="w-full font-sans min-h-screen  px-10 lg:pl-64 bg-[#f2f6fa]">
+//       <div className="w-full h-1/2 flex flex-col lg:flex-row gap-4 justify-between items-center pt-6">
+//         <div className="w-full lg:w-1/3  flex flex-col gap-4">
+//           <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">
+//             <Icon
+//               icon="material-symbols:cases"
+//               width={30}
+//               height={30}
+//               color="#C075E3"
+//             />
+//             <p>{statisticsData?.totalCases}</p>
+//             <p>Total cases</p>
+//           </div>
+//           <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">
+//             <Icon
+//               icon="material-symbols:cases"
+//               width={30}
+//               height={30}
+//               color="#C6EF67"
+//             />
+//             <p>{statisticsData?.completedCase }</p>
+//             <p>Complated Cases</p>
+//           </div>
+//           <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">
+//             <Icon
+//               icon="material-symbols:cases"
+//               width={30}
+//               height={30}
+//               color="#69BEF0"
+//             />
+//             <p>{statisticsData?.inProgressCases}</p>
+//             <p>Pending case</p>
+//           </div>
+//         </div>
+
+//         <div className="w-full lg:w-2/3 flex flex-col items-center gap-4 p-4 bg-white h-72">
+//           <h1 className="font-bold text-xl text-gray-700">Upcoming Trials</h1>
+
+//           <div className="w-full h-4/5 overflow-auto">
+//             <table className="w-full text-left rounded-xl ">
+//               <thead className="sticky top-0 bg-white z-40">
+//                 <tr className="bg-white text-gray-600 rounded-xl">
+//                   <th className="py-3 px-6 ">CASE_ID</th>
+//                   {/* <th className="py-3 px-6 ">CLIENT NAME</th> */}
+                 
+//                   <th className="py-3 px-6">COURT PLACE</th>
+//                   <th className="py-3 px-6 ">DESCRIPTION</th>
+//                   <th className="py-3 px-6">DATE</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {trialsData?.map((apointment: any, index: any) => ( 
+//                   <tr
+//                     className={
+//                       index % 2 === 0
+//                         ? "relative bg-[#F4F4F4]"
+//                         : "relative bg-white"
+//                     }
+//                     key={index}
+//                   >
+//                     <td className="py-3 px-6 text-black text-center">
+//                       {apointment?.id}
+//                     </td>
+//                     {/* <td className="py-3 px-6 text-black text-center">
+//                       {apointment?.clientname}
+//                     </td> */}
+//                     <td className="py-3 px-6 text-black text-center">
+//                       {apointment?.location}
+//                     </td>
+//                     <td className="py-3 px-6 text-black max-w-[100px] text-center truncate hover:text-clip">
+//                       <span title={"hello"}>
+//                         {" "}
+//                         {apointment?.description}
+//                       </span>
+//                     </td>
+//                     <td className="py-3 px-6 text-black text-center">
+//                       {new Date(apointment?.trial_date).toLocaleDateString()}
+//                     </td>
+//                   </tr>
+//                  ))}
+//               </tbody>
+//             </table>
+//           </div>
+//         </div>
+//       </div>
+
+//       <div className="w-full flex flex-col lg:flex-row gap-4 justify-between mt-6">
+//         <div className="w-full lg:w-1/2 h-full border-2 border-gray-300 px-2  bg-white flex justify-center ">
+//           <DoughnutChart data={[statisticsData?.totalCases,statisticsData?.completedCases, statisticsData?.inProgressCases]} />
+//         </div>
+//         <div className="w-full lg:w-1/2 h-full border-2 border-gray-300 px-10 p-2 bg-white">
+//           <LineChart data={statisticsData?.filteredIncomePerMonth} />
+//         </div>
+//       </div>
+//       <TrialNotify show={true} />
+//     </div>
+//   );
+// };
+
+// export default Lawyer;
+
+
+
+
+
+
+"use client"
+
+import { useMemo } from "react"
+import DoughnutChart from "@/components/chart/DoughnutChart"
+import LineChart from "@/components/chart/LineChart"
+import { Icon } from "@iconify/react"
+import { useQuery } from "@tanstack/react-query"
+import { getTrials } from "./api/trial"
+import { getStatistics } from "./api/statistics"
+import { ErrorComponent, LoadingComponent } from "@/components/LoadingErrorComponents"
+import TrialNotify from "@/components/TrialNotify"
+
+// Types
+interface Trial {
+  id: string
+  location: string
+  description: string
+  trial_date: string
+}
+
+interface Statistics {
+  totalCases: number
+  completedCases: number
+  inProgressCases: number
+  filteredIncomePerMonth: number[]
+}
+
+interface StatisticCardData {
+  icon: string
+  value: number
+  label: string
+  color: string
+}
+
+// Constants
+const REFETCH_INTERVALS = {
+  TRIALS: 60000, // 1 minute
+  STATISTICS: 120000, // 2 minutes
+} as const
+
+const COLORS = {
+  PRIMARY: "#C075E3",
+  SUCCESS: "#C6EF67",
+  INFO: "#69BEF0",
+} as const
+
+const TABLE_HEADERS = ["CASE_ID", "COURT PLACE", "DESCRIPTION", "DATE"] as const
+
+const LawyerDashboard = () => {
+  // Data fetching with proper typing
   const {
     data: trialsData,
     isLoading: isLoadingTrials,
     error: trialsError,
-  } = useQuery({
+  } = useQuery<Trial[]>({
     queryKey: ["trials"],
     queryFn: getTrials,
-    refetchInterval: 6000, // Refetch every 2 minutes
-  });
+    refetchInterval: REFETCH_INTERVALS.TRIALS,
+    staleTime: 30000, // Consider data fresh for 30 seconds
+  })
 
   const {
     data: statisticsData,
     isLoading: isLoadingStatistics,
     error: statisticsError,
-  } = useQuery({
+  } = useQuery<Statistics>({
     queryKey: ["statistics"],
     queryFn: getStatistics,
-    refetchInterval: 120000, // Refetch every 2 minutes
-  });
+    refetchInterval: REFETCH_INTERVALS.STATISTICS,
+    staleTime: 60000, // Consider data fresh for 1 minute
+  })
 
-  console.log("statisticsData: ", statisticsData);
+  // Memoized computed values
+  const statisticCards: StatisticCardData[] = useMemo(() => {
+    if (!statisticsData) return []
 
+    return [
+      {
+        icon: "material-symbols:cases",
+        value: statisticsData.totalCases || 0,
+        label: "Total Cases",
+        color: COLORS.PRIMARY,
+      },
+      {
+        icon: "material-symbols:cases",
+        value: statisticsData.completedCases || 0,
+        label: "Completed Cases",
+        color: COLORS.SUCCESS,
+      },
+      {
+        icon: "material-symbols:cases",
+        value: statisticsData.inProgressCases || 0,
+        label: "Pending Cases",
+        color: COLORS.INFO,
+      },
+    ]
+  }, [statisticsData])
 
-  if (isLoadingTrials) return <LoadingComponent />;
-  if (trialsError)
-    return (
-      <ErrorComponent errorMessage="Failed to load data. Please try again." />
-    );
+  const chartData = useMemo(() => {
+    if (!statisticsData) return [0, 0, 0]
+    return [statisticsData.totalCases || 0, statisticsData.completedCases || 0, statisticsData.inProgressCases || 0]
+  }, [statisticsData])
+
+  // Utility functions
+  const formatDate = (dateString: string): string => {
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    } catch {
+      return "Invalid Date"
+    }
+  }
+
+  const truncateText = (text: string, maxLength = 50): string => {
+    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text
+  }
+
+  // Component: Statistic Card
+  const StatisticCard = ({ statistic }: { statistic: StatisticCardData }) => (
+    <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center transition-shadow hover:shadow-lg">
+      <Icon icon={statistic.icon} width={30} height={30} color={statistic.color} aria-hidden="true" />
+      <span className="text-2xl font-semibold" aria-label={`${statistic.value} ${statistic.label}`}>
+        {statistic.value}
+      </span>
+      <span className="text-sm text-gray-600">{statistic.label}</span>
+    </div>
+  )
+
+  // Component: Trials Table
+  const TrialsTable = ({ trials }: { trials: Trial[] }) => (
+    <div className="w-full h-4/5 overflow-auto">
+      <table className="w-full text-left rounded-xl" role="table">
+        <thead className="sticky top-0 bg-white z-40">
+          <tr className="bg-white text-gray-600 rounded-xl">
+            {TABLE_HEADERS.map((header) => (
+              <th key={header} className="py-3 px-6 font-medium" scope="col">
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {trials.map((trial, index) => (
+            <tr
+              key={trial.id}
+              className={`relative transition-colors hover:bg-gray-50 ${index % 2 === 0 ? "bg-[#F4F4F4]" : "bg-white"}`}
+            >
+              <td className="py-3 px-6 text-black text-center font-mono">{trial.id}</td>
+              <td className="py-3 px-6 text-black text-center">{trial.location}</td>
+              <td className="py-3 px-6 text-black text-center">
+                <span title={trial.description} className="cursor-help">
+                  {truncateText(trial.description)}
+                </span>
+              </td>
+              <td className="py-3 px-6 text-black text-center">{formatDate(trial.trial_date)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {trials.length === 0 && <div className="text-center py-8 text-gray-500">No upcoming trials found</div>}
+    </div>
+  )
+
+  // Loading and error states
+  if (isLoadingTrials || isLoadingStatistics) {
+    return <LoadingComponent />
+  }
+
+  if (trialsError || statisticsError) {
+    const errorMessage = trialsError?.message || statisticsError?.message || "Failed to load data"
+    return <ErrorComponent errorMessage={`${errorMessage}. Please try again.`} />
+  }
+
+  // Ensure we have data before rendering
+  const trials = trialsData || []
+  const statistics = statisticsData
 
   return (
-    <div className="w-full font-sans min-h-screen  px-10 lg:pl-64 bg-[#f2f6fa]">
-      <div className="w-full h-1/2 flex flex-col lg:flex-row gap-4 justify-between items-center pt-6">
-        <div className="w-full lg:w-1/3  flex flex-col gap-4">
-          <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">
-            <Icon
-              icon="material-symbols:cases"
-              width={30}
-              height={30}
-              color="#C075E3"
-            />
-            <p>{statisticsData?.totalCases}</p>
-            <p>Total cases</p>
-          </div>
-          <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">
-            <Icon
-              icon="material-symbols:cases"
-              width={30}
-              height={30}
-              color="#C6EF67"
-            />
-            <p>{statisticsData?.completedCase }</p>
-            <p>Complated Cases</p>
-          </div>
-          <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">
-            <Icon
-              icon="material-symbols:cases"
-              width={30}
-              height={30}
-              color="#69BEF0"
-            />
-            <p>{statisticsData?.inProgressCases}</p>
-            <p>Pending case</p>
+    <main className="w-full font-sans min-h-screen px-10 lg:pl-64 bg-[#f2f6fa]">
+      {/* Statistics and Trials Section */}
+      <section className="w-full flex flex-col lg:flex-row gap-4 justify-between items-start pt-6">
+        {/* Statistics Cards */}
+        <aside className="w-full lg:w-1/3 flex flex-col gap-4" aria-label="Case Statistics">
+          {statisticCards.map((card, index) => (
+            <StatisticCard key={`${card.label}-${index}`} statistic={card} />
+          ))}
+        </aside>
+
+        {/* Upcoming Trials Table */}
+        <section className="w-full lg:w-2/3 flex flex-col items-center gap-4 p-4 bg-white h-72 rounded-lg shadow-md">
+          <header>
+            <h1 className="font-bold text-xl text-gray-700">Upcoming Trials</h1>
+          </header>
+          <TrialsTable trials={trials} />
+        </section>
+      </section>
+
+      {/* Charts Section */}
+      <section className="w-full flex flex-col lg:flex-row gap-4 justify-between mt-6">
+        <div className="w-full lg:w-1/2 border-2 border-gray-300 bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="p-4">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">Case Distribution</h2>
+            <div className="flex justify-center">
+              <DoughnutChart data={chartData} />
+            </div>
           </div>
         </div>
 
-        <div className="w-full lg:w-2/3 flex flex-col items-center gap-4 p-4 bg-white h-72">
-          <h1 className="font-bold text-xl text-gray-700">Upcoming Trials</h1>
-
-          <div className="w-full h-4/5 overflow-auto">
-            <table className="w-full text-left rounded-xl ">
-              <thead className="sticky top-0 bg-white z-40">
-                <tr className="bg-white text-gray-600 rounded-xl">
-                  <th className="py-3 px-6 ">CASE_ID</th>
-                  {/* <th className="py-3 px-6 ">CLIENT NAME</th> */}
-                 
-                  <th className="py-3 px-6">COURT PLACE</th>
-                  <th className="py-3 px-6 ">DESCRIPTION</th>
-                  <th className="py-3 px-6">DATE</th>
-                </tr>
-              </thead>
-              <tbody>
-                {trialsData?.map((apointment: any, index: any) => ( 
-                  <tr
-                    className={
-                      index % 2 === 0
-                        ? "relative bg-[#F4F4F4]"
-                        : "relative bg-white"
-                    }
-                    key={index}
-                  >
-                    <td className="py-3 px-6 text-black text-center">
-                      {apointment?.id}
-                    </td>
-                    {/* <td className="py-3 px-6 text-black text-center">
-                      {apointment?.clientname}
-                    </td> */}
-                    <td className="py-3 px-6 text-black text-center">
-                      {apointment?.location}
-                    </td>
-                    <td className="py-3 px-6 text-black max-w-[100px] text-center truncate hover:text-clip">
-                      <span title={"hello"}>
-                        {" "}
-                        {apointment?.description}
-                      </span>
-                    </td>
-                    <td className="py-3 px-6 text-black text-center">
-                      {new Date(apointment?.trial_date).toLocaleDateString()}
-                    </td>
-                  </tr>
-                 ))}
-              </tbody>
-            </table>
+        <div className="w-full lg:w-1/2 border-2 border-gray-300 bg-white rounded-lg shadow-md overflow-hidden">
+          <div className="p-4">
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">Monthly Income</h2>
+            <LineChart data={statistics?.filteredIncomePerMonth || []} />
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="w-full flex flex-col lg:flex-row gap-4 justify-between mt-6">
-        <div className="w-full lg:w-1/2 h-full border-2 border-gray-300 px-2  bg-white flex justify-center ">
-          <DoughnutChart data={[statisticsData?.totalCases,statisticsData?.completedCases, statisticsData?.inProgressCases]} />
-        </div>
-        <div className="w-full lg:w-1/2 h-full border-2 border-gray-300 px-10 p-2 bg-white">
-          <LineChart data={statisticsData?.filteredIncomePerMonth} />
-        </div>
-      </div>
+      {/* Trial Notifications */}
       <TrialNotify show={true} />
-    </div>
-  );
-};
+    </main>
+  )
+}
 
-export default Lawyer;
+export default LawyerDashboard
+
 
 
 
