@@ -61,7 +61,7 @@ const Lawyer = () => {
               height={30}
               color="#C6EF67"
             />
-            <p>{statisticsData?.completedCases }</p>
+            <p>{statisticsData?.completedCase }</p>
             <p>Complated Cases</p>
           </div>
           <div className="w-full lg:w-3/4 h-20 flex gap-3 shadow-md rounded-lg p-4 bg-white text-black items-center justify-center">
