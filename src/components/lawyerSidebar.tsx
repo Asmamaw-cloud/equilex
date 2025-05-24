@@ -503,8 +503,8 @@ const LawyerSideBar = () => {
 
           {/* Sign Out */}
           <li className={path.startsWith("/admin/signOut") ? "bg-[#7B3B99] rounded-xl text-white" : ""}>
-            <Link
-              href="/admin/signOut"
+            <button
+              onClick={handleLogOut}
               className="flex items-center gap-4 py-2 px-4 rounded-lg hover:bg-[#f3f3f3] hover:text-gray-500 text-gray-900"
             >
               <svg
@@ -512,7 +512,7 @@ const LawyerSideBar = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 18 16"
-                onClick={handleLogOut}
+                
               >
                 <path
                   stroke="currentColor"
@@ -523,7 +523,7 @@ const LawyerSideBar = () => {
                 />
               </svg>
               <span className="ms-3">Sign Out</span>
-            </Link>
+            </button>
             <hr />
           </li>
 
