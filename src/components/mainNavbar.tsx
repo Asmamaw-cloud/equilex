@@ -867,7 +867,7 @@ const MainNavbar = () => {
             </div>
 
             {/* Mobile Menu Content */}
-            <nav className="flex flex-col p-6 space-y-2">
+            <nav className="flex flex-col p-6 space-y-2 bg-white">
               {/* Search for clients */}
               {userType === "client" && (
                 <div className="mb-4">
