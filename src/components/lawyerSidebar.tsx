@@ -422,12 +422,17 @@ import { usePathname } from "next/navigation";
 import { Icon } from "@iconify/react";
 import { useState } from "react";
 import { FaBriefcase } from "react-icons/fa";
+import { Account } from "@/server/user-management/Account";
 
 const LawyerSideBar = () => {
   const [showCase, setShowCase] = useState(false);
   const path = usePathname();
 
   const toggleShowCase = () => setShowCase((prev) => !prev);
+
+   const handleLogOut = async () => {
+      await Account.logout()
+    }
 
   return (
     <div className="fixed left-0 w-56 p-2 h-screen z-10 bg-white border-r border-gray-200 lg:translate-x-0">
@@ -507,6 +512,7 @@ const LawyerSideBar = () => {
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 18 16"
+                onClick={handleLogOut}
               >
                 <path
                   stroke="currentColor"
