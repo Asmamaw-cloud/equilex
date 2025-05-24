@@ -680,7 +680,7 @@ const MainNavbar = () => {
 
   return (
     <header className="sticky top-0 bg-background/95 backdrop-blur-sm border-b border-border z-50">
-      <div className="flex justify-between items-center h-20 max-w-7xl mx-auto px-4">
+      <div className="flex justify-between items-center h-20 max-w-7xl mx-6 px-4">
         {/* Logo */}
         <Link
           className="flex items-center gap-2 hover:opacity-80 transition-opacity"
