@@ -818,7 +818,7 @@ const LawyerDashboard = () => {
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
         <div className="flex items-center space-x-2">
           <Badge variant="outline" className="text-xs">
-            Last updated: {new Date().toLocaleTimeString()}
+            Last updated: {new Date().toLocaleDateString()}
           </Badge>
         </div>
       </div>
