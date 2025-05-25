@@ -377,51 +377,379 @@
 
 
 
-"use client";
+// "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { Icon } from "@iconify/react";
-import DoughnutChart from "@/components/chart/DoughnutChart";
-import LineChart from "@/components/chart/LineChart";
-import { LoadingComponent, ErrorComponent } from "@/components/LoadingErrorComponents";
-import TrialNotify from "@/components/TrialNotify";
-import { getTrials } from "./api/trial";
-import { getStatistics } from "./api/statistics";
+// import { useQuery } from "@tanstack/react-query";
+// import { Icon } from "@iconify/react";
+// import DoughnutChart from "@/components/chart/DoughnutChart";
+// import LineChart from "@/components/chart/LineChart";
+// import { LoadingComponent, ErrorComponent } from "@/components/LoadingErrorComponents";
+// import TrialNotify from "@/components/TrialNotify";
+// import { getTrials } from "./api/trial";
+// import { getStatistics } from "./api/statistics";
 
-// Define types for better type safety
+// // Define types for better type safety
+// interface Trial {
+//   id: string;
+//   location: string;
+//   description: string;
+//   trial_date: string;
+// }
+
+// interface Statistics {
+//   totalCases: number;
+//   completedCases: number;
+//   inProgressCases: number;
+//   filteredIncomePerMonth: number[];
+// }
+
+// // Card component for statistics
+// const StatCard = ({
+//   icon,
+//   value,
+//   label,
+//   color,
+// }: {
+//   icon: string;
+//   value: number;
+//   label: string;
+//   color: string;
+// }) => (
+//   <div className="flex h-20 w-full items-center justify-center gap-3 rounded-lg bg-white p-4 shadow-md">
+//     <Icon icon={icon} width={30} height={30} className={color} />
+//     <p className="text-lg font-semibold">{value}</p>
+//     <p className="text-sm text-gray-600">{label}</p>
+//   </div>
+// );
+
+// const LawyerDashboard = () => {
+//   const {
+//     data: trialsData,
+//     isLoading: isLoadingTrials,
+//     error: trialsError,
+//   } = useQuery<Trial[]>({
+//     queryKey: ["trials"],
+//     queryFn: getTrials,
+//     refetchInterval: 120_000, // 2 minutes in milliseconds
+//   });
+
+//   const {
+//     data: statisticsData,
+//     isLoading: isLoadingStatistics,
+//     error: statisticsError,
+//   } = useQuery<Statistics>({
+//     queryKey: ["statistics"],
+//     queryFn: getStatistics,
+//     refetchInterval: 120_000,
+//   });
+
+//   if (isLoadingTrials || isLoadingStatistics) return <LoadingComponent />;
+//   if (trialsError || statisticsError)
+//     return <ErrorComponent errorMessage="Failed to load dashboard data. Please try again." />;
+
+//   return (
+//     <div className="min-h-screen bg-gray-100 px-4 py-6 lg:pl-64 lg:px-10">
+//       <div className="flex flex-col gap-6 lg:flex-row">
+//         {/* Statistics Cards */}
+//         <div className="flex w-full flex-col gap-4 lg:w-1/3">
+//           <StatCard
+//             icon="material-symbols:cases"
+//             value={statisticsData?.totalCases ?? 0}
+//             label="Total Cases"
+//             color="text-purple-500"
+//           />
+//           <StatCard
+//             icon="material-symbols:cases"
+//             value={statisticsData?.completedCases ?? 0}
+//             label="Completed Cases"
+//             color="text-green-500"
+//           />
+//           <StatCard
+//             icon="material-symbols:cases"
+//             value={statisticsData?.inProgressCases ?? 0}
+//             label="Pending Cases"
+//             color="text-blue-500"
+//           />
+//         </div>
+
+//         {/* Trials Table */}
+//         <div className="flex w-full flex-col rounded-lg bg-white p-4 shadow-md lg:w-2/3">
+//           <h2 className="mb-4 text-xl font-bold text-gray-700">Upcoming Trials</h2>
+//           <div className="overflow-x-auto">
+//             <table className="w-full text-left">
+//               <thead className="sticky top-0 bg-white text-gray-600">
+//                 <tr>
+//                   <th className="px-6 py-3">Case ID</th>
+//                   <th className="px-6 py-3">Court Place</th>
+//                   <th className="px-6 py-3">Description</th>
+//                   <th className="px-6 py-3">Date</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {trialsData?.map((trial, index) => (
+//                   <tr
+//                     key={trial.id}
+//                     className={`${
+//                       index % 2 === 0 ? "bg-gray-50" : "bg-white"
+//                     } hover:bg-gray-100`}
+//                   >
+//                     <td className="px-6 py-3 text-center text-gray-800">{trial.id}</td>
+//                     <td className="px-6 py-3 text-center text-gray-800">{trial.location}</td>
+//                     <td className="max-w-[150px] truncate px-6 py-3 text-center text-gray-800">
+//                       <span title={trial.description}>{trial.description}</span>
+//                     </td>
+//                     <td className="px-6 py-3 text-center text-gray-800">
+//                       {new Date(trial.trial_date).toLocaleDateString("en-US", {
+//                         year: "numeric",
+//                         month: "short",
+//                         day: "numeric",
+//                       })}
+//                     </td>
+//                   </tr>
+//                 ))}
+//               </tbody>
+//             </table>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Charts Section */}
+//       <div className="mt-6 flex flex-col gap-6 lg:flex-row">
+//         <div className="w-full rounded-lg bg-white p-4 shadow-md lg:w-1/2">
+//           <DoughnutChart
+//             data={[
+//               statisticsData?.totalCases ?? 0,
+//               statisticsData?.completedCases ?? 0,
+//               statisticsData?.inProgressCases ?? 0,
+//             ]}
+//           />
+//         </div>
+//         <div className="w-full rounded-lg bg-white p-4 shadow-md lg:w-1/2">
+//           <LineChart data={statisticsData?.filteredIncomePerMonth ?? []} />
+//         </div>
+//       </div>
+
+//       <TrialNotify show={true} />
+//     </div>
+//   );
+// };
+
+// export default LawyerDashboard;
+
+
+
+
+
+
+"use client"
+
+import type React from "react"
+
+import { useQuery } from "@tanstack/react-query"
+import { Calendar, FileText, Clock, TrendingUp, Users, CheckCircle } from "lucide-react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import DoughnutChart from "@/components/chart/DoughnutChart"
+import LineChart from "@/components/chart/LineChart"
+import TrialNotify from "@/components/TrialNotify"
+import { getTrials } from "./api/trial"
+import { getStatistics } from "./api/statistics"
+
+// Enhanced type definitions
 interface Trial {
-  id: string;
-  location: string;
-  description: string;
-  trial_date: string;
+  id: string
+  location: string
+  description: string
+  trial_date: string
+  priority?: "high" | "medium" | "low"
+  status?: "upcoming" | "in-progress" | "completed"
 }
 
 interface Statistics {
-  totalCases: number;
-  completedCases: number;
-  inProgressCases: number;
-  filteredIncomePerMonth: number[];
+  totalCases: number
+  completedCases: number
+  inProgressCases: number
+  filteredIncomePerMonth: number[]
 }
 
-// Card component for statistics
+// Enhanced StatCard component with better design
 const StatCard = ({
-  icon,
+  icon: Icon,
   value,
   label,
-  color,
+  description,
+  trend,
+  color = "text-primary",
 }: {
-  icon: string;
-  value: number;
-  label: string;
-  color: string;
+  icon: React.ElementType
+  value: number
+  label: string
+  description?: string
+  trend?: number
+  color?: string
 }) => (
-  <div className="flex h-20 w-full items-center justify-center gap-3 rounded-lg bg-white p-4 shadow-md">
-    <Icon icon={icon} width={30} height={30} className={color} />
-    <p className="text-lg font-semibold">{value}</p>
-    <p className="text-sm text-gray-600">{label}</p>
-  </div>
-);
+  <Card className="transition-all duration-200 hover:shadow-lg">
+    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
+      <Icon className={`h-4 w-4 ${color}`} />
+    </CardHeader>
+    <CardContent>
+      <div className="text-2xl font-bold">{value.toLocaleString()}</div>
+      {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
+      {trend !== undefined && (
+        <div className="flex items-center mt-2">
+          <TrendingUp className={`h-3 w-3 mr-1 ${trend >= 0 ? "text-green-500" : "text-red-500"}`} />
+          <span className={`text-xs ${trend >= 0 ? "text-green-500" : "text-red-500"}`}>
+            {trend >= 0 ? "+" : ""}
+            {trend}% from last month
+          </span>
+        </div>
+      )}
+    </CardContent>
+  </Card>
+)
 
+// Enhanced TrialsTable component
+const TrialsTable = ({ trials }: { trials: Trial[] }) => {
+  const getPriorityColor = (priority = "medium") => {
+    switch (priority) {
+      case "high":
+        return "destructive"
+      case "medium":
+        return "default"
+      case "low":
+        return "secondary"
+      default:
+        return "default"
+    }
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    const today = new Date()
+    const diffTime = date.getTime() - today.getTime()
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+    if (diffDays === 0) return "Today"
+    if (diffDays === 1) return "Tomorrow"
+    if (diffDays > 0 && diffDays <= 7) return `In ${diffDays} days`
+
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  }
+
+  if (!trials || trials.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Upcoming Trials
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <p className="text-muted-foreground">No upcoming trials scheduled</p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Calendar className="h-5 w-5" />
+          Upcoming Trials
+        </CardTitle>
+        <CardDescription>
+          {trials.length} trial{trials.length !== 1 ? "s" : ""} scheduled
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b">
+                <th className="text-left py-3 px-4 font-medium text-muted-foreground">Case ID</th>
+                <th className="text-left py-3 px-4 font-medium text-muted-foreground">Location</th>
+                <th className="text-left py-3 px-4 font-medium text-muted-foreground">Description</th>
+                <th className="text-left py-3 px-4 font-medium text-muted-foreground">Date</th>
+                <th className="text-left py-3 px-4 font-medium text-muted-foreground">Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              {trials.map((trial, index) => (
+                <tr key={trial.id} className="border-b hover:bg-muted/50 transition-colors">
+                  <td className="py-3 px-4 font-mono text-sm">{trial.id}</td>
+                  <td className="py-3 px-4">{trial.location}</td>
+                  <td className="py-3 px-4 max-w-[200px]">
+                    <div className="truncate" title={trial.description}>
+                      {trial.description}
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">
+                    <div className="flex flex-col">
+                      <span className="text-sm">{formatDate(trial.trial_date)}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {new Date(trial.trial_date).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">
+                    <Badge variant={getPriorityColor(trial.priority)}>{trial.priority || "medium"}</Badge>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Loading skeleton component
+const DashboardSkeleton = () => (
+  <div className="space-y-6">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 3 }).map((_, i) => (
+        <Card key={i}>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <Skeleton className="h-4 w-[100px]" />
+            <Skeleton className="h-4 w-4" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-8 w-[60px] mb-2" />
+            <Skeleton className="h-3 w-[120px]" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+    <Card>
+      <CardHeader>
+        <Skeleton className="h-6 w-[150px]" />
+        <Skeleton className="h-4 w-[100px]" />
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-12 w-full" />
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  </div>
+)
+
+// Main Dashboard Component
 const LawyerDashboard = () => {
   const {
     data: trialsData,
@@ -430,8 +758,9 @@ const LawyerDashboard = () => {
   } = useQuery<Trial[]>({
     queryKey: ["trials"],
     queryFn: getTrials,
-    refetchInterval: 120_000, // 2 minutes in milliseconds
-  });
+    refetchInterval: 120_000,
+    staleTime: 60_000, // Consider data fresh for 1 minute
+  })
 
   const {
     data: statisticsData,
@@ -441,100 +770,124 @@ const LawyerDashboard = () => {
     queryKey: ["statistics"],
     queryFn: getStatistics,
     refetchInterval: 120_000,
-  });
+    staleTime: 60_000,
+  })
 
-  if (isLoadingTrials || isLoadingStatistics) return <LoadingComponent />;
-  if (trialsError || statisticsError)
-    return <ErrorComponent errorMessage="Failed to load dashboard data. Please try again." />;
+  const isLoading = isLoadingTrials || isLoadingStatistics
+  const hasError = trialsError || statisticsError
+
+  if (isLoading) {
+    return (
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <div className="flex items-center justify-between space-y-2">
+          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        </div>
+        <DashboardSkeleton />
+      </div>
+    )
+  }
+
+  if (hasError) {
+    return (
+      <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+        <div className="flex items-center justify-between space-y-2">
+          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        </div>
+        <Alert variant="destructive">
+          <AlertDescription>
+            Failed to load dashboard data. Please refresh the page or try again later.
+          </AlertDescription>
+        </Alert>
+      </div>
+    )
+  }
+
+  const stats = statisticsData || {
+    totalCases: 0,
+    completedCases: 0,
+    inProgressCases: 0,
+    filteredIncomePerMonth: [],
+  }
+
+  const completionRate = stats.totalCases > 0 ? Math.round((stats.completedCases / stats.totalCases) * 100) : 0
 
   return (
-    <div className="min-h-screen bg-gray-100 px-4 py-6 lg:pl-64 lg:px-10">
-      <div className="flex flex-col gap-6 lg:flex-row">
-        {/* Statistics Cards */}
-        <div className="flex w-full flex-col gap-4 lg:w-1/3">
-          <StatCard
-            icon="material-symbols:cases"
-            value={statisticsData?.totalCases ?? 0}
-            label="Total Cases"
-            color="text-purple-500"
-          />
-          <StatCard
-            icon="material-symbols:cases"
-            value={statisticsData?.completedCases ?? 0}
-            label="Completed Cases"
-            color="text-green-500"
-          />
-          <StatCard
-            icon="material-symbols:cases"
-            value={statisticsData?.inProgressCases ?? 0}
-            label="Pending Cases"
-            color="text-blue-500"
-          />
-        </div>
-
-        {/* Trials Table */}
-        <div className="flex w-full flex-col rounded-lg bg-white p-4 shadow-md lg:w-2/3">
-          <h2 className="mb-4 text-xl font-bold text-gray-700">Upcoming Trials</h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="sticky top-0 bg-white text-gray-600">
-                <tr>
-                  <th className="px-6 py-3">Case ID</th>
-                  <th className="px-6 py-3">Court Place</th>
-                  <th className="px-6 py-3">Description</th>
-                  <th className="px-6 py-3">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {trialsData?.map((trial, index) => (
-                  <tr
-                    key={trial.id}
-                    className={`${
-                      index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                    } hover:bg-gray-100`}
-                  >
-                    <td className="px-6 py-3 text-center text-gray-800">{trial.id}</td>
-                    <td className="px-6 py-3 text-center text-gray-800">{trial.location}</td>
-                    <td className="max-w-[150px] truncate px-6 py-3 text-center text-gray-800">
-                      <span title={trial.description}>{trial.description}</span>
-                    </td>
-                    <td className="px-6 py-3 text-center text-gray-800">
-                      {new Date(trial.trial_date).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+      {/* Header */}
+      <div className="flex items-center justify-between space-y-2">
+        <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+        <div className="flex items-center space-x-2">
+          <Badge variant="outline" className="text-xs">
+            Last updated: {new Date().toLocaleTimeString()}
+          </Badge>
         </div>
       </div>
+
+      {/* Statistics Cards */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <StatCard
+          icon={FileText}
+          value={stats.totalCases}
+          label="Total Cases"
+          description="All cases in your portfolio"
+          color="text-blue-500"
+        />
+        <StatCard
+          icon={CheckCircle}
+          value={stats.completedCases}
+          label="Completed Cases"
+          description={`${completionRate}% completion rate`}
+          color="text-green-500"
+        />
+        <StatCard
+          icon={Clock}
+          value={stats.inProgressCases}
+          label="Active Cases"
+          description="Currently in progress"
+          color="text-orange-500"
+        />
+      </div>
+
+      {/* Trials Table */}
+      <TrialsTable trials={trialsData || []} />
 
       {/* Charts Section */}
-      <div className="mt-6 flex flex-col gap-6 lg:flex-row">
-        <div className="w-full rounded-lg bg-white p-4 shadow-md lg:w-1/2">
-          <DoughnutChart
-            data={[
-              statisticsData?.totalCases ?? 0,
-              statisticsData?.completedCases ?? 0,
-              statisticsData?.inProgressCases ?? 0,
-            ]}
-          />
-        </div>
-        <div className="w-full rounded-lg bg-white p-4 shadow-md lg:w-1/2">
-          <LineChart data={statisticsData?.filteredIncomePerMonth ?? []} />
-        </div>
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Case Distribution
+            </CardTitle>
+            <CardDescription>Overview of your case portfolio</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <DoughnutChart data={[stats.totalCases, stats.completedCases, stats.inProgressCases]} />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Monthly Revenue
+            </CardTitle>
+            <CardDescription>Income trends over the past months</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LineChart data={stats.filteredIncomePerMonth} />
+          </CardContent>
+        </Card>
       </div>
 
+      {/* Trial Notifications */}
       <TrialNotify show={true} />
     </div>
-  );
-};
+  )
+}
 
-export default LawyerDashboard;
+export default LawyerDashboard
+
 
 
 
