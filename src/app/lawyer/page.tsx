@@ -772,6 +772,7 @@ const LawyerDashboard = () => {
     refetchInterval: 120_000,
     staleTime: 60_000,
   })
+  console.log("statisticsData: ", statisticsData)
 
   const isLoading = isLoadingTrials || isLoadingStatistics
   const hasError = trialsError || statisticsError
