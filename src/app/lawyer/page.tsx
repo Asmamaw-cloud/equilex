@@ -563,13 +563,13 @@ interface Trial {
   location: string
   description: string
   trial_date: string
-  priority?: "high" | "medium" | "low"
+  // priority?: "high" | "medium" | "low"
   status?: "upcoming" | "in-progress" | "completed"
 }
 
 interface Statistics {
   totalCases: number
-  completedCases: number
+  completedCase: number
   inProgressCases: number
   filteredIncomePerMonth: number[]
 }
@@ -596,7 +596,7 @@ const StatCard = ({
       <Icon className={`h-4 w-4 ${color}`} />
     </CardHeader>
     <CardContent>
-      <div className="text-2xl font-bold">{value.toLocaleString()}</div>
+      <div className="text-2xl font-bold">{value?.toLocaleString()}</div>
       {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
       {trend !== undefined && (
         <div className="flex items-center mt-2">
@@ -613,18 +613,18 @@ const StatCard = ({
 
 // Enhanced TrialsTable component
 const TrialsTable = ({ trials }: { trials: Trial[] }) => {
-  const getPriorityColor = (priority = "medium") => {
-    switch (priority) {
-      case "high":
-        return "destructive"
-      case "medium":
-        return "default"
-      case "low":
-        return "secondary"
-      default:
-        return "default"
-    }
-  }
+  // const getPriorityColor = (priority = "medium") => {
+  //   switch (priority) {
+  //     case "high":
+  //       return "destructive"
+  //     case "medium":
+  //       return "default"
+  //     case "low":
+  //       return "secondary"
+  //     default:
+  //       return "default"
+  //   }
+  // }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -682,7 +682,7 @@ const TrialsTable = ({ trials }: { trials: Trial[] }) => {
                 <th className="text-left py-3 px-4 font-medium text-muted-foreground">Location</th>
                 <th className="text-left py-3 px-4 font-medium text-muted-foreground">Description</th>
                 <th className="text-left py-3 px-4 font-medium text-muted-foreground">Date</th>
-                <th className="text-left py-3 px-4 font-medium text-muted-foreground">Priority</th>
+                {/* <th className="text-left py-3 px-4 font-medium text-muted-foreground">Priority</th> */}
               </tr>
             </thead>
             <tbody>
@@ -703,9 +703,9 @@ const TrialsTable = ({ trials }: { trials: Trial[] }) => {
                       </span>
                     </div>
                   </td>
-                  <td className="py-3 px-4">
+                  {/* <td className="py-3 px-4">
                     <Badge variant={getPriorityColor(trial.priority)}>{trial.priority || "medium"}</Badge>
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>
@@ -805,15 +805,21 @@ const LawyerDashboard = () => {
 
   const stats = statisticsData || {
     totalCases: 0,
-    completedCases: 0,
+    completedCase: 0,
     inProgressCases: 0,
     filteredIncomePerMonth: [],
   }
 
-  const completionRate = stats.totalCases > 0 ? Math.round((stats.completedCases / stats.totalCases) * 100) : 0
+  console.log("stats: ", stats)
+  console.log("stats totalCases: ", stats.totalCases)
+  console.log("stats completedCases: ", stats.completedCase)
+  console.log("stats inProgressCases: ", stats.inProgressCases)
+  console.log("stats filteredIncomePerMonth: ", stats.filteredIncomePerMonth)
 
+  const completionRate = stats.totalCases > 0 ? Math.round((stats.completedCase / stats.totalCases) * 100) : 0
+console.log("completionRate: ", completionRate)
   return (
-    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
+    <div className="flex-1 space-y-4 p-4 md:p-8 pt-6 ml-48">
       {/* Header */}
       <div className="flex items-center justify-between space-y-2">
         <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
@@ -835,7 +841,7 @@ const LawyerDashboard = () => {
         />
         <StatCard
           icon={CheckCircle}
-          value={stats.completedCases}
+          value={stats.completedCase}
           label="Completed Cases"
           description={`${completionRate}% completion rate`}
           color="text-green-500"
@@ -860,10 +866,10 @@ const LawyerDashboard = () => {
               <Users className="h-5 w-5" />
               Case Distribution
             </CardTitle>
-            <CardDescription>Overview of your case portfolio</CardDescription>
+            <CardDescription>Overview of your case</CardDescription>
           </CardHeader>
           <CardContent>
-            <DoughnutChart data={[stats.totalCases, stats.completedCases, stats.inProgressCases]} />
+            <DoughnutChart data={[stats.totalCases, stats.completedCase, stats.inProgressCases]} />
           </CardContent>
         </Card>
 

@@ -163,10 +163,44 @@ export class Lawyer extends Account {
         status: "ACCEPTED",
       },
     });
+
+    const incomePerMonth = await db.transaction.findMany({
+      where: {
+        status: "TRANSFERRED",
+        case: {
+          //@ts-ignore
+          id: lawyerSession.user.image.id,
+        },
+      },
+      include: {
+        case: true,
+      },
+    });
+
+    const groupedData = new Map();
+
+    incomePerMonth.forEach((entry) => {
+      const date = new Date(entry.created_at).toISOString().split("T")[0]; // Extract yyyy-mm-dd
+      if (groupedData.has(date)) {
+        groupedData.get(date).ticket_count +=
+          entry.case.price - entry.case.price * 0.2;
+      } else {
+        groupedData.set(date, {
+          date,
+          ticket_count: entry.case.price - entry.case.price * 0.2,
+        });
+      }
+    });
+
+    // Convert Map values to an array
+    const filteredIncomePerMonth = Array.from(groupedData.values());
+
+
     return {
       inProgressCases,
       completedCase,
       totalCases,
+      filteredIncomePerMonth,
     };
   }
 
