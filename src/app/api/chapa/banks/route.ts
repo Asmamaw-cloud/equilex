@@ -55,7 +55,7 @@ export async function GET() {
       },
     });
 
-    console.log("Banks data:", data);
+    console.log("Banks data from from get api: ", data);
 
     return NextResponse.json(
       {
