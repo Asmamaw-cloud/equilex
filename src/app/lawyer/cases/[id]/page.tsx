@@ -603,7 +603,7 @@
 
 "use client"
 
-import { useParams, useRouter } from "next/navigation"
+import { useParams, usePathname, useRouter } from "next/navigation"
 import type React from "react"
 import { useState } from "react"
 import { useMutation, useQuery, type UseMutationResult, useQueryClient } from "@tanstack/react-query"
@@ -623,6 +623,7 @@ const CaseDetail: React.FC = () => {
   const queryClient = useQueryClient()
   const params = useParams()
   const router = useRouter()
+  const path = usePathname()
   const { id } = params
   const caseId = Number(id)
 
@@ -800,7 +801,7 @@ const CaseDetail: React.FC = () => {
                 </Button>
                 <Button
                   variant="destructive"
-                  onClick={() => router.push(`/case/${caseId}/dispute?client_id=${caseData?.client_id}`)}
+                  onClick={() => router.push(`${path}/dispute?client_id=${caseData?.client_id}`)}
                   className="w-full sm:w-auto"
                 >
                   <AlertTriangle className="h-4 w-4 mr-2" />

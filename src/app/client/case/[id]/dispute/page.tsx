@@ -242,27 +242,327 @@
 
 // export default Disputes;
 
+// "use client"
 
+// import type React from "react"
 
+// import { useState } from "react"
+// import { useRouter } from "next/navigation"
+// import { useSession } from "next-auth/react"
+// import { useMutation, useQuery, type UseMutationResult, useQueryClient } from "@tanstack/react-query"
+// import { toast } from "sonner"
+// import { ChevronLeft, Plus, Clock, CheckCircle, AlertTriangle, Send, User, Mail } from "lucide-react"
+// import { LoadingComponent, ErrorComponent } from "@/components/LoadingErrorComponents"
+// import { geClientDisputes, submitDispute } from "@/app/lawyer/api/dispute"
+// import { Button } from "@/components/ui/button"
+// import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+// import { Badge } from "@/components/ui/badge"
+// import { Textarea } from "@/components/ui/textarea"
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogFooter,
+//   DialogHeader,
+//   DialogTitle,
+//   DialogTrigger,
+// } from "@/components/ui/dialog"
+// import { Separator } from "@/components/ui/separator"
+// import { formatDistanceToNow } from "date-fns"
 
+// interface DisputeData {
+//   creator_email: string | null | undefined
+//   client_id: number
+//   content: string
+//   lawyer_id: number
+// }
 
+// interface Dispute {
+//   id: number
+//   content: string
+//   status: string
+//   created_at: string
+//   creator_email: string
+//   solved: boolean
+//   resolution?: string
+//   lawyer?: {
+//     full_name: string
+//     id: number
+//   }
+//   client_id: number
+// }
 
-"use client"
+// const ClientDisputesPage: React.FC = () => {
+//   const queryClient = useQueryClient()
+//   const router = useRouter()
+//   const { data: session } = useSession()
+//   const [newDispute, setNewDispute] = useState({ content: "" })
+//   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
-import type React from "react"
+//   // Get client ID from session
+//   const clientId = session?.user?.image?.id as number
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { useSession } from "next-auth/react"
-import { useMutation, useQuery, type UseMutationResult, useQueryClient } from "@tanstack/react-query"
-import { toast } from "sonner"
-import { ChevronLeft, Plus, Clock, CheckCircle, AlertTriangle, Send, User, Mail } from "lucide-react"
-import { LoadingComponent, ErrorComponent } from "@/components/LoadingErrorComponents"
-import { geClientDisputes, submitDispute } from "@/app/lawyer/api/dispute"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Textarea } from "@/components/ui/textarea"
+//   console.log("clientId: ", clientId)
+//   // Fetch client disputes
+//   const {
+//     data: disputes = [],
+//     isLoading,
+//     error,
+//   } = useQuery({
+//     queryKey: ["clientDisputes", clientId],
+//     queryFn: () => geClientDisputes(clientId),
+//     enabled: !!clientId,
+//   })
+
+//   console.log("client disputes: ", disputes)
+
+//   // Get lawyer ID from first dispute (if available)
+//   const lawyerId = disputes?.[0]?.lawyer?.id || disputes?.[0]?.lawyer_id
+
+//   // Submit dispute mutation
+//   const submitDisputeMutation: UseMutationResult<void, unknown, DisputeData> = useMutation({
+//     mutationFn: submitDispute,
+//     onSuccess: () => {
+//       queryClient.invalidateQueries({ queryKey: ["clientDisputes", clientId] })
+//       toast.success("Dispute submitted successfully!")
+//       setNewDispute({ content: "" })
+//       setIsDialogOpen(false)
+//     },
+//     onError: () => {
+//       toast.error("Failed to submit dispute.")
+//     },
+//   })
+
+//   // Handle form submission
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault()
+
+//     if (!session?.user?.email || !clientId) {
+//       toast.error("Session data is missing. Please log in again.")
+//       return
+//     }
+
+//     if (!lawyerId) {
+//       toast.error("Lawyer information is missing.")
+//       return
+//     }
+
+//     const data: DisputeData = {
+//       content: newDispute.content,
+//       creator_email: session.user.email,
+//       lawyer_id: lawyerId,
+//       client_id: clientId,
+//     }
+
+//     await submitDisputeMutation.mutateAsync(data)
+//   }
+
+//   // Format date for display
+//   const formatDate = (dateString: string) => {
+//     try {
+//       const date = new Date(dateString)
+//       return formatDistanceToNow(date, { addSuffix: true })
+//     } catch (e) {
+//       return new Date(dateString).toLocaleDateString()
+//     }
+//   }
+
+//   // Get status badge
+//   const getStatusBadge = (status: string) => {
+//     switch (status.toLowerCase()) {
+//       case "pending":
+//         return (
+//           <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">
+//             Pending
+//           </Badge>
+//         )
+//       case "accepted":
+//       case "under_review":
+//         return (
+//           <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
+//             Under Review
+//           </Badge>
+//         )
+//       case "resolved":
+//         return (
+//           <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
+//             Resolved
+//           </Badge>
+//         )
+//       default:
+//         return <Badge variant="outline">{status}</Badge>
+//     }
+//   }
+
+//   if (isLoading) return <LoadingComponent />
+//   if (error) return <ErrorComponent errorMessage="Failed to load disputes. Please try again." />
+
+//   return (
+//     <div className="p-6 bg-gray-50 min-h-screen">
+//       <div className="max-w-4xl mx-auto">
+//         <div className="flex items-center justify-between mb-6">
+//           <Button variant="outline" onClick={() => router.back()} className="gap-2">
+//             <ChevronLeft className="h-4 w-4" />
+//             Back
+//           </Button>
+//           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+//             <DialogTrigger asChild>
+//               <Button className="gap-2 bg-purple-600 hover:bg-purple-700">
+//                 <Plus className="h-4 w-4" />
+//                 Submit New Dispute
+//               </Button>
+//             </DialogTrigger>
+//             <DialogContent>
+//               <DialogHeader>
+//                 <DialogTitle>Submit New Dispute</DialogTitle>
+//                 <DialogDescription>
+//                   Describe your issue in detail. Our team will review your dispute as soon as possible.
+//                 </DialogDescription>
+//               </DialogHeader>
+//               <form onSubmit={handleSubmit}>
+//                 <div className="space-y-4 py-4">
+//                   <Textarea
+//                     name="content"
+//                     value={newDispute.content}
+//                     onChange={(e) => setNewDispute({ content: e.target.value })}
+//                     placeholder="Describe your issue in detail..."
+//                     className="min-h-[150px]"
+//                     required
+//                   />
+//                 </div>
+//                 <DialogFooter>
+//                   <Button
+//                     type="submit"
+//                     disabled={submitDisputeMutation.isPending || !newDispute.content.trim()}
+//                     className="gap-2 bg-purple-600 hover:bg-purple-700"
+//                   >
+//                     <Send className="h-4 w-4" />
+//                     {submitDisputeMutation.isPending ? "Submitting..." : "Submit Dispute"}
+//                   </Button>
+//                 </DialogFooter>
+//               </form>
+//             </DialogContent>
+//           </Dialog>
+//         </div>
+
+//         <Card className="mb-6 border-0 shadow-sm">
+//           <CardHeader className="pb-2">
+//             <CardTitle className="text-2xl">Dispute Details</CardTitle>
+//             <CardDescription>View and manage your disputes with lawyers</CardDescription>
+//           </CardHeader>
+//           <CardContent>
+//             {disputes.length > 0 && disputes[0].lawyer && (
+//               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 bg-gray-50 p-4 rounded-lg">
+//                 <div className="space-y-2">
+//                   <div className="flex items-center text-sm text-gray-500">
+//                     <User className="h-4 w-4 mr-2 text-purple-600" />
+//                     <span>Lawyer</span>
+//                   </div>
+//                   <p className="font-medium">{disputes[3].lawyer.full_name}</p>
+//                 </div>
+//                 <div className="space-y-2">
+//                   <div className="flex items-center text-sm text-gray-500">
+//                     <Mail className="h-4 w-4 mr-2 text-purple-600" />
+//                     <span>Contact Email</span>
+//                   </div>
+//                   <p className="font-medium">{disputes[0].creator_email}</p>
+//                 </div>
+//               </div>
+//             )}
+
+//             {disputes.length === 0 ? (
+//               <div className="text-center py-12 bg-gray-50 rounded-lg">
+//                 <AlertTriangle className="h-12 w-12 mx-auto text-gray-300 mb-3" />
+//                 <h3 className="text-lg font-medium text-gray-700">No disputes found</h3>
+//                 <p className="text-gray-500 mt-1">You haven't submitted any disputes yet.</p>
+//                 <Button onClick={() => setIsDialogOpen(true)} className="mt-4 gap-2 bg-purple-600 hover:bg-purple-700">
+//                   <Plus className="h-4 w-4" />
+//                   Submit Your First Dispute
+//                 </Button>
+//               </div>
+//             ) : (
+//               <div className="space-y-6">
+//                 {disputes.map((dispute: Dispute) => (
+//                   <div key={dispute.id} className="bg-white border border-gray-100 rounded-lg overflow-hidden">
+//                     <div className="p-4 flex justify-between items-start">
+//                       <div className="flex items-center gap-2">
+//                         {getStatusBadge(dispute.status)}
+//                         <span className="text-sm text-gray-500">ID: #{dispute.id}</span>
+//                       </div>
+//                       <div className="flex items-center text-sm text-gray-500">
+//                         <Clock className="h-4 w-4 mr-1" />
+//                         {formatDate(dispute.created_at)}
+//                       </div>
+//                     </div>
+//                     <Separator />
+//                     <div className="p-4">
+//                       <h3 className="font-medium text-gray-700 mb-2">Description</h3>
+//                       <p className="text-gray-600 whitespace-pre-wrap">{dispute.content}</p>
+//                     </div>
+//                     {dispute.solved && dispute.resolution && (
+//                       <>
+//                         <Separator />
+//                         <div className="p-4 bg-green-50">
+//                           <div className="flex items-center gap-2 mb-2">
+//                             <CheckCircle className="h-4 w-4 text-green-600" />
+//                             <h3 className="font-medium text-green-700">Resolution</h3>
+//                           </div>
+//                           <p className="text-gray-600 whitespace-pre-wrap">{dispute.resolution}</p>
+//                         </div>
+//                       </>
+//                     )}
+//                   </div>
+//                 ))}
+//               </div>
+//             )}
+//           </CardContent>
+//         </Card>
+//       </div>
+//     </div>
+//   )
+// }
+
+// export default ClientDisputesPage
+
+"use client";
+
+import type React from "react";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import {
+  useMutation,
+  useQuery,
+  type UseMutationResult,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { toast } from "sonner";
+import {
+  ChevronLeft,
+  Plus,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  Send,
+  User,
+  Mail,
+} from "lucide-react";
+import {
+  LoadingComponent,
+  ErrorComponent,
+} from "@/components/LoadingErrorComponents";
+import { geClientDisputes, submitDispute } from "@/app/lawyer/api/dispute";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -271,142 +571,168 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Separator } from "@/components/ui/separator"
-import { formatDistanceToNow } from "date-fns"
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { formatDistanceToNow } from "date-fns";
+import { FileUploader } from "@/components/file-uploader";
 
 interface DisputeData {
-  creator_email: string | null | undefined
-  client_id: number
-  content: string
-  lawyer_id: number
+  creator_email: string | null | undefined;
+  client_id: number;
+  content: string;
+  lawyer_id: number;
+  document?: string | null; // Optional document field
 }
 
 interface Dispute {
-  id: number
-  content: string
-  status: string
-  created_at: string
-  creator_email: string
-  solved: boolean
-  resolution?: string
+  id: number;
+  content: string;
+  status: string;
+  created_at: string;
+  creator_email: string;
+  solved: boolean;
+  resolution?: string;
   lawyer?: {
-    full_name: string
-    id: number
-  }
-  client_id: number
+    full_name: string;
+    id: number;
+  };
+  client_id: number;
 }
 
 const ClientDisputesPage: React.FC = () => {
-  const queryClient = useQueryClient()
-  const router = useRouter()
-  const { data: session } = useSession()
-  const [newDispute, setNewDispute] = useState({ content: "" })
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [newDispute, setNewDispute] = useState({ content: "" });
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [doc, setDoc] = useState<string | null>(null);
 
-  // Get client ID from session
-  const clientId = session?.user?.image?.id as number
+  const clientId =
+    typeof session?.user?.image?.id === "number"
+      ? session.user.image.id
+      : undefined;
+  console.log("clientId: ", clientId);
 
-  console.log("clientId: ", clientId)
-  // Fetch client disputes
   const {
     data: disputes = [],
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["clientDisputes", clientId],
-    queryFn: () => geClientDisputes(clientId),
+    queryKey: ["clientDisputes", clientId ?? "unknown"],
+    queryFn: () => geClientDisputes(clientId!),
     enabled: !!clientId,
-  })
+  });
 
-  console.log("client disputes: ", disputes)
+  console.log("client disputes: ", disputes);
 
-  // Get lawyer ID from first dispute (if available)
-  const lawyerId = disputes?.[0]?.lawyer?.id || disputes?.[0]?.lawyer_id
+  const lawyerId = disputes?.[0]?.lawyer?.id || disputes?.[0]?.lawyer_id;
 
-  // Submit dispute mutation
-  const submitDisputeMutation: UseMutationResult<void, unknown, DisputeData> = useMutation({
-    mutationFn: submitDispute,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["clientDisputes", clientId] })
-      toast.success("Dispute submitted successfully!")
-      setNewDispute({ content: "" })
-      setIsDialogOpen(false)
-    },
-    onError: () => {
-      toast.error("Failed to submit dispute.")
-    },
-  })
+  const submitDisputeMutation: UseMutationResult<any, unknown, DisputeData> =
+    useMutation({
+      mutationFn: submitDispute,
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["clientDisputes", clientId],
+        });
+        toast.success("Dispute submitted successfully!");
+        setNewDispute({ content: "" });
+        setIsDialogOpen(false);
+      },
+      onError: () => {
+        toast.error("Failed to submit dispute.");
+      },
+    });
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!session?.user?.email || !clientId) {
-      toast.error("Session data is missing. Please log in again.")
-      return
+      toast.error("Session data is missing. Please log in again.");
+      return;
     }
 
     if (!lawyerId) {
-      toast.error("Lawyer information is missing.")
-      return
+      toast.error("Lawyer information is missing.");
+      return;
+    }
+
+    if (!newDispute.content.trim()) {
+      toast.error("Dispute content is required.");
+      return;
     }
 
     const data: DisputeData = {
       content: newDispute.content,
+      document: doc,
       creator_email: session.user.email,
       lawyer_id: lawyerId,
       client_id: clientId,
-    }
+    };
 
-    await submitDisputeMutation.mutateAsync(data)
-  }
+    console.log("Submitting dispute data: ", data);
 
-  // Format date for display
+    await submitDisputeMutation.mutateAsync(data);
+  };
+
   const formatDate = (dateString: string) => {
     try {
-      const date = new Date(dateString)
-      return formatDistanceToNow(date, { addSuffix: true })
+      const date = new Date(dateString);
+      return formatDistanceToNow(date, { addSuffix: true });
     } catch (e) {
-      return new Date(dateString).toLocaleDateString()
+      return new Date(dateString).toLocaleDateString();
     }
-  }
+  };
 
-  // Get status badge
   const getStatusBadge = (status: string) => {
     switch (status.toLowerCase()) {
       case "pending":
         return (
-          <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">
+          <Badge
+            variant="outline"
+            className="bg-yellow-100 text-yellow-800 border-yellow-200"
+          >
             Pending
           </Badge>
-        )
+        );
       case "accepted":
       case "under_review":
         return (
-          <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
+          <Badge
+            variant="outline"
+            className="bg-blue-100 text-blue-800 border-blue-200"
+          >
             Under Review
           </Badge>
-        )
+        );
       case "resolved":
         return (
-          <Badge variant="outline" className="bg-green-100 text-green-800 border-green-200">
+          <Badge
+            variant="outline"
+            className="bg-green-100 text-green-800 border-green-200"
+          >
             Resolved
           </Badge>
-        )
+        );
       default:
-        return <Badge variant="outline">{status}</Badge>
+        return <Badge variant="outline">{status}</Badge>;
     }
-  }
+  };
 
-  if (isLoading) return <LoadingComponent />
-  if (error) return <ErrorComponent errorMessage="Failed to load disputes. Please try again." />
+  if (isLoading) return <LoadingComponent />;
+  if (error)
+    return (
+      <ErrorComponent errorMessage="Failed to load disputes. Please try again." />
+    );
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <Button variant="outline" onClick={() => router.back()} className="gap-2">
+          <Button
+            variant="outline"
+            onClick={() => router.back()}
+            className="gap-2"
+          >
             <ChevronLeft className="h-4 w-4" />
             Back
           </Button>
@@ -421,7 +747,8 @@ const ClientDisputesPage: React.FC = () => {
               <DialogHeader>
                 <DialogTitle>Submit New Dispute</DialogTitle>
                 <DialogDescription>
-                  Describe your issue in detail. Our team will review your dispute as soon as possible.
+                  Describe your issue in detail. Our team will review your
+                  dispute as soon as possible.
                 </DialogDescription>
               </DialogHeader>
               <form onSubmit={handleSubmit}>
@@ -435,16 +762,34 @@ const ClientDisputesPage: React.FC = () => {
                     required
                   />
                 </div>
-                <DialogFooter>
-                  <Button
-                    type="submit"
-                    disabled={submitDisputeMutation.isPending || !newDispute.content.trim()}
-                    className="gap-2 bg-purple-600 hover:bg-purple-700"
-                  >
-                    <Send className="h-4 w-4" />
-                    {submitDisputeMutation.isPending ? "Submitting..." : "Submit Dispute"}
-                  </Button>
-                </DialogFooter>
+                <div className=" flex gap-2  ">
+                  <div className="">
+                    <FileUploader
+                    onUploadComplete={(urls) => {
+                      setDoc(urls[0]);
+                    }}
+                    maxFiles={5}
+                    maxSize={4}
+                    fileTypes={["image", "pdf"]}
+                  />
+                  </div>
+
+                  <DialogFooter className="ml-12">
+                    <Button
+                      type="submit"
+                      disabled={
+                        submitDisputeMutation.isPending ||
+                        !newDispute.content.trim()
+                      }
+                      className=" mt-32 gap-2 bg-purple-600 hover:bg-purple-700"
+                    >
+                      <Send className="h-4 w-4" />
+                      {submitDisputeMutation.isPending
+                        ? "Submitting..."
+                        : "Submit Dispute"}
+                    </Button>
+                  </DialogFooter>
+                </div>
               </form>
             </DialogContent>
           </Dialog>
@@ -453,7 +798,9 @@ const ClientDisputesPage: React.FC = () => {
         <Card className="mb-6 border-0 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="text-2xl">Dispute Details</CardTitle>
-            <CardDescription>View and manage your disputes with lawyers</CardDescription>
+            <CardDescription>
+              View and manage your disputes with lawyers
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {disputes.length > 0 && disputes[0].lawyer && (
@@ -463,7 +810,7 @@ const ClientDisputesPage: React.FC = () => {
                     <User className="h-4 w-4 mr-2 text-purple-600" />
                     <span>Lawyer</span>
                   </div>
-                  <p className="font-medium">{disputes[3].lawyer.full_name}</p>
+                  <p className="font-medium">{disputes[0].lawyer.full_name}</p>
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center text-sm text-gray-500">
@@ -478,9 +825,16 @@ const ClientDisputesPage: React.FC = () => {
             {disputes.length === 0 ? (
               <div className="text-center py-12 bg-gray-50 rounded-lg">
                 <AlertTriangle className="h-12 w-12 mx-auto text-gray-300 mb-3" />
-                <h3 className="text-lg font-medium text-gray-700">No disputes found</h3>
-                <p className="text-gray-500 mt-1">You haven't submitted any disputes yet.</p>
-                <Button onClick={() => setIsDialogOpen(true)} className="mt-4 gap-2 bg-purple-600 hover:bg-purple-700">
+                <h3 className="text-lg font-medium text-gray-700">
+                  No disputes found
+                </h3>
+                <p className="text-gray-500 mt-1">
+                  You haven't submitted any disputes yet.
+                </p>
+                <Button
+                  onClick={() => setIsDialogOpen(true)}
+                  className="mt-4 gap-2 bg-purple-600 hover:bg-purple-700"
+                >
                   <Plus className="h-4 w-4" />
                   Submit Your First Dispute
                 </Button>
@@ -488,11 +842,16 @@ const ClientDisputesPage: React.FC = () => {
             ) : (
               <div className="space-y-6">
                 {disputes.map((dispute: Dispute) => (
-                  <div key={dispute.id} className="bg-white border border-gray-100 rounded-lg overflow-hidden">
+                  <div
+                    key={dispute.id}
+                    className="bg-white border border-gray-100 rounded-lg overflow-hidden"
+                  >
                     <div className="p-4 flex justify-between items-start">
                       <div className="flex items-center gap-2">
                         {getStatusBadge(dispute.status)}
-                        <span className="text-sm text-gray-500">ID: #{dispute.id}</span>
+                        <span className="text-sm text-gray-500">
+                          ID: #{dispute.id}
+                        </span>
                       </div>
                       <div className="flex items-center text-sm text-gray-500">
                         <Clock className="h-4 w-4 mr-1" />
@@ -501,8 +860,12 @@ const ClientDisputesPage: React.FC = () => {
                     </div>
                     <Separator />
                     <div className="p-4">
-                      <h3 className="font-medium text-gray-700 mb-2">Description</h3>
-                      <p className="text-gray-600 whitespace-pre-wrap">{dispute.content}</p>
+                      <h3 className="font-medium text-gray-700 mb-2">
+                        Description
+                      </h3>
+                      <p className="text-gray-600 whitespace-pre-wrap">
+                        {dispute.content}
+                      </p>
                     </div>
                     {dispute.solved && dispute.resolution && (
                       <>
@@ -510,9 +873,13 @@ const ClientDisputesPage: React.FC = () => {
                         <div className="p-4 bg-green-50">
                           <div className="flex items-center gap-2 mb-2">
                             <CheckCircle className="h-4 w-4 text-green-600" />
-                            <h3 className="font-medium text-green-700">Resolution</h3>
+                            <h3 className="font-medium text-green-700">
+                              Resolution
+                            </h3>
                           </div>
-                          <p className="text-gray-600 whitespace-pre-wrap">{dispute.resolution}</p>
+                          <p className="text-gray-600 whitespace-pre-wrap">
+                            {dispute.resolution}
+                          </p>
                         </div>
                       </>
                     )}
@@ -524,7 +891,7 @@ const ClientDisputesPage: React.FC = () => {
         </Card>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ClientDisputesPage
+export default ClientDisputesPage;

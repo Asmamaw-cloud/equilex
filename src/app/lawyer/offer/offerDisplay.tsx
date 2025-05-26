@@ -1034,7 +1034,7 @@ const OfferDisplay = ({ caseId, userType }: OfferDisplayProps) => {
   })
 
   const acceptMutation = useMutation({
-    mutationFn: acceptOffer,
+    mutationFn:(id: number)=> acceptOffer(id),
     onSuccess: (data: any) => {
       if (data?.acceptedCase) {
         setTimeout(() => {

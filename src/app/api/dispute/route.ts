@@ -17,7 +17,8 @@ export async function POST(req: Request, res: Response) {
         userInput.client_id,
         userInput.lawyer_id,
         userInput.creator_email,
-        userInput.content
+        userInput.content,
+        userInput.documents || [],
       );
       return NextResponse.json(
         { message: "New dispute created", faqId: newDispute.id },

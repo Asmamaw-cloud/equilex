@@ -63,6 +63,7 @@ export class Case {
   }
 
   static async acceptOffer(case_id: number) {
+    await isClient()
     const acceptedCase = await db.case.update({
       where: {
         id: case_id,

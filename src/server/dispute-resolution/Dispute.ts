@@ -7,7 +7,8 @@ export class Dispute {
     client_id: number,
     lawyer_id: number,
     creator_email: string,
-    content: string
+    content: string,
+    documents: string[] = []
   ) {
     const newDispute = await db.dispute.create({
       data: {
@@ -15,6 +16,7 @@ export class Dispute {
         lawyer_id,
         creator_email,
         content,
+        documents,
       },
     });
     return newDispute;

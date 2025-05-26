@@ -192,7 +192,7 @@
 //     return <ErrorComponent errorMessage="Failed to load data. Please try again." />;
 
 //   return (
-//     <div className="min-h-screen bg-gray-100 p-6">
+//     <div className="min-h-screeRaisen bg-gray-100 p-6">
 //       <div className="max-w-4xl mx-auto space-y-6">
 //         <div className="flex justify-between items-center">
 //           <h1 className="text-3xl font-bold text-[#7B3B99]">Case Details</h1>
@@ -237,7 +237,7 @@
 //                 onClick={() => router.push(`/client/case/${caseId}/dispute`)}
 //                 className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded"
 //               >
-//                 Raise Dispute
+//                  Dispute
 //               </button>
 //             </div>
 //           )}
