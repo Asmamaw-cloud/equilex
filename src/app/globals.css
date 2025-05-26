@@ -112,7 +112,7 @@
 }
 
 .bg-hero-section {
-  @apply bg-cover bg-center bg-no-repeat w-full relative;
+  @apply bg-cover bg-center bg-no-repeat w-full h-screen relative;
   background-image: url('/images/banner1.jpg');
 }
 

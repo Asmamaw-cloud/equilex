@@ -5,7 +5,7 @@ import {
   type DefaultSession,
 } from "next-auth";
 import { db } from "@/lib/db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import Credentials from "next-auth/providers/credentials";
 
 declare module "next-auth" {

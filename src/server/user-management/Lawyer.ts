@@ -1,7 +1,7 @@
 import { Court, Language, Specialty } from "@prisma/client";
 import { Account } from "./Account";
 import { db } from "@/lib/db";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { isAdmin, isLawyer } from "../checkRole";
 
 export class Lawyer extends Account {

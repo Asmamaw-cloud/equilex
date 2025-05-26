@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { Account } from "./Account";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { isAdmin, isClient } from "../checkRole";
 
 export class Client extends Account {
