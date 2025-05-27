@@ -28,14 +28,33 @@ export class Client extends Account {
     return newUser;
   }
 
-  static async getById() {
+  static async getById(id: string) {
+    // Allow either admin or the client themselves to access
     const clientSession = await isClient();
+    const isAdminUser = await isAdmin();
+    if (!isAdminUser && clientSession.user.image.id !== id) {
+      throw new Error("Unauthorized access");
+    }
+
     const client = await db.client.findUnique({
       where: {
-        //@ts-ignore
-        id: clientSession.user.image.id,
+        id,
+      },
+      select: {
+        id: true,
+        email: true,
+        full_name: true,
+        phone_number: true,
+        created_at: true,
+        updatedAt: true,
+        photo: true,
       },
     });
+
+    if (!client) {
+      throw new Error("Client not found");
+    }
+
     return client;
   }
 
@@ -68,10 +87,28 @@ export class Client extends Account {
         ...(photo && { photo }),
       },
       where: {
-        //@ts-ignore
         id: client.user.image.id,
       },
     });
     return clientUpdated;
+  }
+
+  static async delete(id: string) {
+    // Only allow admins to delete clients
+    await isAdmin();
+
+    const client = await db.client.findUnique({
+      where: { id },
+    });
+
+    if (!client) {
+      throw new Error("Client not found");
+    }
+
+    await db.client.delete({
+      where: { id },
+    });
+
+    return { message: "Client deleted successfully" };
   }
 }
