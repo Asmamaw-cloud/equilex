@@ -3,8 +3,7 @@ import { isAdmin, isClient, isLawyer } from "../checkRole";
 import axios from "axios";
 
 export class Payment {
-  static readonly CHAPA_AUTH_KEY: string =
-    process.env.NEXT_PUBLIC_CHAPA_AUTH_KEY!;
+  static readonly CHAPA_AUTH_KEY: string = process.env.NEXT_PUBLIC_CHAPA_AUTH_KEY!;
   static readonly CALLBACK_URL: string = process.env.CHAPA_CALLBACK_URL!;
   static readonly REDIRECT_URL: string = process.env.CHAPA_REDIRECT_URL!;
 
@@ -39,7 +38,7 @@ export class Payment {
     }
 
     const body = {
-      amount: currentCase.price,
+      amount: currentCase.price, 
       currency: "ETB",
       email: email,
       first_name: first_name,
