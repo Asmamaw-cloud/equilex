@@ -74,4 +74,17 @@ export class Client extends Account {
     });
     return clientUpdated;
   }
+  static async delete(id: string) {
+    await isAdmin();
+    const client = await db.client.findUnique({
+      where: { id },
+    });
+    if (!client) {
+      throw new Error("Client not found");
+    }
+    const deletedClient = await db.client.delete({
+      where: { id },
+    });
+    return deletedClient;
+  }
 }
