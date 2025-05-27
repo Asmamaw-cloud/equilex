@@ -142,12 +142,12 @@ export default function ProfileDropdown() {
             ""
           )}
         </DropdownMenuGroup>
-        <DropdownMenuGroup>
+        {/* <DropdownMenuGroup>
           <DropdownMenuItem>
             <ReceiptText className="mr-2 h-4 w-4" />
             <Link href="/lawyer/contract">My contracts</Link>
           </DropdownMenuItem>
-        </DropdownMenuGroup>
+        </DropdownMenuGroup> */}
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <LogOut className="mr-2 h-4 w-4" />
