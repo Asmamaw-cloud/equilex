@@ -23,6 +23,8 @@ const Clients = () => {
     phone_number: "",
     email: "",
   });
+  const [modalError, setModalError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   console.log("client data: ", data);
 
@@ -97,6 +99,11 @@ const Clients = () => {
       queryClient.invalidateQueries(["client"]);
       setIsModalOpen(false);
       setFormData({ full_name: "", phone_number: "", email: "" });
+      setModalError(null);
+    },
+    onError: (error) => {
+      console.error("Add client error:", error);
+      setModalError(error.message || "Failed to add client");
     },
   });
 
@@ -107,6 +114,11 @@ const Clients = () => {
       setIsModalOpen(false);
       setEditingClient(null);
       setFormData({ full_name: "", phone_number: "", email: "" });
+      setModalError(null);
+    },
+    onError: (error) => {
+      console.error("Update client error:", error);
+      setModalError(error.message || "Failed to update client");
     },
   });
 
@@ -115,19 +127,28 @@ const Clients = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["client"]);
     },
+    onError: (error) => {
+      console.error("Delete client error:", error);
+    },
   });
 
   const handleAddEdit = () => {
+    setModalError(null);
+    setIsSubmitting(true);
     if (editingClient) {
+      console.log("Updating client with data:", { id: editingClient.id, ...formData });
       updateMutation.mutate({ id: editingClient.id, ...formData });
     } else {
+      console.log("Adding client with data:", formData);
       addMutation.mutate(formData);
     }
+    setIsSubmitting(false);
   };
 
   const openAddModal = () => {
     setEditingClient(null);
     setFormData({ full_name: "", phone_number: "", email: "" });
+    setModalError(null);
     setIsModalOpen(true);
   };
 
@@ -138,6 +159,7 @@ const Clients = () => {
       phone_number: client.phone_number,
       email: client.email,
     });
+    setModalError(null);
     setIsModalOpen(true);
   };
 
@@ -249,6 +271,9 @@ const Clients = () => {
             <h2 className="text-xl font-bold mb-4">
               {editingClient ? "Edit Client" : "Add Client"}
             </h2>
+            {modalError && (
+              <div className="text-red-600 mb-4">{modalError}</div>
+            )}
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700">
                 Name
@@ -260,6 +285,7 @@ const Clients = () => {
                   setFormData({ ...formData, full_name: e.target.value })
                 }
                 className="mt-1 p-2 w-full border rounded-md"
+                disabled={isSubmitting}
               />
             </div>
             <div className="mb-4">
@@ -273,6 +299,7 @@ const Clients = () => {
                   setFormData({ ...formData, phone_number: e.target.value })
                 }
                 className="mt-1 p-2 w-full border rounded-md"
+                disabled={isSubmitting}
               />
             </div>
             <div className="mb-4">
@@ -286,20 +313,32 @@ const Clients = () => {
                   setFormData({ ...formData, email: e.target.value })
                 }
                 className="mt-1 p-2 w-full border rounded-md"
+                disabled={isSubmitting}
               />
             </div>
             <div className="flex justify-end gap-2">
               <button
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => {
+                  setIsModalOpen(false);
+                  setModalError(null);
+                }}
                 className="px-4 py-2 bg-gray-300 rounded-md"
+                disabled={isSubmitting}
               >
                 Cancel
               </button>
               <button
                 onClick={handleAddEdit}
-                className="px-4 py-2 bg-[#7B3B99] text-white rounded-md"
+                className="px-4 py-2 bg-[#7B3B99] text-white rounded-md disabled:opacity-50"
+                disabled={isSubmitting}
               >
-                {editingClient ? "Update" : "Add"}
+                {isSubmitting
+                  ? editingClient
+                    ? "Updating..."
+                    : "Adding..."
+                  : editingClient
+                  ? "Update"
+                  : "Add"}
               </button>
             </div>
           </div>
