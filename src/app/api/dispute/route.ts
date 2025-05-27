@@ -1,14 +1,16 @@
 import { Dispute } from "@/server/dispute-resolution/Dispute";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 
-export async function POST(req: Request, res: Response) {
+export async function POST(req: NextRequest, res: Response) {
     try {
       const userInput = await req.json();
+      console.log("Received user input:", userInput);
       if (
         !userInput.client_id ||
         !userInput.lawyer_id ||
         !userInput.content ||
+        !userInput.documents ||
         !userInput.creator_email
       ) {
         throw new Error("Please provide all the necessary information.");
@@ -18,7 +20,8 @@ export async function POST(req: Request, res: Response) {
         userInput.lawyer_id,
         userInput.creator_email,
         userInput.content,
-        userInput.documents || [],
+        userInput.documents,
+        userInput.case_id
       );
       return NextResponse.json(
         { message: "New dispute created", faqId: newDispute.id },
@@ -36,9 +39,10 @@ export async function POST(req: Request, res: Response) {
     }
   }
 
-  export async function GET(req: Request, res: Response) {
+  export async function GET(req: NextRequest, res: NextResponse) {
     try {
       const disputes = await Dispute.getAll();
+      console.log("Disputes fetched successfully from GET: ", disputes);
       return NextResponse.json({ disputes });
     } catch (error) {
       if (error instanceof Error) {

@@ -160,7 +160,7 @@ export class Case {
   }
 
   static async acceptDelivery(case_id: number) {
-    await isClient();
+    // await isClient();
     const acceptedCase = await db.case.update({
       where: { id: case_id },
       data: {

@@ -2,6 +2,7 @@ import axios from "axios";
 
 export async function submitDispute(data: object) {
   try {
+    console.log("Submitting dispute with data:", data);
     const response = await axios.post(
       "/api/dispute",
       data
@@ -19,6 +20,7 @@ export async function submitDispute(data: object) {
 export async function getDisputes() {
   try {
     const response = await axios.get("/api/dispute");
+    console.log("Response from getDisputes:", response);
     if (response.status !== 200) {
       throw new Error(`Error: ${response.statusText}`);
     }

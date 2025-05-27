@@ -575,13 +575,14 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { formatDistanceToNow } from "date-fns";
 import { FileUploader } from "@/components/file-uploader";
-
+import { useParams } from "next/navigation";
 interface DisputeData {
   creator_email: string | null | undefined;
   client_id: number;
   content: string;
   lawyer_id: number;
-  document?: string | null; // Optional document field
+  documents?: string[] | null; // Optional document field
+  case_id: number
 }
 
 interface Dispute {
@@ -601,11 +602,15 @@ interface Dispute {
 
 const ClientDisputesPage: React.FC = () => {
   const queryClient = useQueryClient();
+  const params = useParams();
   const router = useRouter();
   const { data: session } = useSession();
   const [newDispute, setNewDispute] = useState({ content: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [doc, setDoc] = useState<string | null>(null);
+  const [doc, setDoc] = useState<string[] | null>(null);
+
+  console.log("params: ", params);
+  const caseId = Number(params.id); // this is a string
 
   const clientId =
     typeof session?.user?.image?.id === "number"
@@ -663,10 +668,11 @@ const ClientDisputesPage: React.FC = () => {
 
     const data: DisputeData = {
       content: newDispute.content,
-      document: doc,
+      documents: doc ?? [] ,
       creator_email: session.user.email,
       lawyer_id: lawyerId,
       client_id: clientId,
+      case_id: caseId
     };
 
     console.log("Submitting dispute data: ", data);
@@ -765,13 +771,13 @@ const ClientDisputesPage: React.FC = () => {
                 <div className=" flex gap-2  ">
                   <div className="">
                     <FileUploader
-                    onUploadComplete={(urls) => {
-                      setDoc(urls[0]);
-                    }}
-                    maxFiles={5}
-                    maxSize={4}
-                    fileTypes={["image", "pdf"]}
-                  />
+                      onUploadComplete={(urls) => {
+                        setDoc(urls);
+                      }}
+                      maxFiles={5}
+                      maxSize={4}
+                      fileTypes={["image", "pdf"]}
+                    />
                   </div>
 
                   <DialogFooter className="ml-12">

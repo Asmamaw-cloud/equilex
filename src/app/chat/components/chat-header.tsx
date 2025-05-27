@@ -168,7 +168,7 @@ interface ChatHeaderProps {
 export default function ChatHeader({
   recipientId,
   recipientName = "Contact",
-  recipientPhoto = "/placeholder.svg?height=50&width=50",
+recipientPhoto = "https://placehold.co/50x50?text=User&font=roboto",
   onlineStatus = "online",
   lastSeen = "Last seen recently",
 }: ChatHeaderProps) {
@@ -177,6 +177,8 @@ export default function ChatHeader({
   const [name, setName] = useState(recipientName)
   const [photo, setPhoto] = useState(recipientPhoto)
   const userType = session?.user?.image?.type
+
+  console.log("photo", photo)
 
   // Fetch recipient details if not provided
   useEffect(() => {
@@ -246,7 +248,7 @@ export default function ChatHeader({
             <div className="relative">
               <Image
                 src={photo || "/placeholder.svg?height=48&width=48"}
-                alt={`${name}'s profile picture`}
+                alt={""}
                 width={48}
                 height={48}
                 className="rounded-full object-cover h-12 w-12 border-2 border-white shadow-sm"

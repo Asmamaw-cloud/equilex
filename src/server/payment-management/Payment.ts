@@ -182,6 +182,34 @@ export class Payment {
 }
 
 
+static async refund({
+    reference,
+    reason,
+  }: {
+    reference: string;
+    reason: string;
+  }) {
+    try {
+      const response = await axios.post(
+        `https://api.chapa.co/v1/transaction/refund/${reference}`,
+        { reason },
+        {
+          headers: {
+            Authorization: `Bearer ${this.CHAPA_SECRET}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Refund response:", response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error("Refund failed:", error.response?.data || error.message);
+      throw new Error("Refund failed");
+    }
+  }
+
+
 
 
 

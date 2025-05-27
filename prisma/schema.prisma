@@ -157,6 +157,7 @@ model dispute {
   documents     String[]
   lawyer        lawyer        @relation(fields: [lawyer_id], references: [id])
   client        client        @relation(fields: [client_id], references: [id])
+  case_id       Int?
 }
 
 model Case {
