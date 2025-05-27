@@ -53,8 +53,7 @@ export async function PUT(req: Request) {
     }
 
     const clientUpdated = await Client.update(
-      userInput.id,
-      userInput.email,
+       userInput.email,
       userInput.full_name,
       userInput.phone_number
     );
