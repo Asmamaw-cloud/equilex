@@ -26,7 +26,7 @@ const Clients = () => {
   const [modalError, setModalError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  console.log("client data: ", data);
+  console.log("client data:", data);
 
   const pageSize = 5;
   const visiblePages = 3;
@@ -34,7 +34,7 @@ const Clients = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = useMemo(() => {
-    return Math.ceil(data?.clients.length / pageSize);
+    return Math.ceil(data?.clients.length / pageSize) || 1;
   }, [data?.clients]);
 
   const startPage = useMemo(() => {
@@ -78,7 +78,7 @@ const Clients = () => {
   const paginatedClients = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    return data?.clients?.slice(startIndex, endIndex);
+    return data?.clients?.slice(startIndex, endIndex) || [];
   }, [currentPage, data?.clients, pageSize]);
 
   const nextPage = () => {
@@ -108,8 +108,14 @@ const Clients = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: updateClient,
+    mutationFn: (data) => {
+      if (!updateClient) {
+        throw new Error("updateClient function is not defined");
+      }
+      return updateClient(data);
+    },
     onSuccess: () => {
+      console.log("Client updated successfully");
       queryClient.invalidateQueries(["client"]);
       setIsModalOpen(false);
       setEditingClient(null);
@@ -125,6 +131,7 @@ const Clients = () => {
   const deleteMutation = useMutation({
     mutationFn: deleteClient,
     onSuccess: () => {
+      console.log("Client deleted successfully");
       queryClient.invalidateQueries(["client"]);
     },
     onError: (error) => {
@@ -133,8 +140,17 @@ const Clients = () => {
   });
 
   const handleAddEdit = () => {
+    if (isSubmitting) return;
     setModalError(null);
     setIsSubmitting(true);
+
+    // Basic client-side validation
+    if (!formData.full_name || !formData.phone_number || !formData.email) {
+      setModalError("Please fill in all fields");
+      setIsSubmitting(false);
+      return;
+    }
+
     if (editingClient) {
       console.log("Updating client with data:", { id: editingClient.id, ...formData });
       updateMutation.mutate({ id: editingClient.id, ...formData });
