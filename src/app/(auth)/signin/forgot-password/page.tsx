@@ -546,6 +546,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -570,6 +571,7 @@ const ForgotPasswordPage = () => {
   const [submittedEmail, setSubmittedEmail] = useState<string>("");
   const [otp, setOtp] = useState<string>("");
   const [otpToken, setOtpToken] = useState<string>("");
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -596,6 +598,7 @@ const ForgotPasswordPage = () => {
         setIsSubmitted(true);
         toast.success("OTP sent to your email");
       }
+      console.log("the otpToken is: ", otpToken)
     } catch (error: any) {
       toast.error(
         error.response?.data?.message ||
@@ -615,7 +618,7 @@ const ForgotPasswordPage = () => {
     try {
       setIsLoading(true);
       const response = await axios.post("/api/auth/verifyOtp", {
-        token: otpToken,
+        otpToken: otpToken,
         otp,
       });
       if (response.status === 200) {
@@ -640,6 +643,7 @@ const ForgotPasswordPage = () => {
       });
       if (response.status === 200) {
         toast.success("Password changed successfully!");
+        router.push("/signin");
       }
     } catch (error: any) {
       toast.error(
