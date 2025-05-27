@@ -1,8 +1,8 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useMemo, useState } from "react";
-import { getClients } from "../api/clients";
+import { getClients, deleteClient } from "../api/clients";
 import {
   ErrorComponent,
   LoadingComponent,
@@ -10,16 +10,31 @@ import {
 import { Icon } from "@iconify/react";
 
 const Clients = () => {
+  const queryClient = useQueryClient();
+
   const { data, isLoading, error } = useQuery({
     queryKey: ["client"],
     queryFn: getClients,
   });
 
-  console.log("client data: ", data);
+  const deleteMutation = useMutation({
+    mutationFn: deleteClient,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["client"]);
+    },
+    onError: (error) => {
+      console.error("Delete failed", error);
+    },
+  });
+
+  const handleDelete = (id: string) => {
+    if (confirm("Are you sure you want to delete this client?")) {
+      deleteMutation.mutate(id);
+    }
+  };
 
   const pageSize = 5;
   const visiblePages = 3;
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = useMemo(() => {
@@ -89,19 +104,20 @@ const Clients = () => {
     );
 
   return (
-    <div className=" w-full font-sans min-h-screen pt-24 pl-10 lg:pl-18 bg-[#F2F6F6] ">
-      <div className=" w-full p-4 ">
-        <h1 className=" font-bold text-3xl text-black ">Clients</h1>
+    <div className="w-full font-sans min-h-screen pt-24 pl-10 lg:pl-18 bg-[#F2F6F6]">
+      <div className="w-full p-4">
+        <h1 className="font-bold text-3xl text-black">Clients</h1>
       </div>
 
-      <div className=" rounded-2xl overflow-auto py-10 pr-10 ">
-        <table className=" w-full text-left rounded-xl ">
+      <div className="rounded-2xl overflow-auto py-10 pr-10">
+        <table className="w-full text-left rounded-xl">
           <thead>
-            <tr className=" bg-white text-gray-600 rounded-xl ">
-              <th className=" py-3 px-6 ">ID</th>
-              <th className=" py-3 px-6 ">Name</th>
-              <th className=" py-3 px-6 ">Phone</th>
-              <th className=" py-3 px-6 ">Email</th>
+            <tr className="bg-white text-gray-600 rounded-xl">
+              <th className="py-3 px-6">ID</th>
+              <th className="py-3 px-6">Name</th>
+              <th className="py-3 px-6">Phone</th>
+              <th className="py-3 px-6">Email</th>
+              <th className="py-3 px-6">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -114,34 +130,31 @@ const Clients = () => {
                 }
                 key={index}
               >
-                <td className="py-3 px-6 text-black" >
-                  {" "}
-                  {client?.id}{" "}
-                </td>
-                <td className="py-3 px-6 text-black" >
-                  {" "}
-                  {client?.full_name}{" "}
-                </td>
+                <td className="py-3 px-6 text-black">{client?.id}</td>
+                <td className="py-3 px-6 text-black">{client?.full_name}</td>
+                <td className="py-3 px-6 text-black">{client?.phone_number}</td>
+                <td className="py-3 px-6 text-black">{client?.email}</td>
                 <td className="py-3 px-6 text-black">
-                  {" "}
-                  {client?.phone_number}{" "}
+                  <button
+                    onClick={() => handleDelete(client?.id)}
+                    className="text-red-500 hover:underline"
+                  >
+                    Delete
+                  </button>
                 </td>
-                <td className="py-3 px-6 text-black"> {client?.email} </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <div className=" flex justify-between w-full text-black bg-white p-3 ">
-          <div className=" flex items-center gap-4  ">
+        <div className="flex justify-between w-full text-black bg-white p-3">
+          <div className="flex items-center gap-4">
             <p>Showing Page</p>
-            <div className=" px-2 h-fit text-[#7B3B99] border-2 ">
-              {currentPage}
-            </div>
+            <div className="px-2 h-fit text-[#7B3B99] border-2">{currentPage}</div>
             <p>Out of {totalPages}</p>
           </div>
 
-          <div className=" flex items-center gap-2 text-black ">
+          <div className="flex items-center gap-2 text-black">
             <div onClick={prevPage} className="cursor-pointer text-black">
               <Icon icon="ep:arrow-left-bold" />
             </div>
@@ -150,7 +163,7 @@ const Clients = () => {
                 key={index}
                 className={
                   currentPage === page
-                    ? "px-1 bg-[#7B3B99]  border-2 rounded-lg text-white"
+                    ? "px-1 bg-[#7B3B99] border-2 rounded-lg text-white"
                     : "px-1 text-black"
                 }
               >

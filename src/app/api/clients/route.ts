@@ -70,3 +70,20 @@ export async function PUT(req: Request) {
     );
   }
 }
+export async function DELETE(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "Client ID is required" }, { status: 400 });
+    }
+
+    const deleted = await Client.delete(id);
+
+    return NextResponse.json({ message: "Client deleted successfully", deleted });
+  } catch (error) {
+    console.error("Delete client error:", error);
+    return NextResponse.json({ error: "Failed to delete client" }, { status: 500 });
+  }
+}
