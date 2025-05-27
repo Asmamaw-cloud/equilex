@@ -110,7 +110,7 @@ const Clients = () => {
   const updateMutation = useMutation({
     mutationFn: (data) => {
       if (!updateClient) {
-        throw new Error("updateClient function is not defined");
+        throw new Error("updateClient function is not defined. Please ensure ../api/clients.js exports updateClient correctly.");
       }
       return updateClient(data);
     },
@@ -139,26 +139,37 @@ const Clients = () => {
     },
   });
 
+  const isFormValid = () => {
+    return (
+      formData.full_name.trim() &&
+      formData.phone_number.trim() &&
+      formData.email.trim() &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)
+    );
+  };
+
   const handleAddEdit = () => {
-    if (isSubmitting) return;
+    if (isSubmitting || !isFormValid()) {
+      setModalError("Please fill in all fields with a valid email");
+      return;
+    }
     setModalError(null);
     setIsSubmitting(true);
 
-    // Basic client-side validation
-    if (!formData.full_name || !formData.phone_number || !formData.email) {
-      setModalError("Please fill in all fields");
+    try {
+      if (editingClient) {
+        console.log("Updating client with data:", { id: editingClient.id, ...formData });
+        updateMutation.mutate({ id: editingClient.id, ...formData });
+      } else {
+        console.log("Adding client with data:", formData);
+        addMutation.mutate(formData);
+      }
+    } catch (error) {
+      console.error("Mutation error:", error);
+      setModalError(error.message || "An unexpected error occurred");
+    } finally {
       setIsSubmitting(false);
-      return;
     }
-
-    if (editingClient) {
-      console.log("Updating client with data:", { id: editingClient.id, ...formData });
-      updateMutation.mutate({ id: editingClient.id, ...formData });
-    } else {
-      console.log("Adding client with data:", formData);
-      addMutation.mutate(formData);
-    }
-    setIsSubmitting(false);
   };
 
   const openAddModal = () => {
@@ -191,6 +202,16 @@ const Clients = () => {
       <ErrorComponent errorMessage="Failed to load data. Please try again." />
     );
 
+  // Check if API functions are imported correctly
+  if (!updateClient) {
+    console.error("API functions check: updateClient is not defined. Please verify ../api/clients.js");
+    return (
+      <ErrorComponent
+        errorMessage="Application error: updateClient function is missing. Please contact support."
+      />
+    );
+  }
+
   return (
     <div className="w-full font-sans min-h-screen pt-24 pl-10 lg:pl-18 bg-[#F2F6F6]">
       <div className="w-full p-4">
@@ -217,7 +238,7 @@ const Clients = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedClients.map((client: any, index: any) => (
+            {paginatedClients.map((client, index) => (
               <tr
                 className={
                   index % 2 === 0
@@ -346,7 +367,7 @@ const Clients = () => {
               <button
                 onClick={handleAddEdit}
                 className="px-4 py-2 bg-[#7B3B99] text-white rounded-md disabled:opacity-50"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isFormValid()}
               >
                 {isSubmitting
                   ? editingClient
