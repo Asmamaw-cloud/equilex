@@ -1,8 +1,8 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useMemo, useState } from "react";
-import { getClients } from "../api/clients";
+import { getClients, addClient, updateClient, deleteClient } from "../api/clients";
 import {
   ErrorComponent,
   LoadingComponent,
@@ -10,9 +10,18 @@ import {
 import { Icon } from "@iconify/react";
 
 const Clients = () => {
+  const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery({
     queryKey: ["client"],
     queryFn: getClients,
+  });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingClient, setEditingClient] = useState(null);
+  const [formData, setFormData] = useState({
+    full_name: "",
+    phone_number: "",
+    email: "",
   });
 
   console.log("client data: ", data);
@@ -82,6 +91,62 @@ const Clients = () => {
     }
   };
 
+  const addMutation = useMutation({
+    mutationFn: addClient,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["client"]);
+      setIsModalOpen(false);
+      setFormData({ full_name: "", phone_number: "", email: "" });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: updateClient,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["client"]);
+      setIsModalOpen(false);
+      setEditingClient(null);
+      setFormData({ full_name: "", phone_number: "", email: "" });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteClient,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["client"]);
+    },
+  });
+
+  const handleAddEdit = () => {
+    if (editingClient) {
+      updateMutation.mutate({ id: editingClient.id, ...formData });
+    } else {
+      addMutation.mutate(formData);
+    }
+  };
+
+  const openAddModal = () => {
+    setEditingClient(null);
+    setFormData({ full_name: "", phone_number: "", email: "" });
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (client) => {
+    setEditingClient(client);
+    setFormData({
+      full_name: client.full_name,
+      phone_number: client.phone_number,
+      email: client.email,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this client?")) {
+      deleteMutation.mutate(id);
+    }
+  };
+
   if (isLoading) return <LoadingComponent />;
   if (error)
     return (
@@ -89,19 +154,28 @@ const Clients = () => {
     );
 
   return (
-    <div className=" w-full font-sans min-h-screen pt-24 pl-10 lg:pl-18 bg-[#F2F6F6] ">
-      <div className=" w-full p-4 ">
-        <h1 className=" font-bold text-3xl text-black ">Clients</h1>
+    <div className="w-full font-sans min-h-screen pt-24 pl-10 lg:pl-18 bg-[#F2F6F6]">
+      <div className="w-full p-4">
+        <div className="flex justify-between items-center">
+          <h1 className="font-bold text-3xl text-black">Clients</h1>
+          <button
+            onClick={openAddModal}
+            className="bg-[#7B3B99] text-white px-4 py-2 rounded-lg"
+          >
+            Add Client
+          </button>
+        </div>
       </div>
 
-      <div className=" rounded-2xl overflow-auto py-10 pr-10 ">
-        <table className=" w-full text-left rounded-xl ">
+      <div className="rounded-2xl overflow-auto py-10 pr-10">
+        <table className="w-full text-left rounded-xl">
           <thead>
-            <tr className=" bg-white text-gray-600 rounded-xl ">
-              <th className=" py-3 px-6 ">ID</th>
-              <th className=" py-3 px-6 ">Name</th>
-              <th className=" py-3 px-6 ">Phone</th>
-              <th className=" py-3 px-6 ">Email</th>
+            <tr className="bg-white text-gray-600 rounded-xl">
+              <th className="py-3 px-6">ID</th>
+              <th className="py-3 px-6">Name</th>
+              <th className="py-3 px-6">Phone</th>
+              <th className="py-3 px-6">Email</th>
+              <th className="py-3 px-6">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -114,34 +188,39 @@ const Clients = () => {
                 }
                 key={index}
               >
-                <td className="py-3 px-6 text-black" >
-                  {" "}
-                  {client?.id}{" "}
-                </td>
-                <td className="py-3 px-6 text-black" >
-                  {" "}
-                  {client?.full_name}{" "}
-                </td>
+                <td className="py-3 px-6 text-black">{client?.id}</td>
+                <td className="py-3 px-6 text-black">{client?.full_name}</td>
+                <td className="py-3 px-6 text-black">{client?.phone_number}</td>
+                <td className="py-3 px-6 text-black">{client?.email}</td>
                 <td className="py-3 px-6 text-black">
-                  {" "}
-                  {client?.phone_number}{" "}
+                  <button
+                    onClick={() => openEditModal(client)}
+                    className="mr-2 text-blue-600"
+                  >
+                    <Icon icon="material-symbols:edit" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(client.id)}
+                    className="text-red-600"
+                  >
+                    <Icon icon="material-symbols:delete" />
+                  </button>
                 </td>
-                <td className="py-3 px-6 text-black"> {client?.email} </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <div className=" flex justify-between w-full text-black bg-white p-3 ">
-          <div className=" flex items-center gap-4  ">
+        <div className="flex justify-between w-full text-black bg-white p-3">
+          <div className="flex items-center gap-4">
             <p>Showing Page</p>
-            <div className=" px-2 h-fit text-[#7B3B99] border-2 ">
+            <div className="px-2 h-fit text-[#7B3B99] border-2">
               {currentPage}
             </div>
             <p>Out of {totalPages}</p>
           </div>
 
-          <div className=" flex items-center gap-2 text-black ">
+          <div className="flex items-center gap-2 text-black">
             <div onClick={prevPage} className="cursor-pointer text-black">
               <Icon icon="ep:arrow-left-bold" />
             </div>
@@ -150,7 +229,7 @@ const Clients = () => {
                 key={index}
                 className={
                   currentPage === page
-                    ? "px-1 bg-[#7B3B99]  border-2 rounded-lg text-white"
+                    ? "px-1 bg-[#7B3B99] border-2 rounded-lg text-white"
                     : "px-1 text-black"
                 }
               >
@@ -163,6 +242,69 @@ const Clients = () => {
           </div>
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg w-96">
+            <h2 className="text-xl font-bold mb-4">
+              {editingClient ? "Edit Client" : "Add Client"}
+            </h2>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Name
+              </label>
+              <input
+                type="text"
+                value={formData.full_name}
+                onChange={(e) =>
+                  setFormData({ ...formData, full_name: e.target.value })
+                }
+                className="mt-1 p-2 w-full border rounded-md"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Phone
+              </label>
+              <input
+                type="text"
+                value={formData.phone_number}
+                onChange={(e) =>
+                  setFormData({ ...formData, phone_number: e.target.value })
+                }
+                className="mt-1 p-2 w-full border rounded-md"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <input
+                type="email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                className="mt-1 p-2 w-full border rounded-md"
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddEdit}
+                className="px-4 py-2 bg-[#7B3B99] text-white rounded-md"
+              >
+                {editingClient ? "Update" : "Add"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
