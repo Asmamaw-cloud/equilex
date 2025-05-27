@@ -1,40 +1,29 @@
-// components/Clients.tsx
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import React, { useMemo, useState } from "react";
-import { getClients, deleteClient } from "../api/clients";
+import { getClients } from "../api/clients";
 import {
   ErrorComponent,
   LoadingComponent,
 } from "@/components/LoadingErrorComponents";
 import { Icon } from "@iconify/react";
-import { toast } from "react-toastify"; // Optional: for notifications
 
 const Clients = () => {
-  const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery({
     queryKey: ["client"],
     queryFn: getClients,
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: deleteClient,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["client"] });
-      toast.success("Client deleted successfully"); // Optional
-    },
-    onError: (error) => {
-      toast.error("Failed to delete client"); // Optional
-    },
-  });
+  console.log("client data: ", data);
 
   const pageSize = 5;
   const visiblePages = 3;
+
   const [currentPage, setCurrentPage] = useState(1);
 
   const totalPages = useMemo(() => {
-    return Math.ceil((data?.clients?.length || 0) / pageSize);
+    return Math.ceil(data?.clients.length / pageSize);
   }, [data?.clients]);
 
   const startPage = useMemo(() => {
@@ -78,7 +67,7 @@ const Clients = () => {
   const paginatedClients = useMemo(() => {
     const startIndex = (currentPage - 1) * pageSize;
     const endIndex = startIndex + pageSize;
-    return data?.clients?.slice(startIndex, endIndex) || [];
+    return data?.clients?.slice(startIndex, endIndex);
   }, [currentPage, data?.clients, pageSize]);
 
   const nextPage = () => {
@@ -93,12 +82,6 @@ const Clients = () => {
     }
   };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm("Are you sure you want to delete this client?")) {
-      deleteMutation.mutate(id);
-    }
-  };
-
   if (isLoading) return <LoadingComponent />;
   if (error)
     return (
@@ -106,71 +89,69 @@ const Clients = () => {
     );
 
   return (
-    <div className="w-full font-sans min-h-screen pt-24 pl-10 lg:pl-18 bg-[#F2F6F6]">
-      <div className="w-full p-4">
-        <h1 className="font-bold text-3xl text-black">Clients</h1>
+    <div className=" w-full font-sans min-h-screen pt-24 pl-10 lg:pl-18 bg-[#F2F6F6] ">
+      <div className=" w-full p-4 ">
+        <h1 className=" font-bold text-3xl text-black ">Clients</h1>
       </div>
 
-      <div className="rounded-2xl overflow-auto py-10 pr-10">
-        <table className="w-full text-left rounded-xl">
+      <div className=" rounded-2xl overflow-auto py-10 pr-10 ">
+        <table className=" w-full text-left rounded-xl ">
           <thead>
-            <tr className="bg-white text-gray-600 rounded-xl">
-              <th className="py-3 px-6">ID</th>
-              <th className="py-3 px-6">Name</th>
-              <th className="py-3 px-6">Phone</th>
-              <th className="py-3 px-6">Email</th>
-              <th className="py-3 px-6">Actions</th>
+            <tr className=" bg-white text-gray-600 rounded-xl ">
+              <th className=" py-3 px-6 ">ID</th>
+              <th className=" py-3 px-6 ">Name</th>
+              <th className=" py-3 px-6 ">Phone</th>
+              <th className=" py-3 px-6 ">Email</th>
             </tr>
           </thead>
           <tbody>
-            {paginatedClients.map((client: any, index: number) => (
+            {paginatedClients.map((client: any, index: any) => (
               <tr
                 className={
                   index % 2 === 0
                     ? "relative bg-[#F4F4F4]"
                     : "relative bg-white"
                 }
-                key={client.id}
+                key={index}
               >
-                <td className="py-3 px-6 text-black">{client?.id}</td>
-                <td className="py-3 px-6 text-black">{client?.full_name}</td>
-                <td className="py-3 px-6 text-black">{client?.phone_number}</td>
-                <td className="py-3 px-6 text-black">{client?.email}</td>
-                <td className="py-3 px-6 text-black">
-                  <button
-                    onClick={() => handleDelete(client.id)}
-                    className="text-red-600 hover:text-red-800"
-                    disabled={deleteMutation.isLoading}
-                  >
-                    <Icon icon="material-symbols:delete" width={24} />
-                  </button>
+                <td className="py-3 px-6 text-black" >
+                  {" "}
+                  {client?.id}{" "}
                 </td>
+                <td className="py-3 px-6 text-black" >
+                  {" "}
+                  {client?.full_name}{" "}
+                </td>
+                <td className="py-3 px-6 text-black">
+                  {" "}
+                  {client?.phone_number}{" "}
+                </td>
+                <td className="py-3 px-6 text-black"> {client?.email} </td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <div className="flex justify-between w-full text-black bg-white p-3">
-          <div className="flex items-center gap-4">
+        <div className=" flex justify-between w-full text-black bg-white p-3 ">
+          <div className=" flex items-center gap-4  ">
             <p>Showing Page</p>
-            <div className="px-2 h-fit text-[#7B3B99] border-2">
+            <div className=" px-2 h-fit text-[#7B3B99] border-2 ">
               {currentPage}
             </div>
             <p>Out of {totalPages}</p>
           </div>
 
-          <div className="flex items-center gap-2 text-black">
+          <div className=" flex items-center gap-2 text-black ">
             <div onClick={prevPage} className="cursor-pointer text-black">
               <Icon icon="ep:arrow-left-bold" />
             </div>
             {pages.map((page, index) => (
               <div
                 key={index}
-                onClick={() => typeof page === "number" && setCurrentPage(page)}
                 className={
                   currentPage === page
-                    ? "px-1 bg-[#7B3B99] border-2 rounded-lg text-white cursor-pointer"
-                    : "px-1 text-black cursor-pointer"
+                    ? "px-1 bg-[#7B3B99]  border-2 rounded-lg text-white"
+                    : "px-1 text-black"
                 }
               >
                 {page}
