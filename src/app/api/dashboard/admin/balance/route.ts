@@ -15,7 +15,7 @@ export async function GET(req: Request, res: Response) {
     });
 
     //@ts-ignore
-    const earning = (analytics._sum.price * 20) / 100;
+    const earning = (analytics._sum.price * 5) / 100;
     return NextResponse.json({ earning });
   } catch (error) {
     if (error instanceof Error) {

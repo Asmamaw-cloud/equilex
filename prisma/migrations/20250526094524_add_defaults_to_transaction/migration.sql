@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Transaction" ADD COLUMN     "price" DOUBLE PRECISION NOT NULL DEFAULT 0,
+ADD COLUMN     "references" TEXT NOT NULL DEFAULT '';

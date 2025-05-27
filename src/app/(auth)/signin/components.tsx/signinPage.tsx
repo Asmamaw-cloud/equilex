@@ -163,7 +163,7 @@ const SigninPage = () => {
                           <div className="flex items-center justify-between">
                             <FormLabel>Password</FormLabel>
                             <Link
-                              href="/forgot-password"
+                              href="/signin/forgot-password"
                               className="text-xs text-primary hover:underline"
                             >
                               Forgot password?

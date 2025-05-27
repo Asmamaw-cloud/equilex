@@ -6,6 +6,8 @@ export class Payment {
   static readonly CHAPA_AUTH_KEY: string = process.env.NEXT_PUBLIC_CHAPA_AUTH_KEY!;
   static readonly CALLBACK_URL: string = process.env.CHAPA_CALLBACK_URL!;
   static readonly REDIRECT_URL: string = process.env.CHAPA_REDIRECT_URL!;
+  static readonly CHAPA_SECRET = process.env.CHAPA_SECRET_KEY;
+
 
   static async initiate(
     email: string,
@@ -76,10 +78,12 @@ export class Payment {
       },
     };
 
-    await axios.get(
+    const checkVerify = await axios.get(
       "https://api.chapa.co/v1/transaction/verify/" + transactionId,
       config
     );
+
+    console.log("Verification response: ", checkVerify.data);
 
     const acceptedCase = await db.case.update({
       where: {
@@ -93,6 +97,7 @@ export class Payment {
     await db.transaction.create({
       data: {
         payment_id: transactionId,
+        references: checkVerify.data.data.reference,
         case_id: acceptedCase.id,
         paid_at: new Date(),
       },
@@ -100,31 +105,150 @@ export class Payment {
     return acceptedCase;
   }
 
-  static async requestWithdrawal(amount: number) {
-    const lawyerSession = await isLawyer();
-    const lawyer = await db.lawyer.findUnique({
-      where: {
-        //@ts-ignore
-        id: lawyerSession.user.image.id,
-      },
-    });
 
-    if (!lawyer) {
-      throw new Error("Lawyer doesn't exist");
-    }
-    if (lawyer?.balance < amount) {
-      throw new Error("Insufficient balance.");
-    }
+  static async requestWithdrawal({
+  full_name,
+  account,
+  amount,
+  bank_code,
+}: {
+  full_name: string;
+  account: string;
+  amount: number;
+  bank_code: string;
+}) {
+  const lawyerSession = await isLawyer();
 
-    const newWithdrawRequest = await db.withdrawRequest.create({
-      data: {
-        amount,
-        //@ts-ignore
-        lawyer_id: lawyerSession.user.image.id,
-      },
-    });
-    return newWithdrawRequest;
+  const lawyer = await db.lawyer.findUnique({
+    where: {
+      //@ts-ignore
+      id: lawyerSession.user.image.id,
+    },
+  });
+
+  if (!lawyer) {
+    throw new Error("Lawyer doesn't exist");
   }
+
+  if (lawyer.balance < amount) {
+    throw new Error("Insufficient balance.");
+  }
+
+  const res = await axios.post(
+    "https://api.chapa.co/v1/transfers",
+    {
+      account_name: full_name,
+      account_number: account,
+      amount,
+      currency: "ETB",
+      bank_code,
+      reference: `withdraw-${Date.now()}`,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${this.CHAPA_SECRET}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const chapaResponse = res.data;
+  console.log("Withdrawal response from Chapa:", chapaResponse);
+
+  if (chapaResponse.status !== "success") {
+    throw new Error(`Chapa API error: ${chapaResponse.message}`);
+  }
+
+  await db.lawyer.update({
+    where: { id: lawyer.id },
+    data: {
+      balance: { decrement: amount },
+    },
+  });
+
+  const newWithdrawRequest = await db.withdrawRequest.create({
+    data: {
+      amount,
+      lawyer_id: lawyer.id,
+      status: "TRANSFERRED",
+    },
+  });
+
+  return {
+    chapaResponse,
+    newWithdrawRequest,
+  };
+}
+
+
+
+
+
+
+  // static async requestWithdrawal({
+  //   full_name, account, amount, bank_code
+  // }: {
+  //   full_name: string;
+  //   account: string;
+  //   amount: number;
+  //   bank_code: string; 
+  // }) {
+  //   const lawyerSession = await isLawyer();
+
+
+  //   try {
+  //   const res = await axios.post(
+  //     "https://api.chapa.co/v1/transfer",
+  //     {
+  //       account_name: full_name,
+  //       account_number: account,
+  //       amount,
+  //       currency: "ETB",
+  //       bank_code,
+  //       reference: `withdraw-${Date.now()}`,
+  //     },
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${this.CHAPA_SECRET}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     }
+  //   );
+
+  //   const result = await res.data;
+  //   console.log("Withdrawal response from chapa: ", result);
+
+  //   return res.data; // ✅ FIXED: You need to return something
+  // } catch (error) {
+  //   console.error("Withdraw error:", error);
+  //   throw new Error("Failed to process withdrawal request");
+  // }
+
+
+
+  //   const lawyer = await db.lawyer.findUnique({
+  //     where: {
+  //       //@ts-ignore
+  //       id: lawyerSession.user.image.id,
+  //     },
+  //   });
+
+  //   if (!lawyer) {
+  //     throw new Error("Lawyer doesn't exist");
+  //   }
+  //   if (lawyer?.balance < amount) {
+  //     throw new Error("Insufficient balance.");
+  //   }
+
+  //   const newWithdrawRequest = await db.withdrawRequest.create({
+  //     data: {
+  //       amount,
+  //       //@ts-ignore
+  //       lawyer_id: lawyerSession.user.image.id,
+  //     },
+  //   });
+  //   return newWithdrawRequest;
+  // }
 
   static async withdrawalRequestHistory() {
     await isAdmin();
@@ -170,5 +294,4 @@ export class Payment {
     });
     return transactionHistory;
   }
-
 }

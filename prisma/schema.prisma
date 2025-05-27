@@ -154,6 +154,7 @@ model dispute {
   created_at    DateTime      @default(now())
   status        DisputeStatus @default(PENDING)
   content       String
+  documents     String[]
   lawyer        lawyer        @relation(fields: [lawyer_id], references: [id])
   client        client        @relation(fields: [client_id], references: [id])
 }
@@ -238,6 +239,8 @@ model Transaction {
   status     TransactionStatus @default(PENDING)
   created_at DateTime          @default(now())
   paid_at    DateTime
+price        Float             @default(0)
+references   String            @default("")
 }
 
 model Message {
