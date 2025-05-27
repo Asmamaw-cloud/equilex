@@ -1,13 +1,10 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { useMemo, useState } from "react";
-import { getClients, deleteClient } from "../api/clients";
-import {
-  ErrorComponent,
-  LoadingComponent,
-} from "@/components/LoadingErrorComponents";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Icon } from "@iconify/react";
+import { getClients, deleteClient } from "../api/clients";
+import { LoadingComponent, ErrorComponent } from "@/components/LoadingErrorComponents";
 
 const Clients = () => {
   const queryClient = useQueryClient();
@@ -16,6 +13,9 @@ const Clients = () => {
     queryKey: ["client"],
     queryFn: getClients,
   });
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
 
   const deleteMutation = useMutation({
     mutationFn: deleteClient,
@@ -27,10 +27,22 @@ const Clients = () => {
     },
   });
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this client?")) {
-      deleteMutation.mutate(id);
+  const handleOpenModal = (id: string) => {
+    setSelectedClientId(id);
+    setShowModal(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedClientId) {
+      deleteMutation.mutate(selectedClientId);
+      setShowModal(false);
+      setSelectedClientId(null);
     }
+  };
+
+  const handleCancelDelete = () => {
+    setShowModal(false);
+    setSelectedClientId(null);
   };
 
   const pageSize = 5;
@@ -121,14 +133,14 @@ const Clients = () => {
             </tr>
           </thead>
           <tbody>
-            {paginatedClients.map((client: any, index: any) => (
+            {paginatedClients.map((client: any, index: number) => (
               <tr
+                key={client?.id}
                 className={
                   index % 2 === 0
                     ? "relative bg-[#F4F4F4]"
                     : "relative bg-white"
                 }
-                key={index}
               >
                 <td className="py-3 px-6 text-black">{client?.id}</td>
                 <td className="py-3 px-6 text-black">{client?.full_name}</td>
@@ -136,7 +148,7 @@ const Clients = () => {
                 <td className="py-3 px-6 text-black">{client?.email}</td>
                 <td className="py-3 px-6 text-black">
                   <button
-                    onClick={() => handleDelete(client?.id)}
+                    onClick={() => handleOpenModal(client?.id)}
                     className="text-red-500 hover:underline"
                   >
                     Delete
@@ -161,10 +173,11 @@ const Clients = () => {
             {pages.map((page, index) => (
               <div
                 key={index}
+                onClick={() => typeof page === "number" && setCurrentPage(page)}
                 className={
                   currentPage === page
-                    ? "px-1 bg-[#7B3B99] border-2 rounded-lg text-white"
-                    : "px-1 text-black"
+                    ? "px-1 bg-[#7B3B99] border-2 rounded-lg text-white cursor-pointer"
+                    : "px-1 text-black cursor-pointer"
                 }
               >
                 {page}
@@ -176,6 +189,29 @@ const Clients = () => {
           </div>
         </div>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded shadow-md w-96 text-center">
+            <h2 className="text-xl font-semibold mb-4">Confirm Delete</h2>
+            <p className="mb-6">Are you sure you want to delete this client?</p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={handleCancelDelete}
+                className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
