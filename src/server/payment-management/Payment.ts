@@ -186,70 +186,7 @@ export class Payment {
 
 
   // static async requestWithdrawal({
-  //   full_name, account, amount, bank_code
-  // }: {
-  //   full_name: string;
-  //   account: string;
-  //   amount: number;
-  //   bank_code: string; 
-  // }) {
-  //   const lawyerSession = await isLawyer();
-
-
-  //   try {
-  //   const res = await axios.post(
-  //     "https://api.chapa.co/v1/transfer",
-  //     {
-  //       account_name: full_name,
-  //       account_number: account,
-  //       amount,
-  //       currency: "ETB",
-  //       bank_code,
-  //       reference: `withdraw-${Date.now()}`,
-  //     },
-  //     {
-  //       headers: {
-  //         Authorization: `Bearer ${this.CHAPA_SECRET}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //     }
-  //   );
-
-  //   const result = await res.data;
-  //   console.log("Withdrawal response from chapa: ", result);
-
-  //   return res.data; // ✅ FIXED: You need to return something
-  // } catch (error) {
-  //   console.error("Withdraw error:", error);
-  //   throw new Error("Failed to process withdrawal request");
-  // }
-
-
-
-  //   const lawyer = await db.lawyer.findUnique({
-  //     where: {
-  //       //@ts-ignore
-  //       id: lawyerSession.user.image.id,
-  //     },
-  //   });
-
-  //   if (!lawyer) {
-  //     throw new Error("Lawyer doesn't exist");
-  //   }
-  //   if (lawyer?.balance < amount) {
-  //     throw new Error("Insufficient balance.");
-  //   }
-
-  //   const newWithdrawRequest = await db.withdrawRequest.create({
-  //     data: {
-  //       amount,
-  //       //@ts-ignore
-  //       lawyer_id: lawyerSession.user.image.id,
-  //     },
-  //   });
-  //   return newWithdrawRequest;
-  // }
-
+   
   static async withdrawalRequestHistory() {
     await isAdmin();
     const withdrawRequestHistory = await db.withdrawRequest.findMany();
@@ -261,7 +198,7 @@ export class Payment {
     const withdrawRequest = await db.withdrawRequest.findUnique({
       where: {
         id: withdrawRequestId,
-        status: "PENDING",
+        status: "PENDING ",
       },
     });
     await db.lawyer.update({
@@ -279,7 +216,7 @@ export class Payment {
         id: withdrawRequest?.id,
       },
       data: {
-        status: "TRANSFERRED",
+        status: "TRANSFERRED ",
       },
     });
     return acceptedWithdrawRequest;
