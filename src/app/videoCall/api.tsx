@@ -1,34 +1,3 @@
-// // Define a fallback token for development (replace with your actual token)
-// export const authToken: string = process.env.NEXT_PUBLIC_VIDEO_AUTH_KEY || "YOUR_FALLBACK_TOKEN_FOR_DEVELOPMENT"
-
-// export const createMeeting = async ({ token }: { token: string }) => {
-//   try {
-//     console.log("Using auth token:", token)
-//     const res = await fetch(`https://api.videosdk.live/v2/rooms`, {
-//       method: "POST",
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({}),
-//     })
-
-//     if (!res.ok) {
-//       const errorData = await res.json()
-//       console.error("API Error:", errorData)
-//       throw new Error(`Failed to create meeting: ${res.status}`)
-//     }
-
-//     const { roomId }: { roomId: string } = await res.json()
-//     console.log("Meeting created with ID:", roomId)
-//     return roomId
-//   } catch (error) {
-//     console.error("Error creating meeting:", error)
-//     throw error
-//   }
-// }
-
-
 
 
 // We'll try different authentication methods to resolve the token issue
