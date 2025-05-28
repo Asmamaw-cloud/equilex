@@ -219,7 +219,7 @@ const SigninPage = () => {
                   </form>
                 </Form>
 
-                <div className="relative my-6">
+                {/* <div className="relative my-6">
                   <Separator />
                   <div className="absolute inset-0 flex items-center justify-center">
                     <span className="bg-card px-2 text-xs text-muted-foreground">
@@ -264,7 +264,7 @@ const SigninPage = () => {
                       <span>Sign in with Google</span>
                     </>
                   )}
-                </Button>
+                </Button> */}
               </CardContent>
               <CardFooter className="flex flex-col space-y-4 border-t bg-muted/50 p-6">
                 <div className="text-center text-sm">
